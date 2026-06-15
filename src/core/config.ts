@@ -14,3 +14,23 @@ export const APP = {
  * cambia — solo se intercambian los adaptadores en core/providers.ts.
  */
 export const DEMO_MODE = true;
+
+/**
+ * Persistencia con Supabase (auth + datos reales).
+ *
+ * La *publishable key* es PÚBLICA por diseño (pensada para vivir en el cliente),
+ * por eso puede ir como default acá. Se puede sobreescribir con variables de
+ * entorno (.env.local) sin tocar código:
+ *   VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY
+ *
+ * NUNCA poner aquí la secret key (sb_secret_…) ni la contraseña de la base.
+ */
+export const SUPABASE = {
+  url: import.meta.env.VITE_SUPABASE_URL ?? 'https://zdvcvazybuupalvjacnh.supabase.co',
+  publishableKey:
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+    'sb_publishable_mJSNIMsZ-fKDhs7lTcnv-w_1urMj8Uj',
+};
+
+/** true cuando hay URL + key configuradas (no implica que el schema ya exista). */
+export const SUPABASE_CONFIGURED = Boolean(SUPABASE.url && SUPABASE.publishableKey);

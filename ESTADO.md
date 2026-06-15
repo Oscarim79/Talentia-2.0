@@ -2,7 +2,7 @@
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
 > Última actualización: 2026-06-15.
-> Último avance: Dashboard de Métricas (costo por contratación + time-to-fill).
+> Último avance: Supabase conectado (cliente + config + schema borrador). Pendiente: aplicar schema, revisar RLS y swap de datos.
 
 ## Decisiones firmes
 - Producto **nuevo desde cero** (este repo), separado del HRIS interno "Talentia Americana 2000".
@@ -21,7 +21,7 @@
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*
 2. ✅ **Wizard de Vacantes** — flujo paso a paso (5 pasos) para crear vacante con IA + export XML LinkedIn. *(hecho)*
 3. ✅ **Agente de Entrevistas** — chat interactivo real usando `providers.llm.interviewReply`. *(hecho)*
-4. ⏸️ **Persistencia** — conectar Supabase free (auth + datos reales). *Bloqueado: requiere claves/cuenta Supabase; sale del modo demo-gratis. Pendiente de decisión del CEO.*
+4. 🚧 **Persistencia** — Supabase conectado. *Hecho: SDK + cliente (`core/supabase.ts`), config con env vars, schema borrador (`supabase/migrations/0001_init.sql`), tarjeta de estado en Admin. Pendiente (requiere revisión en pantalla): aplicar el schema en el SQL Editor, revisar políticas RLS, montar auth (login) y swap de datos seed → queries Supabase feature por feature.*
 5. ✅ **Métricas** — dashboard de costo de contratación y time-to-fill. *(hecho)*
 
 > Roadmap inicial completo salvo Persistencia (paso 4), que depende de presupuesto/claves.

@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react';
+import { Database } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { TENANTS, PLANS, CANDIDATES, USAGE_EVENTS } from '../../data/seed';
 import { Card, PageHeader, Badge, ProgressBar } from '../../components/ui/primitives';
 import { fmtMoney } from '../../lib/utils';
+import { DEMO_MODE, SUPABASE, SUPABASE_CONFIGURED } from '../../core/config';
+import { checkSupabaseConnection } from '../../core/supabase';
 
 export default function AdminPage() {
   const { tenant, plan } = useTenant();
@@ -15,6 +19,9 @@ export default function AdminPage() {
   return (
     <div>
       <PageHeader title="Administración" subtitle="Consola multi-tenant: planes, créditos y consumo." />
+
+      <SupabaseStatusCard />
+
 
       {/* Uso del plan actual */}
       <Card className="mb-6 p-6">
@@ -93,6 +100,51 @@ export default function AdminPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+function SupabaseStatusCard() {
+  const [reachable, setReachable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!SUPABASE_CONFIGURED) return;
+    checkSupabaseConnection().then(setReachable);
+  }, []);
+
+  const projectRef = SUPABASE.url.replace(/^https?:\/\//, '').split('.')[0];
+
+  return (
+    <Card className="mb-6 p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
+            <Database className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-slate-800">Persistencia · Supabase</p>
+            <p className="text-xs text-slate-500">
+              {SUPABASE_CONFIGURED ? <>Proyecto <span className="font-mono">{projectRef}</span></> : 'Sin configurar'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {SUPABASE_CONFIGURED ? (
+            <Badge variant={reachable === false ? 'red' : 'green'}>
+              {reachable === null ? 'Verificando…' : reachable ? 'Conectado' : 'Sin acceso'}
+            </Badge>
+          ) : (
+            <Badge variant="slate">No configurado</Badge>
+          )}
+          <Badge variant={DEMO_MODE ? 'amber' : 'brand'}>
+            {DEMO_MODE ? 'Datos demo' : 'Datos reales'}
+          </Badge>
+        </div>
+      </div>
+      <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+        Cliente conectado. Falta aplicar el schema (<span className="font-mono">supabase/migrations/0001_init.sql</span>)
+        y revisar las políticas RLS antes de mover los datos de demo a la base real.
+      </p>
+    </Card>
   );
 }
 
