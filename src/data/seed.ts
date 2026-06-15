@@ -4,6 +4,7 @@ import type {
   User,
   Job,
   Candidate,
+  Hire,
   NineBoxDataPoint,
   CultureDimension,
   UsageEvent,
@@ -135,6 +136,24 @@ export const CANDIDATES: Candidate[] = [
   // --- Cola de errores (PDFs ilegibles) ---
   c({ id: 'cand_08', firstName: 'Roberto', lastName: 'Díaz', screeningStatus: 'error', errorReason: 'illegible_pdf', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Roberto_Diaz_scan.pdf' }),
   c({ id: 'cand_09', firstName: 'Gabriela', lastName: 'Solís', screeningStatus: 'error', errorReason: 'password_protected', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Gabriela_foto_cv.pdf' }),
+];
+
+// ---------------- Contrataciones cerradas (métricas de costo + time-to-fill) ----------------
+// Costos en USD. El benchmark de un proceso manual ronda los USD 350 por contratación.
+export const MANUAL_BENCHMARK_USD = 350;
+
+export const HIRES: Hire[] = [
+  // Americana 2000 — varios meses para ver tendencia
+  { id: 'h_a1', tenantId: 't_americana', jobId: 'job_motos', candidateName: 'Diego Estrada', source: 'LinkedIn', openedAt: '2026-02-03', filledAt: '2026-02-22', costBreakdown: { ai: 6, recruiter: 95, advertising: 35 } },
+  { id: 'h_a2', tenantId: 't_americana', jobId: 'job_cajero', candidateName: 'Karla Méndez', source: 'Carga directa', openedAt: '2026-02-10', filledAt: '2026-03-04', costBreakdown: { ai: 4, recruiter: 80, advertising: 20 } },
+  { id: 'h_a3', tenantId: 't_americana', jobId: 'job_motos', candidateName: 'Brenda Aguilar', source: 'WhatsApp', openedAt: '2026-03-15', filledAt: '2026-03-30', costBreakdown: { ai: 7, recruiter: 70, advertising: 30 } },
+  { id: 'h_a4', tenantId: 't_americana', jobId: 'job_cajero', candidateName: 'Hugo Marroquín', source: 'LinkedIn', openedAt: '2026-04-02', filledAt: '2026-04-14', costBreakdown: { ai: 5, recruiter: 60, advertising: 25 } },
+  { id: 'h_a5', tenantId: 't_americana', jobId: 'job_motos', candidateName: 'Valeria Coronado', source: 'Carga directa', openedAt: '2026-05-05', filledAt: '2026-05-16', costBreakdown: { ai: 8, recruiter: 55, advertising: 28 } },
+  { id: 'h_a6', tenantId: 't_americana', jobId: 'job_motos', candidateName: 'Andrés Pineda', source: 'WhatsApp', openedAt: '2026-05-20', filledAt: '2026-05-29', costBreakdown: { ai: 9, recruiter: 48, advertising: 22 } },
+  // Contacta BPO
+  { id: 'h_c1', tenantId: 't_contacta', jobId: 'job_agente', candidateName: 'Mónica Salazar', source: 'LinkedIn', openedAt: '2026-04-08', filledAt: '2026-04-20', costBreakdown: { ai: 6, recruiter: 65, advertising: 30 } },
+  { id: 'h_c2', tenantId: 't_contacta', jobId: 'job_agente', candidateName: 'Esteban Rivas', source: 'Carga directa', openedAt: '2026-05-02', filledAt: '2026-05-13', costBreakdown: { ai: 7, recruiter: 52, advertising: 24 } },
+  { id: 'h_c3', tenantId: 't_contacta', jobId: 'job_agente', candidateName: 'Paola Cifuentes', source: 'WhatsApp', openedAt: '2026-05-25', filledAt: '2026-06-03', costBreakdown: { ai: 8, recruiter: 45, advertising: 20 } },
 ];
 
 // ---------------- Módulo Talento: 9-Box (la joya, datos demo) ----------------

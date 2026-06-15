@@ -8,6 +8,7 @@ import ScreeningPage from './features/screening/ScreeningPage';
 import CandidatesPage from './features/candidates/CandidatesPage';
 import InterviewsPage from './features/interviews/InterviewsPage';
 import TalentPage from './features/talent/TalentPage';
+import MetricsPage from './features/metrics/MetricsPage';
 import AdminPage from './features/admin/AdminPage';
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/candidatos" element={<CandidatesPage />} />
           <Route path="/entrevistas" element={<InterviewsPage />} />
           <Route path="/talento" element={<TalentPage />} />
+          <Route path="/metricas" element={<MetricsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

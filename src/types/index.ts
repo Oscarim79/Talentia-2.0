@@ -166,6 +166,19 @@ export interface Interview {
   discrepancies?: Discrepancy[];
 }
 
+// ---------- Métricas de contratación (costo + time-to-fill) ----------
+export interface Hire {
+  id: string;
+  tenantId: string;
+  jobId: string;
+  candidateName: string;
+  source: string;
+  openedAt: string; // fecha de apertura de la vacante (ISO)
+  filledAt: string; // fecha de contratación (ISO)
+  /** Desglose del costo de esta contratación en USD. */
+  costBreakdown: { ai: number; recruiter: number; advertising: number };
+}
+
 // ---------- Módulo Talento (la joya: 9-Box + Cultura 360°) ----------
 export interface NineBoxDataPoint {
   id: string;

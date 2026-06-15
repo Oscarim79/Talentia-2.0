@@ -2,7 +2,7 @@
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
 > Última actualización: 2026-06-15.
-> Último avance: Agente de Entrevistas con chat interactivo en vivo (providers.llm.interviewReply).
+> Último avance: Dashboard de Métricas (costo por contratación + time-to-fill).
 
 ## Decisiones firmes
 - Producto **nuevo desde cero** (este repo), separado del HRIS interno "Talentia Americana 2000".
@@ -21,8 +21,12 @@
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*
 2. ✅ **Wizard de Vacantes** — flujo paso a paso (5 pasos) para crear vacante con IA + export XML LinkedIn. *(hecho)*
 3. ✅ **Agente de Entrevistas** — chat interactivo real usando `providers.llm.interviewReply`. *(hecho)*
-4. **Persistencia** — conectar Supabase free (auth + datos reales) cuando se quiera salir de datos demo.
-5. **Métricas** — dashboard de costo de contratación y time-to-fill.
+4. ⏸️ **Persistencia** — conectar Supabase free (auth + datos reales). *Bloqueado: requiere claves/cuenta Supabase; sale del modo demo-gratis. Pendiente de decisión del CEO.*
+5. ✅ **Métricas** — dashboard de costo de contratación y time-to-fill. *(hecho)*
+
+> Roadmap inicial completo salvo Persistencia (paso 4), que depende de presupuesto/claves.
+> Posibles siguientes: detección automática de discrepancias en entrevistas (Fase 3),
+> edición/pausa de vacantes, o conectar adaptadores reales (Claude/LlamaParse) cuando haya presupuesto.
 
 ## Cómo continuar en el móvil
 1. Abre **claude.ai** en el teléfono.
