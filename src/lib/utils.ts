@@ -26,3 +26,26 @@ export function hashString(s: string): number {
   }
   return Math.abs(h);
 }
+
+/** Convierte un texto a slug url-safe (acentos fuera, espacios → guiones). */
+export function slugify(s: string): string {
+  return s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/** Dispara la descarga de un archivo de texto en el navegador. */
+export function downloadTextFile(fileName: string, content: string, mime = 'text/plain') {
+  const blob = new Blob([content], { type: `${mime};charset=utf-8` });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}

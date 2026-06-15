@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { Upload, CheckCircle2, XCircle, AlertTriangle, Loader2, FileText, UploadCloud, Sparkles } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
-import { JOBS, CANDIDATES } from '../../data/seed';
+import { useJobs } from '../../context/JobsContext';
+import { CANDIDATES } from '../../data/seed';
 import { providers } from '../../core/providers';
 import type { Candidate, Job } from '../../types';
 import {
@@ -24,7 +25,8 @@ const ACCEPTED = '.pdf,.doc,.docx,.png,.jpg,.jpeg';
 
 export default function ScreeningPage() {
   const { tenant } = useTenant();
-  const jobs = JOBS.filter((j) => j.tenantId === tenant.id);
+  const { jobs: allJobs } = useJobs();
+  const jobs = allJobs.filter((j) => j.tenantId === tenant.id);
   const [jobId, setJobId] = useState(jobs[0]?.id ?? '');
   const job = jobs.find((j) => j.id === jobId);
 
