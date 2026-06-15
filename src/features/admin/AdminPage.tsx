@@ -1,12 +1,14 @@
 import { useTenant } from '../../context/TenantContext';
-import { TENANTS, PLANS, JOBS, CANDIDATES, USAGE_EVENTS } from '../../data/seed';
+import { useJobs } from '../../context/JobsContext';
+import { TENANTS, PLANS, CANDIDATES, USAGE_EVENTS } from '../../data/seed';
 import { Card, PageHeader, Badge, ProgressBar } from '../../components/ui/primitives';
 import { fmtMoney } from '../../lib/utils';
 
 export default function AdminPage() {
   const { tenant, plan } = useTenant();
+  const { jobs: allJobs } = useJobs();
 
-  const jobsUsed = JOBS.filter((j) => j.tenantId === tenant.id).length;
+  const jobsUsed = allJobs.filter((j) => j.tenantId === tenant.id).length;
   const candsUsed = CANDIDATES.filter((c) => c.tenantId === tenant.id).length;
   const screeningUsed = USAGE_EVENTS.filter((u) => u.tenantId === tenant.id && u.type === 'screening').reduce((s, u) => s + u.amount, 0);
 
@@ -47,7 +49,7 @@ export default function AdminPage() {
           <tbody>
             {TENANTS.map((t) => {
               const p = PLANS.find((pl) => pl.id === t.planId);
-              const nJobs = JOBS.filter((j) => j.tenantId === t.id).length;
+              const nJobs = allJobs.filter((j) => j.tenantId === t.id).length;
               return (
                 <tr key={t.id} className="border-b border-slate-50 last:border-0">
                   <td className="px-6 py-3 font-semibold text-slate-800">

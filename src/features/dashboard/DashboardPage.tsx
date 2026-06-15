@@ -10,7 +10,8 @@ import {
   Cell,
 } from 'recharts';
 import { useTenant } from '../../context/TenantContext';
-import { JOBS, CANDIDATES, USAGE_EVENTS } from '../../data/seed';
+import { useJobs } from '../../context/JobsContext';
+import { CANDIDATES, USAGE_EVENTS } from '../../data/seed';
 import { Card, PageHeader, StatCard, Badge, ProgressBar } from '../../components/ui/primitives';
 import { fmtMoney } from '../../lib/utils';
 import { scoreVariant } from '../../components/ui/primitives';
@@ -25,7 +26,8 @@ const STAGES: { key: string; label: string; color: string }[] = [
 
 export default function DashboardPage() {
   const { tenant } = useTenant();
-  const jobs = JOBS.filter((j) => j.tenantId === tenant.id);
+  const { jobs: allJobs } = useJobs();
+  const jobs = allJobs.filter((j) => j.tenantId === tenant.id);
   const cands = CANDIDATES.filter((c) => c.tenantId === tenant.id);
   const usage = USAGE_EVENTS.filter((u) => u.tenantId === tenant.id);
 

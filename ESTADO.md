@@ -2,6 +2,7 @@
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
 > Última actualización: 2026-06-15.
+> Último avance: Wizard de Vacantes (5 pasos con IA) + export XML LinkedIn.
 
 ## Decisiones firmes
 - Producto **nuevo desde cero** (este repo), separado del HRIS interno "Talentia Americana 2000".
@@ -17,8 +18,8 @@
 - Arquitectura puertos/adaptadores con mocks.
 
 ## Siguiente (en orden)
-1. **Screening** — drag & drop real de archivos + barra de progreso por lote.
-2. **Wizard de Vacantes** — flujo paso a paso para crear vacante con IA + export XML LinkedIn.
+1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*
+2. ✅ **Wizard de Vacantes** — flujo paso a paso (5 pasos) para crear vacante con IA + export XML LinkedIn. *(hecho)*
 3. **Agente de Entrevistas** — chat interactivo real usando `providers.llm.interviewReply`.
 4. **Persistencia** — conectar Supabase free (auth + datos reales) cuando se quiera salir de datos demo.
 5. **Métricas** — dashboard de costo de contratación y time-to-fill.
