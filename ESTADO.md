@@ -2,7 +2,7 @@
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
 > Última actualización: 2026-06-18.
-> Último avance: 9-Box potenciado — filtro por departamento, perfil por persona (10 dimensiones 360°), historial por trimestre (semáforo) con **motor de decisiones de RR.HH.** (racha → reconocimiento/bono/aumento o advertencia/suspensión/desvinculación), recomendación de crecimiento IA basada en los 7 Hábitos (Franklin Covey) y envío por WhatsApp a la persona y a su jefe.
+> Último avance: **Tablero de acciones pendientes de RR.HH.** (`/acciones`) — agrega las decisiones de todo el equipo, agrupadas por prioridad (atención/riesgo · reconocer/premiar · seguimiento), con filtro por depto, "Ver perfil" y "Marcar hecha". Construido sobre: 9-Box potenciado (filtro por depto, perfil por persona con 10 dims 360°, historial por trimestre + motor de decisiones de RR.HH., recomendación de crecimiento IA por 7 Hábitos y WhatsApp a persona y jefe).
 > Objetivo actual: **demo-first** — presentar al CEO con datos mock (más seguro en vivo). Supabase se conecta DESPUÉS del visto bueno.
 > Nota de negocio: Americana 2000 es un **retail completo** (cadena multitienda: línea blanca, muebles, motos, tecnología — como Max, La Curacao, El Gallo más Gallo, Agencias Way), NO solo motos. El plan de crecimiento se basa en el libro **Los 7 Hábitos** de Covey.
 
@@ -19,6 +19,7 @@
 - Dashboard, Screening IA (MVP con pipeline en vivo + cola de errores), Vacantes, Candidatos, Entrevistas (preview), Talento 9-Box, Admin.
 - Arquitectura puertos/adaptadores con mocks.
 - **Talento 9-Box potenciado** (portado de Talentia 1.0): filtro por departamento, lista de colaboradores clicable, modal de perfil con métricas + 10 dimensiones 360° por persona, **historial por trimestre** (semáforo verde/amarillo/rojo) y **motor de decisiones de RR.HH.** (reglas deterministas en `features/talent/talentDecisions.ts`: la racha de la tendencia → reconocimiento/bono/premio/aumento, o seguimiento/capacitación, o advertencia/suspensión/desvinculación), y **recomendación de crecimiento por IA (7 Hábitos / Covey)** con envío por WhatsApp (`wa.me`) a la persona y a su jefe. Diagnóstico síntoma→hábito en `core/adapters/mock.ts` (mock; el puerto `llm.generateGrowthPlan` queda listo para Gemini real).
+- **Tablero de acciones RR.HH.** (`features/talent/ActionsPage.tsx`, ruta `/acciones`): agrega las decisiones de todo el equipo agrupadas por prioridad, con resumen de conteos, filtro por departamento, "Ver perfil" (reusa el modal) y "Marcar hecha" → Completadas.
 
 ## Siguiente (en orden)
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*
