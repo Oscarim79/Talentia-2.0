@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { AlertTriangle, Award, Eye, ClipboardCheck, RotateCcw } from 'lucide-react';
+import { AlertTriangle, Award, Eye, ClipboardCheck, RotateCcw, FileText, Send } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { NINE_BOX } from '../../data/seed';
 import { Card, PageHeader, Badge, Button, StatCard } from '../../components/ui/primitives';
@@ -8,11 +8,12 @@ import {
   deriveDecision,
   periodLight,
   LIGHT_META,
-  TONE_STYLES,
+  bucketOf,
   type Decision,
   type DecisionTone,
 } from './talentDecisions';
 import { PersonProfileModal } from './PersonProfileModal';
+import { ManagerReportModal } from './ManagerReportModal';
 
 const TONE_BADGE: Record<DecisionTone, 'green' | 'amber' | 'red'> = {
   positive: 'green',
@@ -24,6 +25,14 @@ const TONE_BADGE: Record<DecisionTone, 'green' | 'amber' | 'red'> = {
 interface ActionItem {
   person: NineBoxDataPoint;
   decision: Decision;
+}
+
+interface ReportCard {
+  department: string;
+  manager: string;
+  reward: number;
+  followup: number;
+  risk: number;
 }
 
 const BUCKETS: { key: string; title: string; tones: DecisionTone[]; icon: typeof Award; accent: string }[] = [
@@ -39,6 +48,7 @@ export default function ActionsPage() {
   const [dept, setDept] = useState('Todos');
   const [done, setDone] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [reportDept, setReportDept] = useState<string | null>(null);
 
   const departments = useMemo(
     () => ['Todos', ...Array.from(new Set(NINE_BOX.map((p) => p.department))).sort()],
@@ -51,6 +61,17 @@ export default function ActionsPage() {
   }, [dept]);
 
   const selected = NINE_BOX.find((p) => p.id === selectedId) ?? null;
+
+  // Un reporte por gerente/departamento (respeta el filtro de departamento).
+  const reportCards = useMemo<ReportCard[]>(() => {
+    const m = new Map<string, ReportCard>();
+    items.forEach(({ person, decision }) => {
+      const c = m.get(person.department) ?? { department: person.department, manager: person.managerName, reward: 0, followup: 0, risk: 0 };
+      c[bucketOf(decision.tone)] += 1;
+      m.set(person.department, c);
+    });
+    return Array.from(m.values()).sort((a, b) => b.risk - a.risk || a.department.localeCompare(b.department));
+  }, [items]);
 
   function toggleDone(id: string) {
     setDone((prev) => {
@@ -101,6 +122,31 @@ export default function ActionsPage() {
         <StatCard label="Reconocer / premiar" value={String(countFor(['positive']))} delta="reconocimiento · bono · aumento" icon={<Award className="h-5 w-5" />} />
         <StatCard label="Seguimiento" value={String(countFor(['neutral']))} delta="acompañamiento · capacitación" icon={<Eye className="h-5 w-5" />} />
       </div>
+
+      {/* Reportes a gerentes */}
+      <Card className="mb-6 p-5">
+        <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <FileText className="h-4 w-4 text-indigo-600" />
+          <h2 className="text-sm font-bold text-slate-700">Reportes a gerentes</h2>
+          <span className="text-xs text-slate-400">— envía a cada gerente el estado de su equipo</span>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {reportCards.map((c) => (
+            <div key={c.department} className="rounded-lg border border-slate-200 p-4">
+              <p className="text-sm font-bold text-slate-900">{c.manager}</p>
+              <p className="text-xs text-slate-500">Gerente · {c.department}</p>
+              <div className="mt-2 flex items-center gap-3 text-xs font-semibold">
+                <span className="text-green-600" title="A reconocer / premiar">● {c.reward}</span>
+                <span className="text-amber-600" title="En seguimiento">● {c.followup}</span>
+                <span className="text-red-600" title="En riesgo">● {c.risk}</span>
+              </div>
+              <Button variant="secondary" className="mt-3 w-full justify-center" onClick={() => setReportDept(c.department)}>
+                <Send className="h-4 w-4" /> Ver / enviar reporte
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Buckets de acciones */}
       <div className="space-y-6">
@@ -157,6 +203,7 @@ export default function ActionsPage() {
       </div>
 
       {selected && <PersonProfileModal person={selected} onClose={() => setSelectedId(null)} />}
+      {reportDept && <ManagerReportModal department={reportDept} onClose={() => setReportDept(null)} />}
     </div>
   );
 }

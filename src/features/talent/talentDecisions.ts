@@ -80,3 +80,18 @@ export const TONE_STYLES: Record<DecisionTone, { box: string; title: string }> =
   negative: { box: 'border-orange-200 bg-orange-50', title: 'text-orange-800' },
   critical: { box: 'border-red-200 bg-red-50', title: 'text-red-800' },
 };
+
+// Agrupa los tonos de decisión en 3 cubetas de acción.
+export type ActionBucket = 'risk' | 'reward' | 'followup';
+
+export function bucketOf(tone: DecisionTone): ActionBucket {
+  if (tone === 'critical' || tone === 'negative') return 'risk';
+  if (tone === 'positive') return 'reward';
+  return 'followup';
+}
+
+export function toneBadge(tone: DecisionTone): 'green' | 'amber' | 'red' {
+  if (tone === 'positive') return 'green';
+  if (tone === 'critical' || tone === 'negative') return 'red';
+  return 'amber';
+}
