@@ -129,6 +129,7 @@ export interface Candidate {
   source: string;
   stage: CandidateStage;
   appliedAt: string;
+  hiredAt?: string; // fecha de contratación (alimenta time-to-fill)
   cvFileName: string;
   screeningStatus: ScreeningStatus;
   screeningScore?: number; // 0-100

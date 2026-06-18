@@ -132,6 +132,22 @@ export const CANDIDATES: Candidate[] = [
       { criterion: 'Atención al cliente', matched: false, quote: '— sin evidencia en el CV —' },
       { criterion: 'Crédito', matched: false, quote: '— sin evidencia en el CV —' },
     ] }),
+  c({ id: 'cand_10', firstName: 'Andrea', lastName: 'Estrada', stage: 'hired', hiredAt: '2026-06-14', screeningScore: 91, matchPercent: 93,
+    justification: 'Contratada: cumple 3/3 requisitos con 5 años en venta de motos y manejo de crédito.',
+    parsed: { skills: ['Ventas', 'Crédito', 'CRM', 'Atención al cliente'], totalYears: 5, education: 'Diversificado', experience: [{ company: 'MultiMotos', role: 'Asesor de Ventas', years: 5 }] },
+    evidence: [
+      { criterion: 'Ventas', matched: true, quote: '"Asesor de Ventas en MultiMotos — 5 años"' },
+      { criterion: 'Atención al cliente', matched: true, quote: '"Cartera de clientes con seguimiento posventa"' },
+      { criterion: 'Crédito', matched: true, quote: '"Gestión de crédito y cobranza"' },
+    ] }),
+  c({ id: 'cand_11', firstName: 'Mario', lastName: 'Vélez', stage: 'offer', screeningScore: 85, matchPercent: 88,
+    justification: 'En oferta: cumple 3/3 requisitos con 4 años de experiencia en ventas.',
+    parsed: { skills: ['Ventas', 'Negociación', 'Atención al cliente'], totalYears: 4, education: 'Perito Contador', experience: [{ company: 'Tigo', role: 'Asesor de Ventas', years: 4 }] },
+    evidence: [
+      { criterion: 'Ventas', matched: true, quote: '"Asesor de Ventas en Tigo — 4 años"' },
+      { criterion: 'Atención al cliente', matched: true, quote: '"Atención en punto de venta"' },
+      { criterion: 'Crédito', matched: false, quote: '— sin evidencia en el CV —' },
+    ] }),
   // --- Cola de errores (PDFs ilegibles) ---
   c({ id: 'cand_08', firstName: 'Roberto', lastName: 'Díaz', screeningStatus: 'error', errorReason: 'illegible_pdf', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Roberto_Diaz_scan.pdf' }),
   c({ id: 'cand_09', firstName: 'Gabriela', lastName: 'Solís', screeningStatus: 'error', errorReason: 'password_protected', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Gabriela_foto_cv.pdf' }),

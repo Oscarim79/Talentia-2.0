@@ -6,6 +6,7 @@ import {
   Users,
   MessagesSquare,
   Grid3x3,
+  TrendingUp,
   Shield,
 } from 'lucide-react';
 import { APP } from '../../core/config';
@@ -18,6 +19,7 @@ const nav = [
   { to: '/candidatos', label: 'Candidatos', icon: Users },
   { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare },
   { to: '/talento', label: 'Talento · 9-Box', icon: Grid3x3 },
+  { to: '/metricas', label: 'Métricas · ROI', icon: TrendingUp },
   { to: '/admin', label: 'Admin', icon: Shield },
 ];
 
