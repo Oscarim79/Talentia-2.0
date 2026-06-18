@@ -10,6 +10,7 @@ import type {
   LlmPort,
   ScoreInput,
   ScoreResult,
+  InterviewReplyResult,
   MessagingPort,
   VoicePort,
   BillingPort,
@@ -124,15 +125,32 @@ export const mockLlm: LlmPort = {
     return delay({ score, matchPercent, justification, evidence, flags }, 600);
   },
 
-  async interviewReply({ history }) {
-    const next = history.filter((t) => t.role === 'agent').length;
-    const followups = [
-      'Gracias. ¿Podrías contarme un ejemplo concreto de una venta difícil que cerraste?',
-      'Entiendo. ¿Cómo organizas tu día para cumplir tus metas?',
-      'Perfecto. ¿Tienes disponibilidad para trabajar fines de semana?',
-      'Excelente. Eso es todo por ahora, un reclutador te contactará. ¡Gracias!',
-    ];
-    return delay(followups[Math.min(next, followups.length - 1)], 500);
+  async interviewReply({ history, jobTitle, candidateName, questions }): Promise<InterviewReplyResult> {
+    // Cuántas preguntas ha hecho ya el agente (la apertura incluye la primera).
+    const asked = history.filter((t) => t.role === 'agent').length;
+    const firstName = candidateName.split(' ')[0] || 'candidato';
+
+    // Apertura: saludo + primera pregunta del banco aprobado.
+    if (asked === 0) {
+      const opener = questions.length
+        ? `¡Hola ${firstName}! Soy el asistente de entrevistas de TALENTIA para la vacante de **${jobTitle}**. Te haré ${questions.length} preguntas cortas; responde con naturalidad.\n\n${questions[0]}`
+        : `¡Hola ${firstName}! Soy el asistente de entrevistas de TALENTIA para la vacante de **${jobTitle}**. Cuéntame, ¿por qué te interesa este puesto?`;
+      return delay({ message: opener, done: false }, 700);
+    }
+
+    // El agente SOLO pregunta del banco aprobado (tool-constrained, no improvisa).
+    if (asked < questions.length) {
+      return delay({ message: questions[asked], done: false }, 650);
+    }
+
+    // Banco agotado → cierre de la entrevista.
+    return delay(
+      {
+        message: `Gracias por tus respuestas, ${firstName}. Con esto concluyo la entrevista — un reclutador las revisará y te contactará pronto. ¡Mucho éxito! 👋`,
+        done: true,
+      },
+      650,
+    );
   },
 };
 

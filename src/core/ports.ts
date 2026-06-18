@@ -33,6 +33,22 @@ export interface ScoreResult {
   flags: string[];
 }
 
+// ---- Entrevista IA (agente conversacional) ----
+export interface InterviewReplyInput {
+  history: InterviewTurn[];
+  jobTitle: string;
+  candidateName: string;
+  /** Banco de preguntas aprobado. El agente SOLO pregunta de aquí (tool-constrained). */
+  questions: string[];
+}
+
+export interface InterviewReplyResult {
+  /** Siguiente mensaje del agente. */
+  message: string;
+  /** true cuando el agente cerró la entrevista. */
+  done: boolean;
+}
+
 export interface LlmPort {
   generateJobDescription(input: {
     title: string;
@@ -41,7 +57,7 @@ export interface LlmPort {
   }): Promise<string>;
   generateInterviewQuestions(input: { title: string; count: number }): Promise<string[]>;
   scoreCandidate(input: ScoreInput): Promise<ScoreResult>;
-  interviewReply(input: { history: InterviewTurn[]; context: string }): Promise<string>;
+  interviewReply(input: InterviewReplyInput): Promise<InterviewReplyResult>;
 }
 
 // ---- Mensajería WhatsApp (Twilio / Meta en producción) ----
