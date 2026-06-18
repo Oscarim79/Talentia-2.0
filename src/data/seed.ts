@@ -8,6 +8,7 @@ import type {
   CultureDimension,
   UsageEvent,
 } from '../types';
+import { hashString } from '../lib/utils';
 
 // ---------------- Planes ----------------
 export const PLANS: Plan[] = [
@@ -19,7 +20,7 @@ export const PLANS: Plan[] = [
 
 // ---------------- Tenants (empresas cliente) ----------------
 export const TENANTS: Tenant[] = [
-  { id: 't_americana', name: 'Americana 2000', slug: 'americana', logoEmoji: '🏍️', industry: 'Retail / Motocicletas', planId: 'plan_growth', status: 'active', createdAt: '2026-01-12' },
+  { id: 't_americana', name: 'Americana 2000', slug: 'americana', logoEmoji: '🏬', industry: 'Retail · cadena multitienda (línea blanca, muebles, motos, tecnología)', planId: 'plan_growth', status: 'active', createdAt: '2026-01-12' },
   { id: 't_contacta', name: 'Contacta BPO', slug: 'contacta', logoEmoji: '🎧', industry: 'Call Center', planId: 'plan_starter', status: 'active', createdAt: '2026-03-04' },
   { id: 't_novapay', name: 'NovaPay', slug: 'novapay', logoEmoji: '💳', industry: 'Fintech', planId: 'plan_scale', status: 'trial', createdAt: '2026-05-20' },
 ];
@@ -33,10 +34,10 @@ export const USERS: User[] = [
 // ---------------- Vacantes ----------------
 export const JOBS: Job[] = [
   {
-    id: 'job_motos', tenantId: 't_americana', title: 'Asesor de Ventas - Motocicletas',
+    id: 'job_motos', tenantId: 't_americana', title: 'Asesor de Ventas (Piso de tienda)',
     department: 'Ventas', location: 'Guatemala, GT', employmentType: 'Full-time', status: 'open',
-    salaryMin: 4000, salaryMax: 6500, openings: 8, applySlug: 'americana/asesor-motos', createdAt: '2026-06-01',
-    description: 'Asesor comercial para sala de ventas de motocicletas. Atención al cliente, cierre de ventas y seguimiento de crédito.',
+    salaryMin: 4000, salaryMax: 6500, openings: 8, applySlug: 'americana/asesor-ventas', createdAt: '2026-06-01',
+    description: 'Asesor comercial para sala de ventas de la tienda (electrodomésticos, muebles, motos y tecnología). Atención al cliente, cierre de ventas y seguimiento de crédito.',
     questions: [
       { id: 'q1', text: '¿Qué experiencia tienes en ventas de productos de alto valor?', source: 'ai', weight: 30, idealAnswer: 'Experiencia en ventas con metas y manejo de crédito.' },
       { id: 'q2', text: '¿Cómo manejas a un cliente indeciso?', source: 'manual', weight: 25 },
@@ -154,16 +155,58 @@ export const CANDIDATES: Candidate[] = [
 ];
 
 // ---------------- Módulo Talento: 9-Box (la joya, datos demo) ----------------
+const CULTURE_KEYS = [
+  'clarity', 'inspiration', 'empowerment', 'integrity', 'feedback',
+  'support', 'transparency', 'mentoring', 'emotional', 'conflict',
+] as const;
+
+// Jefe por departamento (para enviar la recomendación también al jefe vía WhatsApp).
+const MANAGERS: Record<string, { name: string; phone: string }> = {
+  'Ventas': { name: 'Ricardo Fuentes', phone: '+502 5512 0001' },
+  'Crédito y Cobranza': { name: 'Patricia Gómez', phone: '+502 5512 0002' },
+  'Atención al Cliente': { name: 'Sandra Ical', phone: '+502 5512 0003' },
+  'Logística': { name: 'Marvin López', phone: '+502 5512 0004' },
+  'Caja': { name: 'Luis Marroquín', phone: '+502 5512 0005' },
+};
+
+// Genera las 10 dimensiones 360° alrededor del score base (determinista, varía por persona).
+function makeCultureScores(seed: string, base: number): Record<string, number> {
+  const h = hashString(seed);
+  const out: Record<string, number> = {};
+  CULTURE_KEYS.forEach((k, i) => {
+    const delta = (((h >> i) & 3) - 1.5) * 0.4; // -0.6 .. +0.6
+    out[k] = Math.max(1, Math.min(5, Math.round((base + delta) * 10) / 10));
+  });
+  return out;
+}
+
+function person(p: {
+  id: string; name: string; initials: string; department: string; role: string;
+  performanceScore: number; cultureScore: number; quadrant: string; enps: number; phone: string;
+}): NineBoxDataPoint {
+  const mgr = MANAGERS[p.department];
+  const first = p.name.split(' ')[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return {
+    ...p,
+    refinedPerformanceScore: p.performanceScore,
+    refinedCultureScore: p.cultureScore,
+    email: `${first}@americana.gt`,
+    managerName: mgr.name,
+    managerPhone: mgr.phone,
+    cultureScores: makeCultureScores(p.id, p.cultureScore),
+  };
+}
+
 export const NINE_BOX: NineBoxDataPoint[] = [
-  { id: 'e1', name: 'María González', initials: 'MG', performanceScore: 4.6, cultureScore: 4.7, refinedPerformanceScore: 4.6, refinedCultureScore: 4.7, quadrant: 'Superestrella' },
-  { id: 'e2', name: 'Carlos Pérez', initials: 'CP', performanceScore: 4.2, cultureScore: 3.6, refinedPerformanceScore: 4.2, refinedCultureScore: 3.6, quadrant: 'Estrella' },
-  { id: 'e3', name: 'Ana López', initials: 'AL', performanceScore: 3.2, cultureScore: 4.3, refinedPerformanceScore: 3.2, refinedCultureScore: 4.3, quadrant: 'Futuro Líder' },
-  { id: 'e4', name: 'Jorge Ramírez', initials: 'JR', performanceScore: 3.4, cultureScore: 3.3, refinedPerformanceScore: 3.4, refinedCultureScore: 3.3, quadrant: 'Colaborador Clave' },
-  { id: 'e5', name: 'Lucía Hernández', initials: 'LH', performanceScore: 2.6, cultureScore: 4.1, refinedPerformanceScore: 2.6, refinedCultureScore: 4.1, quadrant: 'Diamante en Bruto' },
-  { id: 'e6', name: 'Pedro Castillo', initials: 'PC', performanceScore: 1.8, cultureScore: 2.0, refinedPerformanceScore: 1.8, refinedCultureScore: 2.0, quadrant: 'Crítico o Inadecuado' },
-  { id: 'e7', name: 'Sofía Morales', initials: 'SM', performanceScore: 4.4, cultureScore: 2.7, refinedPerformanceScore: 4.4, refinedCultureScore: 2.7, quadrant: 'Profesional' },
-  { id: 'e8', name: 'Luis Gómez', initials: 'LG', performanceScore: 2.9, cultureScore: 2.6, refinedPerformanceScore: 2.9, refinedCultureScore: 2.6, quadrant: 'Colaborador Inconsistente' },
-  { id: 'e9', name: 'Elena Ruiz', initials: 'ER', performanceScore: 2.2, cultureScore: 2.9, refinedPerformanceScore: 2.2, refinedCultureScore: 2.9, quadrant: 'Buen Colaborador' },
+  person({ id: 'e1', name: 'María González', initials: 'MG', department: 'Ventas', role: 'Asesora de Ventas Senior', performanceScore: 4.6, cultureScore: 4.7, quadrant: 'Superestrella', enps: 92, phone: '+502 5500 1001' }),
+  person({ id: 'e2', name: 'Carlos Pérez', initials: 'CP', department: 'Crédito y Cobranza', role: 'Ejecutivo de Crédito', performanceScore: 4.2, cultureScore: 3.6, quadrant: 'Estrella', enps: 70, phone: '+502 5500 1002' }),
+  person({ id: 'e3', name: 'Ana López', initials: 'AL', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 3.2, cultureScore: 4.3, quadrant: 'Futuro Líder', enps: 80, phone: '+502 5500 1003' }),
+  person({ id: 'e4', name: 'Jorge Ramírez', initials: 'JR', department: 'Ventas', role: 'Asesor de Ventas', performanceScore: 3.4, cultureScore: 3.3, quadrant: 'Colaborador Clave', enps: 58, phone: '+502 5500 1004' }),
+  person({ id: 'e5', name: 'Lucía Hernández', initials: 'LH', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 2.6, cultureScore: 4.1, quadrant: 'Diamante en Bruto', enps: 74, phone: '+502 5500 1005' }),
+  person({ id: 'e6', name: 'Pedro Castillo', initials: 'PC', department: 'Caja', role: 'Cajero', performanceScore: 1.8, cultureScore: 2.0, quadrant: 'Crítico o Inadecuado', enps: 22, phone: '+502 5500 1006' }),
+  person({ id: 'e7', name: 'Sofía Morales', initials: 'SM', department: 'Ventas', role: 'Asesora de Ventas', performanceScore: 4.4, cultureScore: 2.7, quadrant: 'Profesional', enps: 44, phone: '+502 5500 1007' }),
+  person({ id: 'e8', name: 'Luis Gómez', initials: 'LG', department: 'Logística', role: 'Encargado de Bodega', performanceScore: 2.9, cultureScore: 2.6, quadrant: 'Colaborador Inconsistente', enps: 40, phone: '+502 5500 1008' }),
+  person({ id: 'e9', name: 'Elena Ruiz', initials: 'ER', department: 'Crédito y Cobranza', role: 'Gestora de Cobranza', performanceScore: 2.2, cultureScore: 2.9, quadrant: 'Buen Colaborador', enps: 50, phone: '+502 5500 1009' }),
 ];
 
 // 10 dimensiones de la Encuesta 360° (la joya de cultura)

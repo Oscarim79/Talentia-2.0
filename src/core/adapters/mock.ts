@@ -11,6 +11,8 @@ import type {
   ScoreInput,
   ScoreResult,
   InterviewReplyResult,
+  GrowthPlanInput,
+  GrowthPlanResult,
   MessagingPort,
   VoicePort,
   BillingPort,
@@ -65,6 +67,115 @@ export const mockCvParser: CvParserPort = {
     return delay({ ok: true, parsed: fabricateParsed(fileName) }, 700);
   },
 };
+
+// ---- 7 Hábitos (Franklin Covey): catálogo, diagnóstico y razón ----
+const DIMENSION_LABELS: Record<string, string> = {
+  clarity: 'Claridad y alineación',
+  inspiration: 'Inspiración al logro',
+  empowerment: 'Empoderamiento',
+  integrity: 'Integridad y coherencia',
+  feedback: 'Calidad del feedback',
+  support: 'Soporte y trabajo en equipo',
+  transparency: 'Transparencia',
+  mentoring: 'Mentoring / Coaching',
+  emotional: 'Inteligencia emocional',
+  conflict: 'Resolución de conflictos',
+};
+
+interface Habit {
+  habit: string;
+  actions: string[];
+  courses: string[];
+}
+
+const HABITS: Record<string, Habit> = {
+  h1: {
+    habit: 'Hábito 1 — Ser proactivo',
+    actions: [
+      'Identificar una situación reciente donde reaccionó en vez de elegir su respuesta, y replantearla.',
+      'Definir su "círculo de influencia" de la semana: 3 cosas que SÍ puede cambiar.',
+    ],
+    courses: ['Proactividad y responsabilidad personal', 'Inteligencia emocional en el trabajo'],
+  },
+  h2: {
+    habit: 'Hábito 2 — Empezar con un fin en mente',
+    actions: [
+      'Escribir su meta del trimestre en una frase y tenerla visible en su estación de trabajo.',
+      'Acordar con su jefe 2 indicadores claros de éxito para el mes.',
+    ],
+    courses: ['Gestión de metas y OKRs', 'Liderazgo efectivo y toma de decisiones'],
+  },
+  h3: {
+    habit: 'Hábito 3 — Poner primero lo primero',
+    actions: [
+      'Bloquear las 2 primeras horas del día para las tareas de mayor impacto en ventas.',
+      'Usar una lista "importante vs. urgente" cada mañana esta semana.',
+    ],
+    courses: ['Gestión del tiempo y productividad', 'Técnicas de cierre de ventas'],
+  },
+  h4: {
+    habit: 'Hábito 4 — Pensar en ganar-ganar',
+    actions: [
+      'En el próximo desacuerdo, proponer una opción que beneficie a ambas partes antes de defender la suya.',
+      'Reconocer públicamente el aporte de un compañero esta semana.',
+    ],
+    courses: ['Manejo de conflictos y resolución de problemas', 'Negociación colaborativa'],
+  },
+  h5: {
+    habit: 'Hábito 5 — Buscar primero entender, luego ser entendido',
+    actions: [
+      'En cada interacción con cliente, parafrasear su necesidad antes de ofrecer la solución.',
+      'Pedir feedback a 2 compañeros sobre cómo lo perciben y escuchar sin justificar.',
+    ],
+    courses: ['Escucha activa y comunicación', 'Servicio al cliente de excelencia'],
+  },
+  h6: {
+    habit: 'Hábito 6 — Sinergizar',
+    actions: [
+      'Proponer una mejora de proceso junto con otra área esta semana.',
+      'Aportar una idea concreta en la próxima reunión de equipo.',
+    ],
+    courses: ['Trabajo en equipo de alto desempeño', 'Colaboración entre áreas'],
+  },
+  h7: {
+    habit: 'Hábito 7 — Afilar la sierra',
+    actions: [
+      'Dedicar 30 min/semana a una capacitación o lectura de su área.',
+      'Fijar una meta de desarrollo personal para el trimestre.',
+    ],
+    courses: ['Aprendizaje continuo', 'Bienestar y manejo del estrés'],
+  },
+};
+
+const COVEY_RATIONALE: Record<string, string> = {
+  h1: 'asumir el control de su actitud y enfocarse en lo que sí puede influir.',
+  h2: 'definir metas claras que le den dirección y sentido a su esfuerzo.',
+  h3: 'priorizar lo importante sobre lo urgente para convertir su potencial en resultados.',
+  h4: 'construir acuerdos donde todos ganan y fortalecer la relación con su equipo.',
+  h5: 'escuchar y entender mejor a clientes y compañeros antes de responder.',
+  h6: 'colaborar con otras áreas para lograr más de lo que lograría en solitario.',
+  h7: 'invertir en su propio crecimiento para sostener y elevar su desempeño.',
+};
+
+function diagnoseHabit(input: GrowthPlanInput): { key: string; focusKey: string } {
+  const { performanceScore: perf, cultureScore: cult, cultureScores } = input;
+  const weakest = Object.entries(cultureScores).sort((a, b) => a[1] - b[1])[0]?.[0] ?? 'clarity';
+
+  // Reglas por balance desempeño/cultura (como en Talentia 1.0)
+  if (perf < 3 && cult < 3) return { key: 'h1', focusKey: weakest };
+  if (perf < 3 && cult >= 4) return { key: 'h3', focusKey: weakest };
+  if (perf >= 4 && cult < 3.5) return { key: 'h5', focusKey: weakest };
+
+  // Reglas por dimensión 360° más débil
+  const byDim: Record<string, string> = {
+    clarity: 'h2', inspiration: 'h2',
+    empowerment: 'h1', integrity: 'h1',
+    feedback: 'h5', mentoring: 'h5',
+    support: 'h6', transparency: 'h6',
+    conflict: 'h4', emotional: 'h7',
+  };
+  return { key: byDim[weakest] ?? 'h7', focusKey: weakest };
+}
 
 // ---------- LLM ----------
 export const mockLlm: LlmPort = {
@@ -151,6 +262,19 @@ export const mockLlm: LlmPort = {
       },
       650,
     );
+  },
+
+  async generateGrowthPlan(input: GrowthPlanInput): Promise<GrowthPlanResult> {
+    const { key, focusKey } = diagnoseHabit(input);
+    const h = HABITS[key];
+    const first = input.name.split(' ')[0];
+    const focusArea = DIMENSION_LABELS[focusKey] ?? 'desarrollo profesional';
+    const focusVal = input.cultureScores[focusKey];
+    const summary =
+      `${first} se ubica en el cuadrante "${input.quadrant}" (desempeño ${input.performanceScore.toFixed(1)}/5, ` +
+      `cultura ${input.cultureScore.toFixed(1)}/5). Su mayor área de oportunidad es "${focusArea}" ` +
+      `(${focusVal?.toFixed(1) ?? '—'}/5). El enfoque de este periodo es ${h.habit}: ${COVEY_RATIONALE[key]}`;
+    return delay({ habit: h.habit, focusArea, summary, actions: h.actions, courses: h.courses }, 900);
   },
 };
 

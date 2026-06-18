@@ -2,8 +2,9 @@
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
 > Última actualización: 2026-06-18.
-> Último avance: Métricas / ROI — página dedicada (ahorro vs proceso manual, costo por contratación, time-to-fill, desglose de costo IA) para el cierre con el CEO.
+> Último avance: 9-Box potenciado — filtro por departamento, perfil por persona (10 dimensiones 360°), recomendación de crecimiento IA basada en los 7 Hábitos (Franklin Covey) y envío por WhatsApp a la persona y a su jefe.
 > Objetivo actual: **demo-first** — presentar al CEO con datos mock (más seguro en vivo). Supabase se conecta DESPUÉS del visto bueno.
+> Nota de negocio: Americana 2000 es un **retail completo** (cadena multitienda: línea blanca, muebles, motos, tecnología — como Max, La Curacao, El Gallo más Gallo, Agencias Way), NO solo motos. El plan de crecimiento se basa en el libro **Los 7 Hábitos** de Covey.
 
 ## Decisiones firmes
 - Producto **nuevo desde cero** (este repo), separado del HRIS interno "Talentia Americana 2000".
@@ -17,6 +18,7 @@
 - Multi-tenant (selector de empresa, aislamiento de datos).
 - Dashboard, Screening IA (MVP con pipeline en vivo + cola de errores), Vacantes, Candidatos, Entrevistas (preview), Talento 9-Box, Admin.
 - Arquitectura puertos/adaptadores con mocks.
+- **Talento 9-Box potenciado** (portado de Talentia 1.0): filtro por departamento, lista de colaboradores clicable, modal de perfil con métricas + 10 dimensiones 360° por persona, y **recomendación de crecimiento por IA (7 Hábitos / Covey)** con envío por WhatsApp (`wa.me`) a la persona y a su jefe. Lógica de diagnóstico síntoma→hábito en `core/adapters/mock.ts` (mock realista; el puerto `llm.generateGrowthPlan` queda listo para Gemini real).
 
 ## Siguiente (en orden)
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*

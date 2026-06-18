@@ -49,6 +49,25 @@ export interface InterviewReplyResult {
   done: boolean;
 }
 
+// ---- Plan de crecimiento (7 Hábitos / Franklin Covey) ----
+export interface GrowthPlanInput {
+  name: string;
+  role: string;
+  department: string;
+  performanceScore: number; // 1-5
+  cultureScore: number; // 1-5
+  quadrant: string;
+  cultureScores: Record<string, number>; // 10 dimensiones 360°
+}
+
+export interface GrowthPlanResult {
+  habit: string; // ej. "Hábito 3 — Poner primero lo primero"
+  focusArea: string; // dimensión/área más débil detectada
+  summary: string; // diagnóstico conectando resultados con el hábito
+  actions: string[]; // acciones concretas para esta semana
+  courses: string[]; // cursos recomendados
+}
+
 export interface LlmPort {
   generateJobDescription(input: {
     title: string;
@@ -58,6 +77,7 @@ export interface LlmPort {
   generateInterviewQuestions(input: { title: string; count: number }): Promise<string[]>;
   scoreCandidate(input: ScoreInput): Promise<ScoreResult>;
   interviewReply(input: InterviewReplyInput): Promise<InterviewReplyResult>;
+  generateGrowthPlan(input: GrowthPlanInput): Promise<GrowthPlanResult>;
 }
 
 // ---- Mensajería WhatsApp (Twilio / Meta en producción) ----

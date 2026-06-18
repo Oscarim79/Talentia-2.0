@@ -173,11 +173,20 @@ export interface NineBoxDataPoint {
   name: string;
   initials: string;
   photoUrl?: string;
+  department: string;
+  role: string;
+  email: string;
+  phone: string;
+  managerName: string;
+  managerPhone: string;
+  enps: number; // 0-100
   performanceScore: number; // 1-5 (Desempeño / Ventas)
   cultureScore: number; // 1-5 (Cultura / Potencial)
   refinedPerformanceScore?: number;
   refinedCultureScore?: number;
   quadrant: string;
+  /** Las 10 dimensiones 360° de esta persona, por `CultureDimension.key` (escala 1-5). */
+  cultureScores: Record<string, number>;
 }
 
 export type CultureGroup = 'Liderazgo' | 'Comunicación y Soporte' | 'Inteligencia Emocional';
