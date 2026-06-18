@@ -187,6 +187,15 @@ export interface NineBoxDataPoint {
   quadrant: string;
   /** Las 10 dimensiones 360° de esta persona, por `CultureDimension.key` (escala 1-5). */
   cultureScores: Record<string, number>;
+  /** Historial de evaluaciones por trimestre (más antiguo → actual). */
+  history: EvaluationPeriod[];
+}
+
+/** Una evaluación de un periodo (trimestre) — alimenta el historial y las decisiones de RR.HH. */
+export interface EvaluationPeriod {
+  period: string; // ej. "2026 T1"
+  performanceScore: number; // 1-5
+  cultureScore: number; // 1-5
 }
 
 export type CultureGroup = 'Liderazgo' | 'Comunicación y Soporte' | 'Inteligencia Emocional';

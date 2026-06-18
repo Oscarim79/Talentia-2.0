@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { X, Sparkles, Loader2, MessageCircle, Target, GraduationCap } from 'lucide-react';
+import { X, Sparkles, Loader2, MessageCircle, Target, GraduationCap, Award, Eye, AlertTriangle, Ban } from 'lucide-react';
 import { CULTURE_DIMENSIONS } from '../../data/seed';
 import { providers } from '../../core/providers';
 import type { CultureGroup, NineBoxDataPoint } from '../../types';
 import type { GrowthPlanResult } from '../../core/ports';
 import { Card, Badge, Button } from '../../components/ui/primitives';
+import { periodLight, LIGHT_META, deriveDecision, TONE_STYLES, type DecisionTone } from './talentDecisions';
+
+const TONE_ICON: Record<DecisionTone, typeof Award> = {
+  positive: Award,
+  neutral: Eye,
+  negative: AlertTriangle,
+  critical: Ban,
+};
 
 const GROUPS: CultureGroup[] = ['Liderazgo', 'Comunicación y Soporte', 'Inteligencia Emocional'];
 
@@ -31,6 +39,8 @@ export function PersonProfileModal({
   const first = person.name.split(' ')[0];
   const perf = person.performanceScore;
   const cult = person.cultureScore;
+  const decision = deriveDecision(person.history);
+  const DecisionIcon = TONE_ICON[decision.tone];
 
   async function generate() {
     setLoading(true);
@@ -101,6 +111,49 @@ export function PersonProfileModal({
             <div className="rounded-lg border border-slate-100 p-3">
               <p className="text-xs text-slate-500">Cuadrante 9-Box</p>
               <Badge variant="brand" className="mt-1">{person.quadrant}</Badge>
+            </div>
+          </div>
+
+          {/* Historial de desempeño (semáforo por trimestre) */}
+          <div>
+            <h3 className="mb-3 text-sm font-bold text-slate-700">
+              Historial de desempeño · últimos {person.history.length} trimestres
+            </h3>
+            <div className="flex items-end gap-2">
+              {person.history.map((h) => {
+                const light = periodLight(h);
+                const avg = (h.performanceScore + h.cultureScore) / 2;
+                return (
+                  <div key={h.period} className="flex flex-1 flex-col items-center">
+                    <span className="mb-1 text-[10px] font-semibold text-slate-500">{avg.toFixed(1)}</span>
+                    <div className="flex h-20 w-full items-end">
+                      <div
+                        className={`w-full rounded-t ${LIGHT_META[light].bar}`}
+                        style={{ height: `${(avg / 5) * 100}%` }}
+                        title={`${h.period}: desempeño ${h.performanceScore}/5 · cultura ${h.cultureScore}/5`}
+                      />
+                    </div>
+                    <span className="mt-1 text-[9px] text-slate-400">{h.period}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Decisión sugerida de RR.HH. (derivada del historial, reglas de política) */}
+          <div className={`rounded-xl border p-5 ${TONE_STYLES[decision.tone].box}`}>
+            <div className="flex items-start gap-3">
+              <DecisionIcon className={`h-6 w-6 shrink-0 ${TONE_STYLES[decision.tone].title}`} />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Decisión sugerida · RR.HH.
+                </p>
+                <p className={`mt-0.5 text-lg font-bold ${TONE_STYLES[decision.tone].title}`}>
+                  {decision.label}
+                </p>
+                <p className="mt-1 text-sm text-slate-600">{decision.detail}</p>
+                <p className="mt-1.5 text-xs text-slate-400">Base: {decision.rationale}</p>
+              </div>
             </div>
           </div>
 
