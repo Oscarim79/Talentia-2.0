@@ -11,6 +11,7 @@
 - **Conservar la joya**: módulo Talento (9-Box + Cultura 360° 10 dimensiones) portado como nativo. Diferenciador: ciclo completo candidato → contratado → 9-Box.
 - **MVP = Motor de Screening de CVs.**
 - **Demo-first, gratis**: arquitectura de puertos y adaptadores; todos los proveedores de pago en mock (`DEMO_MODE = true`). Se presenta al CEO y luego se decide invertir.
+- **Software OPINADO (convención sobre configuración):** la empresa se adapta al software, NO al revés. Nada de onboarding/configuración flexible que se vuelva "un revoltijo de configuraciones" (wizard de config descartado). Los datos entran por **plantillas estándar** que la empresa solo llena y sube — Colaboradores (RR.HH.), KPIs de Desempeño y Cultura 360°. La importación real va junto con la persistencia (Supabase), después del visto bueno del CEO.
 - **Stack producción (cuando haya presupuesto):** Supabase (Postgres+Auth+Storage+RLS) + NestJS; Claude + Gemini Flash; Vapi/Retell (voz); Recall.ai (Meet); Twilio/Meta (WhatsApp); Stripe; Inngest.
 
 ## Hecho (Fase 1 — fundación) ✅
