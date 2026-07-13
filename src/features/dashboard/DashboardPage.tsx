@@ -17,11 +17,11 @@ import { fmtMoney } from '../../lib/utils';
 import { scoreVariant } from '../../components/ui/primitives';
 
 const STAGES: { key: string; label: string; color: string }[] = [
-  { key: 'applied', label: 'Aplicados', color: '#94a3b8' },
-  { key: 'screening', label: 'Screening', color: '#6366f1' },
-  { key: 'interview', label: 'Entrevista', color: '#8b5cf6' },
-  { key: 'offer', label: 'Oferta', color: '#f59e0b' },
-  { key: 'hired', label: 'Contratado', color: '#22c55e' },
+  { key: 'applied', label: 'Aplicados', color: '#d6d3d1' },
+  { key: 'screening', label: 'Screening', color: '#7cc4a6' },
+  { key: 'interview', label: 'Entrevista', color: '#1f8a66' },
+  { key: 'offer', label: 'Oferta', color: '#c99043' },
+  { key: 'hired', label: 'Contratado', color: '#0c5b44' },
 ];
 
 export default function DashboardPage() {
@@ -49,6 +49,7 @@ export default function DashboardPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Resumen"
         title={`Hola, ${tenant.name}`}
         subtitle="Resumen de tu reclutamiento automatizado con IA"
       />
@@ -62,17 +63,17 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-2">
-          <h2 className="mb-4 text-sm font-bold text-slate-700">Funnel de reclutamiento</h2>
+          <h2 className="mb-4 text-sm font-bold text-stone-700">Funnel de reclutamiento</h2>
           {cands.length === 0 ? (
             <EmptyState text="Aún no hay candidatos para esta empresa. Ve a Screening IA para cargar CVs." />
           ) : (
             <div style={{ height: 280 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={funnel} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                  <Tooltip cursor={{ fill: '#f1f5f9' }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e7e5e4" />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: '#f5f5f4' }} contentStyle={{ borderRadius: 12, border: '1px solid #e7e5e4', fontSize: 13 }} />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {funnel.map((f) => (
                       <Cell key={f.label} fill={f.color} />
@@ -85,19 +86,19 @@ export default function DashboardPage() {
         </Card>
 
         <Card className="p-5">
-          <h2 className="mb-4 text-sm font-bold text-slate-700">Mejores candidatos (IA)</h2>
+          <h2 className="mb-4 text-sm font-bold text-stone-700">Mejores candidatos (IA)</h2>
           {topCandidates.length === 0 ? (
             <EmptyState text="Sin candidatos puntuados todavía." />
           ) : (
             <ul className="space-y-3">
               {topCandidates.map((c) => (
                 <li key={c.id} className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                     {c.firstName[0]}
                     {c.lastName[0]}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-800">
+                    <p className="truncate text-sm font-semibold text-stone-800">
                       {c.firstName} {c.lastName}
                     </p>
                     <ProgressBar value={c.screeningScore ?? 0} className="mt-1" />
@@ -115,7 +116,7 @@ export default function DashboardPage() {
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-slate-200 px-6 text-center text-sm text-slate-400">
+    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-stone-200 px-6 text-center text-sm text-stone-400">
       {text}
     </div>
   );

@@ -18,10 +18,10 @@ export default function CandidatesPage() {
 
   return (
     <div>
-      <PageHeader title="Candidatos" subtitle="Pipeline post-screening. Arrastra (próximamente) entre etapas." />
+      <PageHeader eyebrow="Reclutamiento" title="Candidatos" subtitle="Pipeline post-screening: cada candidato en su etapa." />
 
       {cands.length === 0 ? (
-        <Card className="p-12 text-center text-sm text-slate-400">
+        <Card className="p-12 text-center text-sm text-stone-400">
           Sin candidatos para esta empresa todavía.
         </Card>
       ) : (
@@ -31,22 +31,22 @@ export default function CandidatesPage() {
             return (
               <div key={col.key} className="w-64 shrink-0">
                 <div className="mb-3 flex items-center justify-between px-1">
-                  <span className="text-xs font-bold uppercase tracking-wide text-slate-500">{col.label}</span>
-                  <Badge variant="slate">{items.length}</Badge>
+                  <span className="text-xs font-bold uppercase tracking-wide text-stone-500">{col.label}</span>
+                  <Badge variant="stone">{items.length}</Badge>
                 </div>
                 <div className="space-y-2">
                   {items.map((c) => (
                     <Card key={c.id} className="p-3">
                       <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-[11px] font-bold text-indigo-700">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
                           {c.firstName[0]}
                           {c.lastName[0]}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold text-slate-800">
+                          <p className="truncate text-sm font-semibold text-stone-800">
                             {c.firstName} {c.lastName}
                           </p>
-                          <p className="truncate text-[11px] text-slate-400">{c.source}</p>
+                          <p className="truncate text-[11px] text-stone-400">{c.source}</p>
                         </div>
                         {c.screeningScore != null && (
                           <Badge variant={scoreVariant(c.screeningScore)}>{c.screeningScore}</Badge>
@@ -55,7 +55,7 @@ export default function CandidatesPage() {
                     </Card>
                   ))}
                   {items.length === 0 && (
-                    <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[11px] text-slate-300">
+                    <div className="rounded-lg border border-dashed border-stone-200 py-6 text-center text-[11px] text-stone-300">
                       vacío
                     </div>
                   )}

@@ -116,6 +116,7 @@ export default function InterviewsPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Reclutamiento"
         title="Entrevistas IA"
         subtitle="El agente entrevista con el banco de preguntas de la vacante, transcribe y evalúa."
         actions={
@@ -130,13 +131,13 @@ export default function InterviewsPage() {
         {CHANNELS.map((ch) => (
           <Card key={ch.label} className="p-5">
             <div className="flex items-center justify-between">
-              <div className="rounded-lg bg-indigo-50 p-2.5 text-indigo-600">
+              <div className="rounded-lg bg-brand-50 p-2.5 text-brand-600">
                 <ch.icon className="h-5 w-5" />
               </div>
-              <Badge variant="slate">{ch.tag}</Badge>
+              <Badge variant="stone">{ch.tag}</Badge>
             </div>
-            <p className="mt-3 text-sm font-bold text-slate-800">{ch.label}</p>
-            <p className="text-xs text-slate-500">{ch.desc}</p>
+            <p className="mt-3 text-sm font-bold text-stone-800">{ch.label}</p>
+            <p className="text-xs text-stone-500">{ch.desc}</p>
           </Card>
         ))}
       </div>
@@ -145,12 +146,12 @@ export default function InterviewsPage() {
       <Card className="mb-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">Candidato</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">Candidato</span>
             <select
               value={candId}
               onChange={(e) => setCandId(e.target.value)}
               disabled={candidates.length === 0}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
+              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:bg-stone-50"
             >
               {candidates.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -159,21 +160,21 @@ export default function InterviewsPage() {
               ))}
             </select>
           </div>
-          {job && <Badge variant="slate">{job.title}</Badge>}
+          {job && <Badge variant="stone">{job.title}</Badge>}
         </div>
       </Card>
 
       {candidates.length === 0 ? (
-        <Card className="p-10 text-center text-sm text-slate-400">
+        <Card className="p-10 text-center text-sm text-stone-400">
           No hay candidatos en etapa de entrevista para esta empresa. Puntúa CVs en <b>Screening IA</b> primero.
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Chat interactivo */}
           <Card className="flex flex-col lg:col-span-2">
-            <div className="flex items-center justify-between border-b border-slate-100 p-4">
-              <h2 className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                <Bot className="h-4 w-4 text-indigo-600" /> Entrevista — {cand?.firstName} {cand?.lastName}
+            <div className="flex items-center justify-between border-b border-stone-100 p-4">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-stone-700">
+                <Bot className="h-4 w-4 text-brand-600" /> Entrevista — {cand?.firstName} {cand?.lastName}
               </h2>
               {started && (
                 <Button variant="ghost" onClick={startInterview} disabled={thinking}>
@@ -185,8 +186,8 @@ export default function InterviewsPage() {
             <div ref={scrollRef} className="max-h-[420px] flex-1 space-y-3 overflow-y-auto p-4">
               {!started && !thinking && (
                 <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                  <Bot className="h-10 w-10 text-indigo-300" />
-                  <p className="max-w-xs text-sm text-slate-500">
+                  <Bot className="h-10 w-10 text-brand-300" />
+                  <p className="max-w-xs text-sm text-stone-500">
                     El agente hará {questionTexts.length} preguntas del banco de la vacante. Responde como lo haría el candidato.
                   </p>
                   <Button onClick={startInterview} disabled={thinking}>
@@ -202,7 +203,7 @@ export default function InterviewsPage() {
             </div>
 
             {started && !done && (
-              <div className="flex items-center gap-2 border-t border-slate-100 p-3">
+              <div className="flex items-center gap-2 border-t border-stone-100 p-3">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -211,7 +212,7 @@ export default function InterviewsPage() {
                   }}
                   placeholder="Escribe la respuesta del candidato…"
                   disabled={thinking}
-                  className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
+                  className="flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:bg-stone-50"
                 />
                 <Button onClick={send} disabled={thinking || !input.trim()}>
                   <Send className="h-4 w-4" />
@@ -220,7 +221,7 @@ export default function InterviewsPage() {
             )}
 
             {done && (
-              <div className="border-t border-slate-100 p-3 text-center text-xs text-slate-400">
+              <div className="border-t border-stone-100 p-3 text-center text-xs text-stone-400">
                 Entrevista finalizada · {evaluation?.answersCount} respuestas registradas
               </div>
             )}
@@ -230,28 +231,28 @@ export default function InterviewsPage() {
           <div className="space-y-4">
             {!evaluation ? (
               <Card className="p-5">
-                <h3 className="mb-2 text-sm font-bold text-slate-700">Evaluación</h3>
-                <p className="text-sm text-slate-500">
+                <h3 className="mb-2 text-sm font-bold text-stone-700">Evaluación</h3>
+                <p className="text-sm text-stone-500">
                   El puntaje por pregunta, el global y las discrepancias CV vs respuestas aparecen al finalizar la entrevista.
                 </p>
               </Card>
             ) : (
               <>
                 <Card className="p-5">
-                  <h3 className="mb-2 text-sm font-bold text-slate-700">Puntaje global IA</h3>
+                  <h3 className="mb-2 text-sm font-bold text-stone-700">Puntaje global IA</h3>
                   <p className={`text-4xl font-black ${scoreColor(evaluation.global)}`}>
                     {evaluation.global}
-                    <span className="text-lg text-slate-400">/100</span>
+                    <span className="text-lg text-stone-400">/100</span>
                   </p>
-                  <p className="mt-1 text-xs text-slate-500">{recommendation(evaluation.global)}</p>
+                  <p className="mt-1 text-xs text-stone-500">{recommendation(evaluation.global)}</p>
                 </Card>
 
                 <Card className="p-5">
-                  <h3 className="mb-3 text-sm font-bold text-slate-700">Por pregunta</h3>
+                  <h3 className="mb-3 text-sm font-bold text-stone-700">Por pregunta</h3>
                   <div className="space-y-2.5">
                     {evaluation.perQuestion.map((q, i) => (
                       <div key={i} className="flex items-start justify-between gap-3 text-xs">
-                        <span className="text-slate-600">{q.question}</span>
+                        <span className="text-stone-600">{q.question}</span>
                         <Badge variant={q.score >= 8 ? 'green' : q.score >= 5 ? 'amber' : 'red'}>
                           {q.score}/10
                         </Badge>
@@ -265,14 +266,14 @@ export default function InterviewsPage() {
                     <AlertTriangle className="h-4 w-4" /> Discrepancias CV vs respuestas
                   </h3>
                   {evaluation.discrepancies.length === 0 ? (
-                    <p className="text-xs text-slate-500">Sin discrepancias detectadas entre el CV y las respuestas.</p>
+                    <p className="text-xs text-stone-500">Sin discrepancias detectadas entre el CV y las respuestas.</p>
                   ) : (
                     <div className="space-y-3">
                       {evaluation.discrepancies.map((d, i) => (
                         <div key={i} className="rounded-lg bg-amber-50 p-3 text-xs">
                           <p className="font-bold text-amber-800">{d.topic}</p>
-                          <p className="mt-1 text-slate-600">{d.cvClaim}</p>
-                          <p className="text-slate-600">{d.interviewClaim}</p>
+                          <p className="mt-1 text-stone-600">{d.cvClaim}</p>
+                          <p className="text-stone-600">{d.interviewClaim}</p>
                         </div>
                       ))}
                     </div>
@@ -295,14 +296,14 @@ function Bubble({ turn }: { turn: InterviewTurn }) {
     <div className={`flex gap-3 ${isAgent ? '' : 'flex-row-reverse'}`}>
       <div
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-          isAgent ? 'bg-indigo-100 text-indigo-600' : 'bg-green-100 text-green-600'
+          isAgent ? 'bg-brand-100 text-brand-600' : 'bg-green-100 text-green-600'
         }`}
       >
         {isAgent ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
       </div>
       <div
         className={`max-w-[78%] whitespace-pre-line rounded-2xl px-4 py-2 text-sm ${
-          isAgent ? 'bg-slate-100 text-slate-700' : 'bg-green-50 text-slate-800'
+          isAgent ? 'bg-stone-100 text-stone-700' : 'bg-green-50 text-stone-800'
         }`}
       >
         {renderRich(turn.content)}
@@ -314,13 +315,13 @@ function Bubble({ turn }: { turn: InterviewTurn }) {
 function TypingBubble() {
   return (
     <div className="flex gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
         <Bot className="h-4 w-4" />
       </div>
-      <div className="flex items-center gap-1 rounded-2xl bg-slate-100 px-4 py-3">
-        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.3s]" />
-        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.15s]" />
-        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" />
+      <div className="flex items-center gap-1 rounded-2xl bg-stone-100 px-4 py-3">
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 [animation-delay:-0.3s]" />
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 [animation-delay:-0.15s]" />
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400" />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { providers } from '../../core/providers';
 import type { CultureGroup, NineBoxDataPoint } from '../../types';
 import type { GrowthPlanResult } from '../../core/ports';
 import { Card, Badge, Button } from '../../components/ui/primitives';
+import { useEscape } from '../../lib/useEscape';
 import { periodLight, LIGHT_META, deriveDecision, TONE_STYLES, type DecisionTone } from './talentDecisions';
 
 const TONE_ICON: Record<DecisionTone, typeof Award> = {
@@ -68,9 +69,14 @@ export function PersonProfileModal({
       `Enfoque: *${plan.habit}*. Acciones sugeridas: ${plan.actions.join(' / ')}. — TALENTIA`
     : '';
 
+  useEscape(onClose);
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Perfil de ${person.name}`}
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/50 p-4 sm:p-8"
       onClick={onClose}
     >
       <div
@@ -78,24 +84,24 @@ export function PersonProfileModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Encabezado */}
-        <div className="flex items-start justify-between border-b border-slate-100 p-6">
+        <div className="flex items-start justify-between border-b border-stone-100 p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-bold text-indigo-700">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-lg font-bold text-brand-700">
               {person.initials}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">{person.name}</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className="text-lg font-bold text-stone-900">{person.name}</h2>
+              <p className="text-sm text-stone-500">
                 {person.role} · {person.department}
               </p>
-              <p className="mt-0.5 text-xs text-slate-400">
+              <p className="mt-0.5 text-xs text-stone-400">
                 Jefe: {person.managerName}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-600"
             aria-label="Cerrar"
           >
             <X className="h-5 w-5" />
@@ -108,15 +114,15 @@ export function PersonProfileModal({
             <Stat label="Desempeño" value={`${perf.toFixed(1)}`} suffix="/5" />
             <Stat label="Cultura" value={`${cult.toFixed(1)}`} suffix="/5" />
             <Stat label="eNPS" value={String(person.enps)} />
-            <div className="rounded-lg border border-slate-100 p-3">
-              <p className="text-xs text-slate-500">Cuadrante 9-Box</p>
+            <div className="rounded-lg border border-stone-100 p-3">
+              <p className="text-xs text-stone-500">Cuadrante 9-Box</p>
               <Badge variant="brand" className="mt-1">{person.quadrant}</Badge>
             </div>
           </div>
 
           {/* Historial de desempeño (semáforo por trimestre) */}
           <div>
-            <h3 className="mb-3 text-sm font-bold text-slate-700">
+            <h3 className="mb-3 text-sm font-bold text-stone-700">
               Historial de desempeño · últimos {person.history.length} trimestres
             </h3>
             <div className="flex items-end gap-2">
@@ -125,7 +131,7 @@ export function PersonProfileModal({
                 const avg = (h.performanceScore + h.cultureScore) / 2;
                 return (
                   <div key={h.period} className="flex flex-1 flex-col items-center">
-                    <span className="mb-1 text-[10px] font-semibold text-slate-500">{avg.toFixed(1)}</span>
+                    <span className="mb-1 text-[10px] font-semibold text-stone-500">{avg.toFixed(1)}</span>
                     <div className="flex h-20 w-full items-end">
                       <div
                         className={`w-full rounded-t ${LIGHT_META[light].bar}`}
@@ -133,7 +139,7 @@ export function PersonProfileModal({
                         title={`${h.period}: desempeño ${h.performanceScore}/5 · cultura ${h.cultureScore}/5`}
                       />
                     </div>
-                    <span className="mt-1 text-[9px] text-slate-400">{h.period}</span>
+                    <span className="mt-1 text-[9px] text-stone-400">{h.period}</span>
                   </div>
                 );
               })}
@@ -145,21 +151,21 @@ export function PersonProfileModal({
             <div className="flex items-start gap-3">
               <DecisionIcon className={`h-6 w-6 shrink-0 ${TONE_STYLES[decision.tone].title}`} />
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-bold uppercase tracking-wide text-stone-500">
                   Decisión sugerida · RR.HH.
                 </p>
                 <p className={`mt-0.5 text-lg font-bold ${TONE_STYLES[decision.tone].title}`}>
                   {decision.label}
                 </p>
-                <p className="mt-1 text-sm text-slate-600">{decision.detail}</p>
-                <p className="mt-1.5 text-xs text-slate-400">Base: {decision.rationale}</p>
+                <p className="mt-1 text-sm text-stone-600">{decision.detail}</p>
+                <p className="mt-1.5 text-xs text-stone-400">Base: {decision.rationale}</p>
               </div>
             </div>
           </div>
 
           {/* Cultura 360° por dimensión */}
           <div>
-            <h3 className="mb-3 text-sm font-bold text-slate-700">Cultura 360° · 10 dimensiones</h3>
+            <h3 className="mb-3 text-sm font-bold text-stone-700">Cultura 360° · 10 dimensiones</h3>
             <div className="space-y-4">
               {GROUPS.map((g) => {
                 const dims = CULTURE_DIMENSIONS.filter((d) => d.group === g);
@@ -167,7 +173,7 @@ export function PersonProfileModal({
                 return (
                   <div key={g}>
                     <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wide text-slate-500">{g}</span>
+                      <span className="text-xs font-bold uppercase tracking-wide text-stone-500">{g}</span>
                       <Badge variant={avg >= 4 ? 'green' : avg >= 3 ? 'amber' : 'red'}>{avg.toFixed(2)}/5</Badge>
                     </div>
                     <div className="space-y-2">
@@ -175,11 +181,11 @@ export function PersonProfileModal({
                         const v = person.cultureScores[d.key] ?? 0;
                         return (
                           <div key={d.key} className="flex items-center gap-2">
-                            <span className="w-44 shrink-0 truncate text-xs text-slate-600">{d.label}</span>
-                            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                            <span className="w-44 shrink-0 truncate text-xs text-stone-600">{d.label}</span>
+                            <div className="h-2 flex-1 overflow-hidden rounded-full bg-stone-100">
                               <div className={`h-full rounded-full ${scoreColor(v)}`} style={{ width: `${(v / 5) * 100}%` }} />
                             </div>
-                            <span className="w-8 shrink-0 text-right text-xs font-semibold text-slate-700">
+                            <span className="w-8 shrink-0 text-right text-xs font-semibold text-stone-700">
                               {v.toFixed(1)}
                             </span>
                           </div>
@@ -193,14 +199,14 @@ export function PersonProfileModal({
           </div>
 
           {/* Recomendación de crecimiento (IA · 7 Hábitos) */}
-          <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-5">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-indigo-900">
+          <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-5">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-brand-900">
               <Sparkles className="h-4 w-4" /> Recomendación de crecimiento · 7 Hábitos
             </h3>
 
             {!plan && !loading && (
               <div className="mt-3">
-                <p className="mb-3 text-sm text-slate-600">
+                <p className="mb-3 text-sm text-stone-600">
                   Genera un plan de seguimiento basado en los resultados de {first} y los principios de Franklin Covey.
                 </p>
                 <Button onClick={generate}>
@@ -210,7 +216,7 @@ export function PersonProfileModal({
             )}
 
             {loading && (
-              <div className="mt-4 flex items-center gap-2 text-sm font-medium text-indigo-700">
+              <div className="mt-4 flex items-center gap-2 text-sm font-medium text-brand-700">
                 <Loader2 className="h-4 w-4 animate-spin" /> Analizando resultados y generando el plan…
               </div>
             )}
@@ -218,16 +224,16 @@ export function PersonProfileModal({
             {plan && (
               <div className="mt-3 space-y-4">
                 <Badge variant="brand" className="text-sm">{plan.habit}</Badge>
-                <p className="text-sm leading-relaxed text-slate-700">{plan.summary}</p>
+                <p className="text-sm leading-relaxed text-stone-700">{plan.summary}</p>
 
                 <div>
-                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-stone-500">
                     <Target className="h-3.5 w-3.5" /> Acciones esta semana
                   </p>
                   <ul className="space-y-1.5">
                     {plan.actions.map((a, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-slate-700">
-                        <span className="font-bold text-indigo-500">{i + 1}.</span>
+                      <li key={i} className="flex gap-2 text-sm text-stone-700">
+                        <span className="font-bold text-brand-500">{i + 1}.</span>
                         {a}
                       </li>
                     ))}
@@ -235,12 +241,12 @@ export function PersonProfileModal({
                 </div>
 
                 <div>
-                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-stone-500">
                     <GraduationCap className="h-3.5 w-3.5" /> Cursos recomendados
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {plan.courses.map((c) => (
-                      <span key={c} className="rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200">
+                      <span key={c} className="rounded-md bg-white px-2.5 py-1 text-xs font-medium text-stone-600 ring-1 ring-stone-200">
                         {c}
                       </span>
                     ))}
@@ -248,8 +254,8 @@ export function PersonProfileModal({
                 </div>
 
                 {/* Enviar por WhatsApp a la persona y a su jefe */}
-                <div className="flex flex-wrap items-center gap-2 border-t border-indigo-100 pt-4">
-                  <span className="text-xs font-semibold text-slate-500">Enviar por WhatsApp:</span>
+                <div className="flex flex-wrap items-center gap-2 border-t border-brand-100 pt-4">
+                  <span className="text-xs font-semibold text-stone-500">Enviar por WhatsApp:</span>
                   <a
                     href={waLink(person.phone, empText)}
                     target="_blank"
@@ -279,10 +285,10 @@ export function PersonProfileModal({
 function Stat({ label, value, suffix }: { label: string; value: string; suffix?: string }) {
   return (
     <Card className="p-3">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-0.5 text-xl font-black text-slate-900">
+      <p className="text-xs text-stone-500">{label}</p>
+      <p className="mt-0.5 text-xl font-black text-stone-900">
         {value}
-        {suffix && <span className="text-sm font-medium text-slate-400">{suffix}</span>}
+        {suffix && <span className="text-sm font-medium text-stone-400">{suffix}</span>}
       </p>
     </Card>
   );

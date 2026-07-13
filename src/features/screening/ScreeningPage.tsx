@@ -117,6 +117,7 @@ export default function ScreeningPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Reclutamiento"
         title="Screening IA"
         subtitle="Carga masiva de CVs → parseo → scoring con evidencia. Una persona filtra cientos."
         actions={
@@ -131,11 +132,11 @@ export default function ScreeningPage() {
       <Card className="mb-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">Vacante</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">Vacante</span>
             <select
               value={jobId}
               onChange={(e) => setJobId(e.target.value)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>
@@ -144,7 +145,7 @@ export default function ScreeningPage() {
               ))}
             </select>
           </div>
-          <div className="text-sm text-slate-500">
+          <div className="text-sm text-stone-500">
             {ranked.length} puntuados · <span className="text-red-600">{errors.length} con error</span>
           </div>
         </div>
@@ -176,10 +177,10 @@ export default function ScreeningPage() {
         }}
         className={`mb-5 cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
           dragging
-            ? 'border-indigo-500 bg-indigo-50'
+            ? 'border-brand-500 bg-brand-50'
             : busy
-              ? 'cursor-not-allowed border-slate-200 bg-slate-50'
-              : 'border-slate-300 bg-white hover:border-indigo-400 hover:bg-slate-50'
+              ? 'cursor-not-allowed border-stone-200 bg-stone-50'
+              : 'border-stone-300 bg-white hover:border-brand-400 hover:bg-stone-50'
         }`}
       >
         <input
@@ -196,27 +197,27 @@ export default function ScreeningPage() {
 
         {busy && batch ? (
           <div className="mx-auto max-w-md">
-            <div className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700">
+            <div className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
               <Loader2 className="h-4 w-4 animate-spin" />
               Procesando lote… {batch.done}/{batch.total}
             </div>
-            <ProgressBar value={pct} />
-            <p className="mt-2 truncate text-xs text-slate-500">
-              {batch.current ? <>Analizando <span className="font-medium text-slate-700">{batch.current}</span></> : '¡Lote completado!'}
+            <ProgressBar value={pct} tone="brand" />
+            <p className="mt-2 truncate text-xs text-stone-500">
+              {batch.current ? <>Analizando <span className="font-medium text-stone-700">{batch.current}</span></> : '¡Lote completado!'}
             </p>
           </div>
         ) : (
           <>
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
               <UploadCloud className="h-6 w-6" />
             </div>
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-stone-700">
               Arrastra y suelta los CVs aquí
             </p>
-            <p className="mt-1 text-xs text-slate-400">
-              o <span className="font-medium text-indigo-600">selecciona archivos</span> · PDF, DOC o imágenes · carga por lote
+            <p className="mt-1 text-xs text-stone-400">
+              o <span className="font-medium text-brand-600">selecciona archivos</span> · PDF, DOC o imágenes · carga por lote
             </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-slate-400">
+            <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-stone-400">
               <Upload className="h-3 w-3" /> Los escaneos ilegibles caen automáticamente en la cola de errores
             </div>
           </>
@@ -236,7 +237,7 @@ export default function ScreeningPage() {
       {tab === 'ranked' ? (
         <div className="space-y-3">
           {ranked.length === 0 && (
-            <Card className="p-10 text-center text-sm text-slate-400">
+            <Card className="p-10 text-center text-sm text-stone-400">
               No hay candidatos puntuados. Suelta CVs arriba o pulsa <b>CVs de ejemplo</b> para ver el pipeline de IA en acción.
             </Card>
           )}
@@ -247,7 +248,7 @@ export default function ScreeningPage() {
       ) : (
         <div className="space-y-3">
           {errors.length === 0 && (
-            <Card className="p-10 text-center text-sm text-slate-400">Sin errores de lectura. 🎉</Card>
+            <Card className="p-10 text-center text-sm text-stone-400">Sin errores de lectura. 🎉</Card>
           )}
           {errors.map((c) => (
             <ErrorRow key={c.id} candidate={c} />
@@ -264,19 +265,19 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
     <Card className="p-4">
       <div className="flex items-start gap-4">
         <div className="flex w-8 shrink-0 flex-col items-center pt-1">
-          <span className="text-lg font-black text-slate-300">#{rank}</span>
+          <span className="text-lg font-black text-stone-300">#{rank}</span>
         </div>
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
           {candidate.firstName[0]}
           {candidate.lastName[0]}
         </div>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-bold text-slate-900">
+            <p className="text-sm font-bold text-stone-900">
               {candidate.firstName} {candidate.lastName}
             </p>
-            <Badge variant="slate">{candidate.source}</Badge>
+            <Badge variant="stone">{candidate.source}</Badge>
             {candidate.flags?.map((f) => (
               <Badge key={f} variant="red">
                 <AlertTriangle className="h-3 w-3" /> {f}
@@ -284,7 +285,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
             ))}
           </div>
 
-          <p className="mt-1.5 text-sm text-slate-600">{candidate.justification}</p>
+          <p className="mt-1.5 text-sm text-stone-600">{candidate.justification}</p>
 
           {/* Evidencia anclada al CV (anti-alucinación) */}
           {candidate.evidence && (
@@ -293,7 +294,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
                 <span
                   key={e.criterion}
                   className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${
-                    e.matched ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-400'
+                    e.matched ? 'bg-green-50 text-green-700' : 'bg-stone-100 text-stone-400'
                   }`}
                   title={e.quote}
                 >
@@ -311,7 +312,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
               {score}
             </Badge>
           </div>
-          <p className="mt-1 text-[11px] text-slate-400">match {candidate.matchPercent}%</p>
+          <p className="mt-1 text-[11px] text-stone-400">match {candidate.matchPercent}%</p>
           <ProgressBar value={score} className="mt-2" />
         </div>
       </div>
@@ -332,7 +333,7 @@ function ErrorRow({ candidate }: { candidate: Candidate }) {
         <FileText className="h-5 w-5" />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-semibold text-slate-800">{candidate.cvFileName}</p>
+        <p className="text-sm font-semibold text-stone-800">{candidate.cvFileName}</p>
         <p className="text-xs text-red-600">
           {ERROR_LABELS[candidate.errorReason ?? ''] ?? 'Error de lectura'} — requiere gestión manual
         </p>
@@ -355,7 +356,7 @@ function TabButton({
     <button
       onClick={onClick}
       className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-        active ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
+        active ? 'bg-brand-600 text-white' : 'bg-white text-stone-600 hover:bg-stone-100'
       }`}
     >
       {children}

@@ -42,33 +42,33 @@ export function NineBoxMatrix({ dataPoints, onPointClick }: Props) {
       <div className="flex w-full gap-2 sm:gap-4">
         {/* Eje Y */}
         <div className="relative w-12 shrink-0">
-          <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="absolute top-1/2 -left-10 -transtone-y-1/2 -rotate-90 whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-stone-400">
             Cultura / Potencial
           </div>
           <div className="flex h-full flex-col justify-between py-4 sm:py-8">
-            <span className="pr-2 text-right text-[10px] font-bold text-slate-300">5.0</span>
+            <span className="pr-2 text-right text-[10px] font-bold text-stone-300">5.0</span>
             <div className="flex-1" />
-            <span className="pr-2 text-right text-[10px] font-bold text-slate-300">1.0</span>
+            <span className="pr-2 text-right text-[10px] font-bold text-stone-300">1.0</span>
           </div>
         </div>
 
         {/* Matriz */}
         <div className="relative flex-1">
-          <div className="relative aspect-square rounded-lg border-2 border-slate-200 bg-white shadow-sm sm:aspect-video">
+          <div className="relative aspect-square rounded-lg border-2 border-stone-200 bg-white shadow-sm sm:aspect-video">
             <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
               {quadrants.map((q) => (
-                <div key={q.id} className={`${q.color} flex items-start border border-slate-100/50 p-2`}>
-                  <span className="text-[9px] font-bold uppercase tracking-tighter text-slate-400 opacity-60">
+                <div key={q.id} className={`${q.color} flex items-start border border-stone-100/50 p-2`}>
+                  <span className="text-[9px] font-bold uppercase tracking-tighter text-stone-400 opacity-60">
                     {q.label}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="absolute top-0 bottom-0 left-[33.3%] z-10 w-px bg-slate-200/80" />
-            <div className="absolute top-0 bottom-0 left-[66.6%] z-10 w-px bg-slate-200/80" />
-            <div className="absolute right-0 left-0 top-[33.3%] z-10 h-px bg-slate-200/80" />
-            <div className="absolute right-0 left-0 top-[66.6%] z-10 h-px bg-slate-200/80" />
+            <div className="absolute top-0 bottom-0 left-[33.3%] z-10 w-px bg-stone-200/80" />
+            <div className="absolute top-0 bottom-0 left-[66.6%] z-10 w-px bg-stone-200/80" />
+            <div className="absolute right-0 left-0 top-[33.3%] z-10 h-px bg-stone-200/80" />
+            <div className="absolute right-0 left-0 top-[66.6%] z-10 h-px bg-stone-200/80" />
 
             {dataPoints?.map((p, idx) => {
               const rx = p.refinedPerformanceScore || p.performanceScore;
@@ -82,16 +82,16 @@ export function NineBoxMatrix({ dataPoints, onPointClick }: Props) {
                 <div
                   key={p.id}
                   onClick={() => onPointClick?.(p.id)}
-                  className="group absolute z-30 h-8 w-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                  className="group absolute z-30 h-8 w-8 -transtone-x-1/2 -transtone-y-1/2 cursor-pointer"
                   style={{ left: `${x}%`, top: `${y}%` }}
                 >
                   <div className="relative">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-indigo-500 text-[10px] font-bold text-white shadow-xl ring-1 ring-slate-200 transition-transform hover:scale-125">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-brand-500 text-[10px] font-bold text-white shadow-xl ring-1 ring-stone-200 transition-transform hover:scale-125">
                       {p.initials}
                     </div>
-                    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 flex -translate-x-1/2 scale-90 flex-col items-center whitespace-nowrap rounded border border-slate-700/50 bg-slate-900 px-2 py-1 text-[10px] text-white opacity-0 shadow-2xl transition-all group-hover:scale-100 group-hover:opacity-100">
+                    <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 flex -transtone-x-1/2 scale-90 flex-col items-center whitespace-nowrap rounded border border-stone-700/50 bg-stone-900 px-2 py-1 text-[10px] text-white opacity-0 shadow-2xl transition-all group-hover:scale-100 group-hover:opacity-100">
                       <span className="font-bold">{p.name}</span>
-                      <span className="text-[9px] font-medium text-slate-400">
+                      <span className="text-[9px] font-medium text-stone-400">
                         {rx.toFixed(2)} - {ry.toFixed(2)}
                       </span>
                     </div>
@@ -103,11 +103,11 @@ export function NineBoxMatrix({ dataPoints, onPointClick }: Props) {
 
           {/* Eje X */}
           <div className="relative mt-2 flex h-8 w-full items-center justify-between px-4 sm:mt-4">
-            <span className="text-[10px] font-bold text-slate-300">1.0</span>
-            <div className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <span className="text-[10px] font-bold text-stone-300">1.0</span>
+            <div className="absolute left-1/2 -transtone-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-stone-400">
               Desempeño (Ventas)
             </div>
-            <span className="text-[10px] font-bold text-slate-300">5.0</span>
+            <span className="text-[10px] font-bold text-stone-300">5.0</span>
           </div>
         </div>
       </div>

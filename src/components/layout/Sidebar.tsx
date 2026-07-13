@@ -9,62 +9,107 @@ import {
   ClipboardCheck,
   TrendingUp,
   Shield,
+  X,
 } from 'lucide-react';
 import { APP } from '../../core/config';
 import { cn } from '../../lib/utils';
 
-const nav = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
-  { to: '/screening', label: 'Screening IA', icon: ScanSearch },
-  { to: '/candidatos', label: 'Candidatos', icon: Users },
-  { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare },
-  { to: '/talento', label: 'Talento · 9-Box', icon: Grid3x3 },
-  { to: '/acciones', label: 'Acciones RR.HH.', icon: ClipboardCheck },
-  { to: '/metricas', label: 'Métricas · ROI', icon: TrendingUp },
-  { to: '/admin', label: 'Admin', icon: Shield },
+const groups: {
+  label: string | null;
+  items: { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean }[];
+}[] = [
+  {
+    label: null,
+    items: [{ to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true }],
+  },
+  {
+    label: 'Reclutamiento',
+    items: [
+      { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
+      { to: '/screening', label: 'Screening IA', icon: ScanSearch },
+      { to: '/candidatos', label: 'Candidatos', icon: Users },
+      { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare },
+    ],
+  },
+  {
+    label: 'Talento',
+    items: [
+      { to: '/talento', label: 'Matriz 9-Box', icon: Grid3x3 },
+      { to: '/acciones', label: 'Acciones RR.HH.', icon: ClipboardCheck },
+    ],
+  },
+  {
+    label: 'Negocio',
+    items: [
+      { to: '/metricas', label: 'Métricas · ROI', icon: TrendingUp },
+      { to: '/admin', label: 'Admin', icon: Shield },
+    ],
+  },
 ];
 
-export function Sidebar() {
+export function Sidebar({ onClose }: { onClose?: () => void }) {
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-slate-200 bg-white">
-      <div className="flex items-center gap-2 px-5 py-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-sm font-black text-white">
+    <aside className="flex h-full w-64 shrink-0 flex-col bg-brand-950 text-brand-100">
+      <div className="flex items-center gap-3 px-5 pb-4 pt-5">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 font-display text-lg font-bold text-brand-950 shadow-[0_2px_8px_rgba(201,144,67,0.4)]">
           T
         </div>
-        <div>
-          <p className="text-sm font-bold leading-tight text-slate-900">
-            {APP.name} <span className="text-indigo-600">{APP.version}</span>
+        <div className="flex-1">
+          <p className="font-display text-[15px] font-semibold leading-tight tracking-wide text-white">
+            {APP.name} <span className="text-gold-400">{APP.version}</span>
           </p>
-          <p className="text-[10px] font-medium text-slate-400">Reclutamiento con IA</p>
+          <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-brand-300">
+            Reclutamiento con IA
+          </p>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            aria-label="Cerrar menú"
+            className="rounded-lg p-1.5 text-brand-300 hover:bg-white/10 hover:text-white lg:hidden"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-2">
-        {nav.map(({ to, label, icon: Icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
-              )
-            }
-          >
-            <Icon className="h-4.5 w-4.5" strokeWidth={2} />
-            {label}
-          </NavLink>
+      <nav className="flex-1 overflow-y-auto px-3 py-2">
+        {groups.map((g) => (
+          <div key={g.label ?? 'main'} className="mb-1">
+            {g.label && (
+              <p className="mb-1 mt-4 px-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.22em] text-brand-400/80">
+                {g.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {g.items.map(({ to, label, icon: Icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    cn(
+                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium transition-colors',
+                      isActive
+                        ? 'bg-white/10 text-white shadow-[inset_2px_0_0_0_var(--color-gold-500)]'
+                        : 'text-brand-200/80 hover:bg-white/5 hover:text-white',
+                    )
+                  }
+                >
+                  <Icon className="h-4.5 w-4.5 shrink-0" strokeWidth={1.8} />
+                  {label}
+                </NavLink>
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
 
       <div className="px-3 py-4">
-        <div className="rounded-lg bg-slate-50 p-3 text-[11px] text-slate-500">
-          <p className="font-semibold text-slate-700">Modo demostración</p>
-          <p className="mt-0.5">Sin proveedores conectados. IA simulada.</p>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-brand-200">
+          <p className="font-semibold text-gold-300">Modo demostración</p>
+          <p className="mt-0.5 text-brand-300">Sin proveedores conectados. IA simulada.</p>
         </div>
       </div>
     </aside>

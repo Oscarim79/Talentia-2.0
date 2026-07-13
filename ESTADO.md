@@ -1,8 +1,8 @@
 # ESTADO — TALENTIA 2.0
 
 > Punto de retoma para continuar en cualquier dispositivo (laptop o móvil).
-> Última actualización: 2026-06-18.
-> Último avance: **Reportes a gerentes** en el tablero de acciones (`/acciones`) — RR.HH. genera por departamento un reporte del estado del equipo (a reconocer / en seguimiento / en riesgo, con cada caso y su base) y lo envía al gerente por WhatsApp, o lo copia/descarga (.txt). Construido sobre: tablero de acciones + 9-Box potenciado (perfil por persona con 10 dims 360°, historial por trimestre + motor de decisiones de RR.HH., recomendación de crecimiento IA por 7 Hábitos y WhatsApp a persona y jefe).
+> Última actualización: 2026-07-13.
+> Último avance: **Rediseño visual completo + QA/auditoría integral.** Nueva identidad propia (ya no parece plantilla): paleta verde bosque + marfil + dorado (tokens `brand-*`/`gold-*` en `src/index.css`), tipografías Bricolage Grotesque (títulos/cifras), Instrument Sans (UI) e IBM Plex Mono (etiquetas de sección), sidebar oscura con navegación agrupada (Reclutamiento / Talento / Negocio), **versión móvil funcional** (drawer con hamburguesa; antes se rompía), modales con Escape + `role="dialog"`, el wizard ya no pierde datos con un clic fuera (pide confirmación), empty-state en Métricas para empresas sin datos, y correcciones de color semántico (barras de progreso ya no salen rojas en procesos normales). Reporte QA con evidencia en `.gstack/qa-reports/` (no va a git).
 > Objetivo actual: **demo-first** — presentar al CEO con datos mock (más seguro en vivo). Supabase se conecta DESPUÉS del visto bueno.
 > Nota de negocio: Americana 2000 es un **retail completo** (cadena multitienda: línea blanca, muebles, motos, tecnología — como Max, La Curacao, El Gallo más Gallo, Agencias Way), NO solo motos. El plan de crecimiento se basa en el libro **Los 7 Hábitos** de Covey.
 
@@ -22,6 +22,16 @@
 - **Talento 9-Box potenciado** (portado de Talentia 1.0): filtro por departamento, lista de colaboradores clicable, modal de perfil con métricas + 10 dimensiones 360° por persona, **historial por trimestre** (semáforo verde/amarillo/rojo) y **motor de decisiones de RR.HH.** (reglas deterministas en `features/talent/talentDecisions.ts`: la racha de la tendencia → reconocimiento/bono/premio/aumento, o seguimiento/capacitación, o advertencia/suspensión/desvinculación), y **recomendación de crecimiento por IA (7 Hábitos / Covey)** con envío por WhatsApp (`wa.me`) a la persona y a su jefe. Diagnóstico síntoma→hábito en `core/adapters/mock.ts` (mock; el puerto `llm.generateGrowthPlan` queda listo para Gemini real).
 - **Tablero de acciones RR.HH.** (`features/talent/ActionsPage.tsx`, ruta `/acciones`): agrega las decisiones de todo el equipo agrupadas por prioridad, con resumen de conteos, filtro por departamento, "Ver perfil" (reusa el modal) y "Marcar hecha" → Completadas.
 - **Reportes a gerentes** (`features/talent/ManagerReportModal.tsx`): por departamento, RR.HH. ve y envía al gerente un reporte del estado de su equipo (resumen + casos por prioridad con su base), vía WhatsApp (`wa.me` al teléfono del jefe), copiar al portapapeles o descargar `.txt`.
+
+## Pendientes ANTES de la demo al CEO (hallazgos de la auditoría 2026-07-13)
+
+Bugs reales encontrados por la auditoría técnica + QA (detalle completo en `.gstack/qa-reports/qa-report-talentia-localhost-2026-07-13.md`):
+
+1. **9-Box desalineada (CRÍTICO, ~1h):** 4 de 9 personas caen dibujadas en una celda distinta a su etiqueta, porque el cuadrante es un texto manuscrito en `src/data/seed.ts` y el punto se posiciona por score. Arreglo: derivar el cuadrante de los scores con una función única (hoy no existe). Es la pantalla estrella — un CEO que conozca 9-box lo nota.
+2. **Fuga entre empresas con lote corriendo (CRÍTICO, disciplina de demo):** si se cambia de empresa o vacante mientras el screening procesa un lote, los candidatos del lote viejo aparecen en la empresa nueva (`ScreeningPage.tsx`, `processNames`). Mitigación en vivo: NO cambiar de empresa/vacante con lote en curso. Arreglo: deshabilitar selectores durante `busy` o descartar resultados de otro tenant.
+3. **`crypto.randomUUID` truena fuera de localhost (CRÍTICO si se presenta desde tablet/celular por IP):** presentar SIEMPRE desde `http://localhost:3000`, o cambiar a un generador de IDs propio (`ScreeningPage.tsx:396`).
+4. **Los candidatos del screening no existen en el resto de la app (IMPORTANTE):** viven solo en el estado local de la página; Candidatos/Dashboard leen el seed. Evitar el guion "subo CVs → vamos a Candidatos". Arreglo de fondo: falta un puerto de datos (repositorio/contexto) — mismo trabajo que pide Supabase, conviene hacerlo junto.
+5. Menores: botón muerto "Subir versión legible" en cola de errores; mensaje fantasma en Entrevistas si cambias de candidato mientras el agente "piensa"; markdown crudo (`##`, `**`) visible en el textarea de descripción del wizard; sin validación salario min>max.
 
 ## Siguiente (en orden)
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*

@@ -88,8 +88,8 @@ export default function ActionsPage() {
   if (!hasData) {
     return (
       <div>
-        <PageHeader title="Acciones pendientes · RR.HH." subtitle="Decisiones de gestión derivadas del desempeño del equipo." />
-        <Card className="p-12 text-center text-sm text-slate-400">
+        <PageHeader eyebrow="Talento" title="Acciones pendientes · RR.HH." subtitle="Decisiones de gestión derivadas del desempeño del equipo." />
+        <Card className="p-12 text-center text-sm text-stone-400">
           El tablero de acciones se activa cuando hay colaboradores evaluados.
           <br />
           (Datos de demostración disponibles en la empresa <b>Americana 2000</b>.)
@@ -101,13 +101,14 @@ export default function ActionsPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Talento"
         title="Acciones pendientes · RR.HH."
         subtitle="Decisiones de gestión derivadas de la tendencia de cada colaborador. Prioriza riesgos, reconoce el buen desempeño."
         actions={
           <select
             value={dept}
             onChange={(e) => setDept(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
           >
             {departments.map((d) => (
               <option key={d} value={d}>{d}</option>
@@ -118,23 +119,23 @@ export default function ActionsPage() {
 
       {/* Resumen */}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="Atención / riesgo" value={String(countFor(['critical', 'negative']))} delta="advertencia · suspensión · desvinculación" icon={<AlertTriangle className="h-5 w-5" />} />
-        <StatCard label="Reconocer / premiar" value={String(countFor(['positive']))} delta="reconocimiento · bono · aumento" icon={<Award className="h-5 w-5" />} />
-        <StatCard label="Seguimiento" value={String(countFor(['neutral']))} delta="acompañamiento · capacitación" icon={<Eye className="h-5 w-5" />} />
+        <StatCard label="Atención / riesgo" value={String(countFor(['critical', 'negative']))} delta="advertencia · suspensión · desvinculación" deltaTone="risk" icon={<AlertTriangle className="h-5 w-5" />} />
+        <StatCard label="Reconocer / premiar" value={String(countFor(['positive']))} delta="reconocimiento · bono · aumento" deltaTone="up" icon={<Award className="h-5 w-5" />} />
+        <StatCard label="Seguimiento" value={String(countFor(['neutral']))} delta="acompañamiento · capacitación" deltaTone="warn" icon={<Eye className="h-5 w-5" />} />
       </div>
 
       {/* Reportes a gerentes */}
       <Card className="mb-6 p-5">
         <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1">
-          <FileText className="h-4 w-4 text-indigo-600" />
-          <h2 className="text-sm font-bold text-slate-700">Reportes a gerentes</h2>
-          <span className="text-xs text-slate-400">— envía a cada gerente el estado de su equipo</span>
+          <FileText className="h-4 w-4 text-brand-600" />
+          <h2 className="text-sm font-bold text-stone-700">Reportes a gerentes</h2>
+          <span className="text-xs text-stone-400">— envía a cada gerente el estado de su equipo</span>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {reportCards.map((c) => (
-            <div key={c.department} className="rounded-lg border border-slate-200 p-4">
-              <p className="text-sm font-bold text-slate-900">{c.manager}</p>
-              <p className="text-xs text-slate-500">Gerente · {c.department}</p>
+            <div key={c.department} className="rounded-lg border border-stone-200 p-4">
+              <p className="text-sm font-bold text-stone-900">{c.manager}</p>
+              <p className="text-xs text-stone-500">Gerente · {c.department}</p>
               <div className="mt-2 flex items-center gap-3 text-xs font-semibold">
                 <span className="text-green-600" title="A reconocer / premiar">● {c.reward}</span>
                 <span className="text-amber-600" title="En seguimiento">● {c.followup}</span>
@@ -158,7 +159,7 @@ export default function ActionsPage() {
             <div key={bucket.key}>
               <h2 className={`mb-3 flex items-center gap-2 text-sm font-bold ${bucket.accent}`}>
                 <Icon className="h-4 w-4" /> {bucket.title}
-                <span className="text-slate-400">· {list.length}</span>
+                <span className="text-stone-400">· {list.length}</span>
               </h2>
               <div className="space-y-3">
                 {list.map((item) => (
@@ -176,7 +177,7 @@ export default function ActionsPage() {
         })}
 
         {pending.length === 0 && (
-          <Card className="p-10 text-center text-sm text-slate-400">
+          <Card className="p-10 text-center text-sm text-stone-400">
             🎉 No hay acciones pendientes para esta selección.
           </Card>
         )}
@@ -184,8 +185,8 @@ export default function ActionsPage() {
         {/* Completadas */}
         {completed.length > 0 && (
           <div>
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-500">
-              <ClipboardCheck className="h-4 w-4" /> Completadas <span className="text-slate-400">· {completed.length}</span>
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-500">
+              <ClipboardCheck className="h-4 w-4" /> Completadas <span className="text-stone-400">· {completed.length}</span>
             </h2>
             <div className="space-y-3">
               {completed.map((item) => (
@@ -225,7 +226,7 @@ function ActionRow({
     <Card className={`p-4 ${done ? 'opacity-60' : ''}`}>
       <div className="flex items-start gap-4">
         <div className="relative shrink-0">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
             {person.initials}
           </div>
           <span className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${LIGHT_META[light].dot}`} />
@@ -233,12 +234,12 @@ function ActionRow({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className={`text-sm font-bold text-slate-900 ${done ? 'line-through' : ''}`}>{person.name}</p>
+            <p className={`text-sm font-bold text-stone-900 ${done ? 'line-through' : ''}`}>{person.name}</p>
             <Badge variant={TONE_BADGE[decision.tone]}>{decision.label}</Badge>
           </div>
-          <p className="text-xs text-slate-500">{person.role} · {person.department}</p>
-          <p className="mt-1.5 text-sm text-slate-600">{decision.detail}</p>
-          <p className="mt-0.5 text-xs text-slate-400">Base: {decision.rationale}</p>
+          <p className="text-xs text-stone-500">{person.role} · {person.department}</p>
+          <p className="mt-1.5 text-sm text-stone-600">{decision.detail}</p>
+          <p className="mt-0.5 text-xs text-stone-400">Base: {decision.rationale}</p>
         </div>
 
         <div className="flex shrink-0 flex-col gap-1.5">

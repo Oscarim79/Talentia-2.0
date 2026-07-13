@@ -7,6 +7,7 @@ import { Card, PageHeader, StatCard, Badge } from '../../components/ui/primitive
 
 // ---- Supuestos de la comparación (editables; se muestran como nota al pie) ----
 const MIN_POR_CV_MANUAL = 8; // min que un reclutador tarda revisando un CV a mano
+const MIN_POR_CV_IA = 0.5; // min que tarda el pipeline de IA por CV (parseo + scoring)
 const COSTO_HORA_RECLUTADOR = 5; // USD/hora (mercado GT, ~Q5.5k/mes)
 const TIME_TO_FILL_INDUSTRIA = 36; // días promedio de la industria (benchmark)
 
@@ -70,7 +71,7 @@ export default function MetricsPage() {
     {
       metric: 'Tiempo de screening',
       manual: `≈ ${horasAhorradas.toFixed(0)} h`,
-      ia: 'minutos',
+      ia: `≈ ${Math.max(1, Math.round(cvsAnalizados * MIN_POR_CV_IA))} min`,
       win: `${horasAhorradas.toFixed(0)} h ahorradas`,
     },
     {
@@ -97,9 +98,28 @@ export default function MetricsPage() {
       : []),
   ];
 
+  // Sin datos de uso no hay ROI que mostrar: empty-state en lugar de "0× más barato".
+  if (cvsAnalizados === 0) {
+    return (
+      <div>
+        <PageHeader
+          eyebrow="Negocio"
+          title="Métricas y ROI"
+          subtitle="El retorno de automatizar el reclutamiento con IA — una persona gestiona cientos de candidatos."
+        />
+        <Card className="p-12 text-center text-sm text-stone-400">
+          Las métricas de ROI se calculan con el uso real de IA.
+          <br />
+          Procesa CVs en <b>Screening IA</b> y aquí verás el ahorro del periodo.
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <PageHeader
+        eyebrow="Negocio"
         title="Métricas y ROI"
         subtitle="El retorno de automatizar el reclutamiento con IA — una persona gestiona cientos de candidatos."
       />
@@ -134,27 +154,27 @@ export default function MetricsPage() {
 
       {/* Comparación antes vs con Talentia (el cierre para el CEO) */}
       <Card className="mt-6 overflow-hidden">
-        <div className="border-b border-slate-100 px-6 py-4">
-          <h2 className="text-sm font-bold text-slate-700">Proceso manual vs. con TALENTIA</h2>
-          <p className="mt-0.5 text-xs text-slate-400">Sobre los {cvsAnalizados.toLocaleString()} CVs procesados en este periodo.</p>
+        <div className="border-b border-stone-100 px-6 py-4">
+          <h2 className="text-sm font-bold text-stone-700">Proceso manual vs. con TALENTIA</h2>
+          <p className="mt-0.5 text-xs text-stone-400">Sobre los {cvsAnalizados.toLocaleString()} CVs procesados en este periodo.</p>
         </div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-400">
+            <tr className="border-b border-stone-100 text-left text-xs uppercase tracking-wide text-stone-400">
               <th className="px-6 py-3 font-semibold">Métrica</th>
               <th className="px-6 py-3 font-semibold">Proceso manual</th>
-              <th className="px-6 py-3 font-semibold text-indigo-600">Con TALENTIA</th>
+              <th className="px-6 py-3 font-semibold text-brand-600">Con TALENTIA</th>
               <th className="px-6 py-3 font-semibold text-right">Ventaja</th>
             </tr>
           </thead>
           <tbody>
             {comparison.map((row) => (
-              <tr key={row.metric} className="border-b border-slate-50 last:border-0">
-                <td className="px-6 py-4 font-semibold text-slate-800">{row.metric}</td>
-                <td className="px-6 py-4 text-slate-400 line-through decoration-slate-300">{row.manual}</td>
+              <tr key={row.metric} className="border-b border-stone-50 last:border-0">
+                <td className="px-6 py-4 font-semibold text-stone-800">{row.metric}</td>
+                <td className="px-6 py-4 text-stone-400 line-through decoration-stone-300">{row.manual}</td>
                 <td className="px-6 py-4">
-                  <span className="inline-flex items-center gap-1.5 font-bold text-slate-900">
-                    <ArrowRight className="h-3.5 w-3.5 text-indigo-500" />
+                  <span className="inline-flex items-center gap-1.5 font-bold text-stone-900">
+                    <ArrowRight className="h-3.5 w-3.5 text-brand-500" />
                     {row.ia}
                   </span>
                 </td>
@@ -171,19 +191,19 @@ export default function MetricsPage() {
         {/* Desglose de costo IA */}
         <Card className="p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-700">Costo IA por servicio</h2>
+            <h2 className="text-sm font-bold text-stone-700">Costo IA por servicio</h2>
             <Badge variant="brand">{usd(costoIATotal)} total</Badge>
           </div>
           <div className="space-y-3">
             {breakdown.map((r) => (
               <div key={r.label}>
                 <div className="mb-1 flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-600">{r.label}</span>
-                  <span className="font-semibold text-slate-700">{usd(r.value)}</span>
+                  <span className="font-medium text-stone-600">{r.label}</span>
+                  <span className="font-semibold text-stone-700">{usd(r.value)}</span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100">
                   <div
-                    className="h-full rounded-full bg-indigo-500"
+                    className="h-full rounded-full bg-brand-500"
                     style={{ width: `${(r.value / maxCost) * 100}%` }}
                   />
                 </div>
@@ -194,14 +214,14 @@ export default function MetricsPage() {
 
         {/* Resumen del embudo */}
         <Card className="p-5">
-          <h2 className="mb-4 text-sm font-bold text-slate-700">Resultado del periodo</h2>
+          <h2 className="mb-4 text-sm font-bold text-stone-700">Resultado del periodo</h2>
           <div className="grid grid-cols-2 gap-4">
             <MiniStat value={cands.length.toLocaleString()} label="Candidatos en pipeline" />
             <MiniStat value={String(hires)} label="Contrataciones" accent />
             <MiniStat value={timeToFill != null ? `${timeToFill} días` : '—'} label="Time-to-fill promedio" />
             <MiniStat value={usd(costoIAporCV)} label="Costo IA por CV" />
           </div>
-          <p className="mt-4 rounded-lg bg-indigo-50 px-4 py-3 text-xs text-indigo-900">
+          <p className="mt-4 rounded-lg bg-brand-50 px-4 py-3 text-xs text-brand-900">
             Con TALENTIA, <b>una persona</b> filtró <b>{cvsAnalizados.toLocaleString()} CVs</b> por{' '}
             <b>{usd(costoIAScreening)}</b> — lo que a mano tomaría <b>≈{horasAhorradas.toFixed(0)} horas</b> de trabajo.
           </p>
@@ -209,9 +229,9 @@ export default function MetricsPage() {
       </div>
 
       {/* Nota de supuestos */}
-      <p className="mt-5 text-[11px] leading-relaxed text-slate-400">
+      <p className="mt-5 text-[11px] leading-relaxed text-stone-400">
         Datos de demostración. Supuestos de la comparación: revisión manual ≈ {MIN_POR_CV_MANUAL} min/CV ·
-        costo reclutador ≈ {usd(COSTO_HORA_RECLUTADOR, 0)}/hora · time-to-fill de industria ≈ {TIME_TO_FILL_INDUSTRIA} días.
+        IA ≈ {MIN_POR_CV_IA} min/CV · costo reclutador ≈ {usd(COSTO_HORA_RECLUTADOR, 0)}/hora · time-to-fill de industria ≈ {TIME_TO_FILL_INDUSTRIA} días.
         Los costos de IA provienen de los eventos de uso reales del periodo.
       </p>
     </div>
@@ -220,9 +240,9 @@ export default function MetricsPage() {
 
 function MiniStat({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
   return (
-    <div className="rounded-lg border border-slate-100 p-3">
-      <p className={`text-2xl font-black ${accent ? 'text-green-600' : 'text-slate-900'}`}>{value}</p>
-      <p className="mt-0.5 text-xs text-slate-500">{label}</p>
+    <div className="rounded-lg border border-stone-100 p-3">
+      <p className={`font-display text-2xl font-semibold ${accent ? 'text-green-600' : 'text-stone-900'}`}>{value}</p>
+      <p className="mt-0.5 text-xs text-stone-500">{label}</p>
     </div>
   );
 }
