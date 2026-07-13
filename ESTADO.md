@@ -31,7 +31,9 @@ Bugs reales encontrados por la auditoría técnica + QA (detalle completo en `.g
 2. **Fuga entre empresas con lote corriendo (CRÍTICO, disciplina de demo):** si se cambia de empresa o vacante mientras el screening procesa un lote, los candidatos del lote viejo aparecen en la empresa nueva (`ScreeningPage.tsx`, `processNames`). Mitigación en vivo: NO cambiar de empresa/vacante con lote en curso. Arreglo: deshabilitar selectores durante `busy` o descartar resultados de otro tenant.
 3. **`crypto.randomUUID` truena fuera de localhost (CRÍTICO si se presenta desde tablet/celular por IP):** presentar SIEMPRE desde `http://localhost:3000`, o cambiar a un generador de IDs propio (`ScreeningPage.tsx:396`).
 4. **Los candidatos del screening no existen en el resto de la app (IMPORTANTE):** viven solo en el estado local de la página; Candidatos/Dashboard leen el seed. Evitar el guion "subo CVs → vamos a Candidatos". Arreglo de fondo: falta un puerto de datos (repositorio/contexto) — mismo trabajo que pide Supabase, conviene hacerlo junto.
-5. Menores: botón muerto "Subir versión legible" en cola de errores; mensaje fantasma en Entrevistas si cambias de candidato mientras el agente "piensa"; markdown crudo (`##`, `**`) visible en el textarea de descripción del wizard; sin validación salario min>max.
+5. ~~Menores~~ **Corregidos el 2026-07-13 (2ª tanda):** mensaje fantasma en Entrevistas (guard de generación en `agentSpeak`), markdown crudo en la descripción IA (el mock ahora genera texto plano), validación salario min>max en el wizard (aviso + Siguiente bloqueado), IDs del wizard sin colisiones (`nextId`), y `DEMO_MODE` cableado de verdad en `core/providers.ts` (apagarlo sin adaptadores reales falla en el arranque con mensaje claro, no a mitad de demo). El botón muerto "Subir versión legible" va en la tarea de blindar screening.
+
+> Los puntos 1–3 se están trabajando en dos sesiones paralelas (chips): "Corregir cuadrantes de la matriz 9-Box" y "Blindar el screening para la demo en vivo".
 
 ## Siguiente (en orden)
 1. ✅ **Screening** — drag & drop real de archivos + barra de progreso por lote. *(hecho)*

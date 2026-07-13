@@ -65,9 +65,13 @@ export default function InterviewsPage() {
   const [thinking, setThinking] = useState(false);
   const [done, setDone] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Generación de la conversación: invalida respuestas pendientes del agente
+  // cuando se cambia de candidato/empresa (evita mensajes "fantasma").
+  const genRef = useRef(0);
 
   // Reinicia la conversación al cambiar de candidato o empresa.
   useEffect(() => {
+    genRef.current += 1;
     setTurns([]);
     setInput('');
     setThinking(false);
@@ -84,6 +88,7 @@ export default function InterviewsPage() {
   // Pide al agente (puerto LLM) su siguiente turno a partir del historial.
   async function agentSpeak(history: InterviewTurn[]) {
     if (!cand) return;
+    const gen = genRef.current;
     setThinking(true);
     const res = await providers.llm.interviewReply({
       history,
@@ -91,6 +96,8 @@ export default function InterviewsPage() {
       candidateName: `${cand.firstName} ${cand.lastName}`,
       questions: questionTexts,
     });
+    // Si la conversación cambió mientras el agente "pensaba", descarta la respuesta.
+    if (gen !== genRef.current) return;
     setThinking(false);
     setTurns((prev) => [...prev, { role: 'agent', content: res.message }]);
     if (res.done) setDone(true);

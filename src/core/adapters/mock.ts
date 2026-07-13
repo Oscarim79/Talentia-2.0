@@ -180,7 +180,9 @@ function diagnoseHabit(input: GrowthPlanInput): { key: string; focusKey: string 
 // ---------- LLM ----------
 export const mockLlm: LlmPort = {
   async generateJobDescription({ title, department, seniority }) {
-    const text = `## ${title}\n\n**Departamento:** ${department} · **Nivel:** ${seniority}\n\nBuscamos un(a) **${title}** orientado(a) a resultados para sumarse a nuestro equipo. Será responsable de impulsar las metas del área, brindar una experiencia excepcional al cliente y trabajar de forma colaborativa.\n\n**Responsabilidades**\n- Cumplir y superar las metas asignadas.\n- Gestionar la cartera de clientes y dar seguimiento posventa.\n- Mantener registros precisos en el CRM.\n\n**Requisitos**\n- Experiencia comprobable en el área.\n- Excelente comunicación y actitud de servicio.\n- Disponibilidad inmediata.\n\n*Descripción generada por IA — editable.*`;
+    // Texto plano (sin marcas ## / **): se ve limpio en el textarea del wizard,
+    // en la tarjeta de vacante y en el XML de LinkedIn.
+    const text = `${title} — ${department} · Nivel ${seniority}\n\nBuscamos un(a) ${title} orientado(a) a resultados para sumarse a nuestro equipo. Será responsable de impulsar las metas del área, brindar una experiencia excepcional al cliente y trabajar de forma colaborativa.\n\nRESPONSABILIDADES\n• Cumplir y superar las metas asignadas.\n• Gestionar la cartera de clientes y dar seguimiento posventa.\n• Mantener registros precisos en el CRM.\n\nREQUISITOS\n• Experiencia comprobable en el área.\n• Excelente comunicación y actitud de servicio.\n• Disponibilidad inmediata.\n\n(Descripción generada por IA — edítala a tu gusto.)`;
     return delay(text, 900);
   },
 

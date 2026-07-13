@@ -12,6 +12,10 @@ import type { Job, ScreeningFilter, InterviewQuestion } from '../../types';
 
 const STEPS = ['Básicos', 'Descripción IA', 'Filtros de screening', 'Preguntas IA', 'Revisar'] as const;
 
+// IDs únicos aunque se generen varios en el mismo milisegundo.
+let uidCounter = 0;
+const nextId = (prefix: string) => `${prefix}_${Date.now().toString(36)}_${++uidCounter}`;
+
 const inputCls =
   'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
@@ -42,8 +46,11 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
   const [questions, setQuestions] = useState<InterviewQuestion[]>([]);
   const [genQ, setGenQ] = useState(false);
 
+  const salaryInvalid = salaryMin > salaryMax;
   const canNext =
-    step === 0 ? title.trim().length > 1 && department.trim().length > 1 : true;
+    step === 0
+      ? title.trim().length > 1 && department.trim().length > 1 && !salaryInvalid
+      : true;
 
   async function generateDescription() {
     setGenDesc(true);
@@ -56,7 +63,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
     setGenQ(true);
     const qs = await providers.llm.generateInterviewQuestions({ title, count: 5 });
     setQuestions(
-      qs.map((text, i) => ({ id: `q_${Date.now()}_${i}`, text, source: 'ai', weight: 20 })),
+      qs.map((text) => ({ id: nextId('q'), text, source: 'ai', weight: 20 })),
     );
     setGenQ(false);
   }
@@ -66,7 +73,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
     if (!criterion) return;
     setFilters((prev) => [
       ...prev,
-      { id: `f_${Date.now()}`, polarity: filterPolarity, criterion, weight: filterPolarity === 'positive' ? 30 : 100 },
+      { id: nextId('f'), polarity: filterPolarity, criterion, weight: filterPolarity === 'positive' ? 30 : 100 },
     ]);
     setFilterText('');
   }
@@ -182,6 +189,11 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                   <input type="number" min={0} className={inputCls} value={salaryMax} onChange={(e) => setSalaryMax(Number(e.target.value))} />
                 </Field>
               </div>
+              {salaryInvalid && (
+                <p className="text-xs font-medium text-red-600">
+                  El salario mínimo no puede ser mayor que el máximo.
+                </p>
+              )}
             </div>
           )}
 
@@ -195,7 +207,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                 </Button>
               </div>
               <textarea
-                className={`${inputCls} min-h-[280px] font-mono text-xs leading-relaxed`}
+                className={`${inputCls} min-h-[280px] leading-relaxed`}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Pulsa «Generar con IA» o escribe la descripción aquí…"
@@ -273,7 +285,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
               </div>
               <Button
                 variant="ghost"
-                onClick={() => setQuestions((prev) => [...prev, { id: `q_${Date.now()}`, text: '', source: 'manual', weight: 20 }])}
+                onClick={() => setQuestions((prev) => [...prev, { id: nextId('q'), text: '', source: 'manual', weight: 20 }])}
               >
                 <Plus className="h-4 w-4" /> Agregar pregunta manual
               </Button>
