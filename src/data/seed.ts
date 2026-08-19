@@ -10,6 +10,7 @@ import type {
   UsageEvent,
 } from '../types';
 import { hashString } from '../lib/utils';
+import { quadrantFromScores } from '../core/nineBox';
 
 // ---------------- Planes ----------------
 export const PLANS: Plan[] = [
@@ -196,7 +197,7 @@ function makeHistory(perf: number, cult: number, trend: 'up' | 'down' | 'stable'
 
 function person(p: {
   id: string; name: string; initials: string; department: string; role: string;
-  performanceScore: number; cultureScore: number; quadrant: string; enps: number;
+  performanceScore: number; cultureScore: number; enps: number;
   phone: string; trend: 'up' | 'down' | 'stable';
 }): NineBoxDataPoint {
   const { trend, ...rest } = p;
@@ -204,6 +205,8 @@ function person(p: {
   const first = rest.name.split(' ')[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   return {
     ...rest,
+    // El cuadrante SIEMPRE se deriva de los scores (fuente única en core/nineBox.ts).
+    quadrant: quadrantFromScores(rest.performanceScore, rest.cultureScore),
     refinedPerformanceScore: rest.performanceScore,
     refinedCultureScore: rest.cultureScore,
     email: `${first}@americana.gt`,
@@ -214,16 +217,18 @@ function person(p: {
   };
 }
 
+// Los scores están elegidos para que cada persona caiga en un cuadrante distinto
+// (una historia por celda en la demo). El nombre del cuadrante se deriva solo.
 export const NINE_BOX: NineBoxDataPoint[] = [
-  person({ id: 'e1', name: 'María González', initials: 'MG', department: 'Ventas', role: 'Asesora de Ventas Senior', performanceScore: 4.6, cultureScore: 4.7, quadrant: 'Superestrella', enps: 92, phone: '+502 5500 1001', trend: 'stable' }),
-  person({ id: 'e2', name: 'Carlos Pérez', initials: 'CP', department: 'Crédito y Cobranza', role: 'Ejecutivo de Crédito', performanceScore: 4.2, cultureScore: 3.6, quadrant: 'Estrella', enps: 70, phone: '+502 5500 1002', trend: 'up' }),
-  person({ id: 'e3', name: 'Ana López', initials: 'AL', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 3.2, cultureScore: 4.3, quadrant: 'Futuro Líder', enps: 80, phone: '+502 5500 1003', trend: 'up' }),
-  person({ id: 'e4', name: 'Jorge Ramírez', initials: 'JR', department: 'Ventas', role: 'Asesor de Ventas', performanceScore: 3.4, cultureScore: 3.3, quadrant: 'Colaborador Clave', enps: 58, phone: '+502 5500 1004', trend: 'stable' }),
-  person({ id: 'e5', name: 'Lucía Hernández', initials: 'LH', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 2.6, cultureScore: 4.1, quadrant: 'Diamante en Bruto', enps: 74, phone: '+502 5500 1005', trend: 'up' }),
-  person({ id: 'e6', name: 'Pedro Castillo', initials: 'PC', department: 'Caja', role: 'Cajero', performanceScore: 1.5, cultureScore: 1.6, quadrant: 'Crítico o Inadecuado', enps: 22, phone: '+502 5500 1006', trend: 'down' }),
-  person({ id: 'e7', name: 'Sofía Morales', initials: 'SM', department: 'Ventas', role: 'Asesora de Ventas', performanceScore: 4.4, cultureScore: 2.7, quadrant: 'Profesional', enps: 44, phone: '+502 5500 1007', trend: 'down' }),
-  person({ id: 'e8', name: 'Luis Gómez', initials: 'LG', department: 'Logística', role: 'Encargado de Bodega', performanceScore: 2.9, cultureScore: 2.6, quadrant: 'Colaborador Inconsistente', enps: 40, phone: '+502 5500 1008', trend: 'down' }),
-  person({ id: 'e9', name: 'Elena Ruiz', initials: 'ER', department: 'Crédito y Cobranza', role: 'Gestora de Cobranza', performanceScore: 2.2, cultureScore: 2.9, quadrant: 'Buen Colaborador', enps: 50, phone: '+502 5500 1009', trend: 'stable' }),
+  person({ id: 'e1', name: 'María González', initials: 'MG', department: 'Ventas', role: 'Asesora de Ventas Senior', performanceScore: 4.6, cultureScore: 4.7, enps: 92, phone: '+502 5500 1001', trend: 'stable' }), // Superestrella
+  person({ id: 'e2', name: 'Carlos Pérez', initials: 'CP', department: 'Crédito y Cobranza', role: 'Ejecutivo de Crédito', performanceScore: 4.2, cultureScore: 3.6, enps: 70, phone: '+502 5500 1002', trend: 'up' }), // Estrella
+  person({ id: 'e3', name: 'Ana López', initials: 'AL', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 3.2, cultureScore: 4.3, enps: 80, phone: '+502 5500 1003', trend: 'up' }), // Futuro Líder
+  person({ id: 'e4', name: 'Jorge Ramírez', initials: 'JR', department: 'Ventas', role: 'Asesor de Ventas', performanceScore: 3.4, cultureScore: 3.3, enps: 58, phone: '+502 5500 1004', trend: 'stable' }), // Colaborador Clave
+  person({ id: 'e5', name: 'Lucía Hernández', initials: 'LH', department: 'Atención al Cliente', role: 'Agente de Servicio', performanceScore: 2.1, cultureScore: 4.1, enps: 74, phone: '+502 5500 1005', trend: 'up' }), // Diamante en Bruto
+  person({ id: 'e6', name: 'Pedro Castillo', initials: 'PC', department: 'Caja', role: 'Cajero', performanceScore: 1.5, cultureScore: 1.6, enps: 22, phone: '+502 5500 1006', trend: 'down' }), // Crítico o Inadecuado
+  person({ id: 'e7', name: 'Sofía Morales', initials: 'SM', department: 'Ventas', role: 'Asesora de Ventas', performanceScore: 4.4, cultureScore: 2.1, enps: 44, phone: '+502 5500 1007', trend: 'down' }), // Profesional
+  person({ id: 'e8', name: 'Luis Gómez', initials: 'LG', department: 'Logística', role: 'Encargado de Bodega', performanceScore: 2.2, cultureScore: 2.6, enps: 40, phone: '+502 5500 1008', trend: 'down' }), // Colaborador Inconsistente
+  person({ id: 'e9', name: 'Elena Ruiz', initials: 'ER', department: 'Crédito y Cobranza', role: 'Gestora de Cobranza', performanceScore: 2.6, cultureScore: 2.2, enps: 50, phone: '+502 5500 1009', trend: 'stable' }), // Buen Colaborador
 ];
 
 // 10 dimensiones de la Encuesta 360° (la joya de cultura)

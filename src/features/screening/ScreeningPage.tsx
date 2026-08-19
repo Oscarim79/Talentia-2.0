@@ -4,6 +4,7 @@ import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { CANDIDATES } from '../../data/seed';
 import { providers } from '../../core/providers';
+import { newId } from '../../lib/utils';
 import type { Candidate, Job } from '../../types';
 import {
   Card,
@@ -35,10 +36,15 @@ export default function ScreeningPage() {
   const [batch, setBatch] = useState<BatchState | null>(null);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Identifica el contexto empresa+vacante vigente: al cambiar, cualquier lote
+  // en curso queda invalidado y sus resultados se descartan (aislamiento multi-tenant).
+  const runRef = useRef(0);
   const busy = batch !== null;
 
   // Resetea la lista al cambiar de empresa o vacante (aislamiento por tenant)
   useEffect(() => {
+    runRef.current += 1;
+    setBatch(null);
     setList(CANDIDATES.filter((c) => c.tenantId === tenant.id && c.jobId === jobId));
     setTab('ranked');
   }, [tenant.id, jobId]);
@@ -57,7 +63,8 @@ export default function ScreeningPage() {
   // Núcleo del pipeline: parsea + puntúa una lista de nombres de archivo,
   // actualizando la barra de progreso por cada uno (lote en vivo).
   async function processNames(fileNames: string[]) {
-    if (!job || fileNames.length === 0) return;
+    if (!job || busy || fileNames.length === 0) return;
+    const run = runRef.current; // si cambia empresa/vacante, este lote queda huérfano
     const mustHaves = job.filters.filter((f) => f.polarity === 'positive').map((f) => f.criterion);
     const negatives = job.filters.filter((f) => f.polarity === 'negative').map((f) => f.criterion);
 
@@ -68,6 +75,7 @@ export default function ScreeningPage() {
       setBatch({ total: fileNames.length, done: i, current: file });
 
       const res = await providers.cvParser.parse(file);
+      if (runRef.current !== run) return; // lote viejo: descartar, no contaminar el tenant nuevo
       if (!res.ok || !res.parsed) {
         setList((prev) => [...prev, makeErrorCandidate(file, job, res.errorReason)]);
         continue;
@@ -79,12 +87,14 @@ export default function ScreeningPage() {
         negatives,
         parsed: res.parsed,
       });
+      if (runRef.current !== run) return;
       setList((prev) => [...prev, makeScoredCandidate(file, job, res.parsed!, score)]);
     }
 
     setBatch({ total: fileNames.length, done: fileNames.length, current: '' });
     // Deja ver el 100% un instante antes de cerrar la barra.
     await new Promise((r) => setTimeout(r, 500));
+    if (runRef.current !== run) return;
     setBatch(null);
     setTab('ranked');
   }
@@ -136,7 +146,9 @@ export default function ScreeningPage() {
             <select
               value={jobId}
               onChange={(e) => setJobId(e.target.value)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              disabled={busy}
+              title={busy ? 'Espera a que termine el lote en proceso' : undefined}
+              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>
@@ -394,7 +406,7 @@ function makeScoredCandidate(
 ): Candidate {
   const { firstName, lastName } = nameFromFile(file);
   return {
-    id: crypto.randomUUID(),
+    id: newId('cand'),
     tenantId: job.tenantId,
     jobId: job.id,
     firstName,
@@ -418,7 +430,7 @@ function makeScoredCandidate(
 function makeErrorCandidate(file: string, job: Job, reason?: string): Candidate {
   const { firstName, lastName } = nameFromFile(file);
   return {
-    id: crypto.randomUUID(),
+    id: newId('cand'),
     tenantId: job.tenantId,
     jobId: job.id,
     firstName,

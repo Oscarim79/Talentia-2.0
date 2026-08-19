@@ -27,6 +27,13 @@ export function hashString(s: string): number {
   return Math.abs(h);
 }
 
+let idCounter = 0;
+/** IDs únicos sin `crypto.randomUUID` (no existe en contextos no seguros, ej. demo abierta por IP desde tablet/celular). */
+export function newId(prefix = 'id'): string {
+  idCounter += 1;
+  return `${prefix}_${Date.now().toString(36)}_${idCounter.toString(36)}`;
+}
+
 /** Convierte un texto a slug url-safe (acentos fuera, espacios → guiones). */
 export function slugify(s: string): string {
   return s
