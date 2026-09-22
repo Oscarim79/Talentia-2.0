@@ -149,6 +149,15 @@ export const HELP_FAQ: FaqEntry[] = [
       'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que configures (metas, equipo, módulos) se guarda en este navegador. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
   },
   {
+    id: 'comentarios',
+    question: '¿Cómo envío mis comentarios o dudas a Oscar?',
+    keywords: ['comentario', 'comentarios', 'sugerencia', 'enviar', 'oscar', 'retroalimentacion', 'retroalimentación', 'feedback', 'ronda', 'prueba', 'guion', 'guión'],
+    answer:
+      'Todo lo que preguntas aquí queda guardado. Ve a Configuración → "Preguntas al chat de ayuda" y pulsa "Enviar a Oscar": se abre un correo con tus preguntas y espacio para tus respuestas. El guion de la ronda de prueba (qué probar cada día) está en la pestaña Guía del botón de ayuda.',
+    route: '/ronda-de-prueba',
+    routeLabel: 'Ver la ronda de prueba',
+  },
+  {
     id: 'tour',
     question: '¿Cómo vuelvo a ver el tour o el video?',
     keywords: ['tour', 'video', 'guia', 'guía', 'tutorial', 'ayuda', 'aprender', 'capacitacion', 'capacitación'],

@@ -2,9 +2,19 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 export type HelpTab = 'chat' | 'guide' | 'video';
 
+/** Pregunta hecha al chat de ayuda (se registra para mejorar la guía). */
+export interface HelpQuestion {
+  id: string;
+  at: string;
+  route: string;
+  question: string;
+  answered: boolean;
+}
+
 interface HelpState {
   welcomeSeen: boolean;
   tourDone: boolean;
+  questions: HelpQuestion[];
 }
 
 interface HelpCtxValue {
@@ -20,16 +30,21 @@ interface HelpCtxValue {
   showWelcome: boolean;
   dismissWelcome: () => void;
   tourDone: boolean;
+  questions: HelpQuestion[];
+  logQuestion: (q: Omit<HelpQuestion, 'id' | 'at'>) => void;
+  clearQuestions: () => void;
 }
 
 const STORAGE_KEY = 'talentia.help.v1';
 
+const EMPTY: HelpState = { welcomeSeen: false, tourDone: false, questions: [] };
+
 function load(): HelpState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? { welcomeSeen: false, tourDone: false, ...JSON.parse(raw) } : { welcomeSeen: false, tourDone: false };
+    return raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY;
   } catch {
-    return { welcomeSeen: false, tourDone: false };
+    return EMPTY;
   }
 }
 
@@ -78,6 +93,13 @@ export function HelpProvider({ children }: { children: ReactNode }) {
       showWelcome: !state.welcomeSeen && tourStep === null,
       dismissWelcome: () => setState((s) => ({ ...s, welcomeSeen: true })),
       tourDone: state.tourDone,
+      questions: state.questions,
+      logQuestion: (q) =>
+        setState((s) => ({
+          ...s,
+          questions: [{ id: `q_${Date.now().toString(36)}`, at: new Date().toISOString(), ...q }, ...s.questions].slice(0, 200),
+        })),
+      clearQuestions: () => setState((s) => ({ ...s, questions: [] })),
     }),
     [panelOpen, tab, openPanel, closePanel, tourStep, startTour, endTour, state],
   );

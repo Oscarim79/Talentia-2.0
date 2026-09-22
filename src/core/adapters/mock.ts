@@ -304,13 +304,14 @@ export async function mockHelpReply({ question, route }: HelpReplyInput): Promis
     return delay(
       {
         answer:
-          'No encontré eso en la guía. Prueba con otras palabras (por ejemplo "subir CVs", "responder", "metas", "vacante") o elige una de estas preguntas.',
+          'No encontré eso en la guía. Prueba con otras palabras (por ejemplo "subir CVs", "responder", "metas", "vacante") o elige una de estas preguntas. Tu pregunta quedó registrada para mejorar la ayuda.',
+        matched: false,
         related: here.length ? here : HELP_FAQ.slice(0, 3).map((f) => f.question),
       },
       500,
     );
   }
-  return delay({ answer: best.f.answer, route: best.f.route, routeLabel: best.f.routeLabel, related }, 700);
+  return delay({ answer: best.f.answer, matched: true, route: best.f.route, routeLabel: best.f.routeLabel, related }, 700);
 }
 
 // ---------- WhatsApp ----------

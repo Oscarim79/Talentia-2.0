@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw } from 'lucide-react';
+import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList } from 'lucide-react';
+import { useHelp } from '../help/HelpContext';
+import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
+import { downloadTextFile } from '../../lib/utils';
 import { useTenant } from '../../context/TenantContext';
 import { useSettings } from '../../context/SettingsContext';
 import { MODULES } from '../../core/modules';
@@ -16,6 +19,37 @@ export default function SettingsPage() {
   const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
   const [newName, setNewName] = useState('');
   const [newTitle, setNewTitle] = useState('');
+  const { questions, clearQuestions } = useHelp();
+  const [copied, setCopied] = useState(false);
+
+  const questionsText = () => {
+    const lines = questions
+      .slice()
+      .reverse()
+      .map((q) => `${new Date(q.at).toLocaleString('es-GT')} · ${q.route} · ${q.answered ? 'respondida' : 'SIN RESPUESTA'}\n  ${q.question}`);
+    return `Preguntas al chat de ayuda de TALENTIA — ${tenant.name}\n\n${lines.join('\n\n')}\n\nMis respuestas a las 7 preguntas de la ronda de prueba:\n1.\n2.\n3.\n4.\n5.\n6.\n7.\n`;
+  };
+  const mailto = () =>
+    `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('TALENTIA — preguntas y comentarios de la ronda de prueba')}&body=${encodeURIComponent(questionsText())}`;
+  async function copyQuestions() {
+    try {
+      await navigator.clipboard.writeText(questionsText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      downloadTextFile('preguntas-talentia.txt', questionsText());
+    }
+  }
+  function resetDemo() {
+    if (!window.confirm('Se borrarán metas, equipo agregado, módulos, preguntas y el estado del tour en este navegador. ¿Restablecer la demo?')) return;
+    try {
+      localStorage.removeItem('talentia.settings.v1');
+      localStorage.removeItem('talentia.help.v1');
+    } catch {
+      /* sin almacenamiento */
+    }
+    window.location.href = import.meta.env.BASE_URL;
+  }
   const slaIsDefault = (Object.keys(DEFAULT_SLA) as (keyof SlaGoals)[]).every((k) => settings.sla[k] === DEFAULT_SLA[k]);
 
   function submitMember() {
@@ -148,6 +182,53 @@ export default function SettingsPage() {
         </ul>
       </Card>
 
+      {/* Preguntas al chat de ayuda */}
+      <Card className="mb-6 overflow-hidden">
+        <div className="flex flex-wrap items-center gap-2 border-b border-stone-100 px-6 py-4">
+          <MessageCircleQuestion className="h-4 w-4 text-brand-600" />
+          <h2 className="text-sm font-bold text-stone-700">Preguntas al chat de ayuda</h2>
+          <Badge variant={questions.some((q) => !q.answered) ? 'amber' : 'stone'}>
+            {questions.length} · {questions.filter((q) => !q.answered).length} sin respuesta
+          </Badge>
+          <span className="ml-auto flex flex-wrap items-center gap-1.5">
+            <a
+              href={mailto()}
+              className={cn('inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700', questions.length === 0 && 'pointer-events-none opacity-40')}
+            >
+              <Send className="h-4 w-4" /> Enviar a Oscar
+            </a>
+            <Button variant="secondary" onClick={copyQuestions} disabled={questions.length === 0}>
+              <Copy className="h-4 w-4" /> {copied ? 'Copiado' : 'Copiar'}
+            </Button>
+            <Button variant="secondary" onClick={() => downloadTextFile('preguntas-talentia.txt', questionsText())} disabled={questions.length === 0}>
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" onClick={clearQuestions} disabled={questions.length === 0}>
+              <Eraser className="h-4 w-4" /> Borrar
+            </Button>
+          </span>
+        </div>
+        {questions.length === 0 ? (
+          <p className="px-6 py-6 text-sm text-stone-400">Aún no has hecho preguntas. Todo lo que preguntes en el botón Ayuda aparecerá aquí para mejorar la guía.</p>
+        ) : (
+          <ul className="max-h-72 divide-y divide-stone-100 overflow-y-auto">
+            {questions.map((q) => (
+              <li key={q.id} className="flex flex-wrap items-center gap-3 px-6 py-2.5 text-sm">
+                <Badge variant={q.answered ? 'green' : 'red'}>{q.answered ? 'Respondida' : 'Sin respuesta'}</Badge>
+                <span className="text-stone-800">{q.question}</span>
+                <span className="ml-auto text-[11px] text-stone-400">{q.route} · {new Date(q.at).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {TEAM_PILOT && (
+          <p className="border-t border-stone-100 px-6 py-3 text-[11px] text-stone-400">
+            Al terminar la ronda de prueba, "Enviar a Oscar" abre un correo con estas preguntas y espacio para tus respuestas.{' '}
+            <Link to="/ronda-de-prueba" className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline"><ClipboardList className="h-3 w-3" /> Ver el guion</Link>
+          </p>
+        )}
+      </Card>
+
       <Card className="p-5">
         <div className="flex items-start gap-3">
           <div className="rounded-lg bg-stone-100 p-2 text-stone-500">
@@ -161,6 +242,9 @@ export default function SettingsPage() {
               KPIs de Desempeño y Cultura 360°). Aquí solo se decide quién está en el equipo, qué tan rápido
               debe atender cada etapa y qué módulos opcionales están encendidos.
             </p>
+            <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={resetDemo}>
+              <RotateCcw className="h-4 w-4" /> Restablecer la demo en este navegador
+            </Button>
           </div>
         </div>
       </Card>

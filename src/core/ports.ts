@@ -77,6 +77,8 @@ export interface HelpReplyInput {
 
 export interface HelpReplyResult {
   answer: string;
+  /** false cuando no se encontró respuesta en la guía (se registra para mejorarla). */
+  matched: boolean;
   /** Sugerencia de a dónde ir para hacerlo. */
   route?: string;
   routeLabel?: string;

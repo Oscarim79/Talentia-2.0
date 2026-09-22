@@ -13,7 +13,7 @@ import {
   MailCheck,
   X,
 } from 'lucide-react';
-import { APP } from '../../core/config';
+import { APP, TEAM_PILOT } from '../../core/config';
 import { cn } from '../../lib/utils';
 import { useSettings } from '../../context/SettingsContext';
 import type { ModuleId } from '../../core/modules';
@@ -25,6 +25,8 @@ type NavItem = {
   end?: boolean;
   /** Solo se muestra si el módulo opcional está activo para la empresa. */
   module?: ModuleId;
+  /** Oculto mientras el equipo de RR.HH. prueba la app (consola del SaaS). */
+  hideInPilot?: boolean;
 };
 
 const groups: { label: string | null; items: NavItem[] }[] = [
@@ -54,7 +56,7 @@ const groups: { label: string | null; items: NavItem[] }[] = [
     items: [
       { to: '/metricas', label: 'Métricas RR.HH.', icon: TrendingUp },
       { to: '/configuracion', label: 'Configuración', icon: Settings },
-      { to: '/admin', label: 'Admin', icon: Shield },
+      { to: '/admin', label: 'Admin', icon: Shield, hideInPilot: true },
     ],
   },
 ];
@@ -63,7 +65,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   const { isModuleEnabled } = useSettings();
   const visibleGroups = groups.map((g) => ({
     ...g,
-    items: g.items.filter((it) => !it.module || isModuleEnabled(it.module)),
+    items: g.items.filter((it) => (!it.module || isModuleEnabled(it.module)) && !(TEAM_PILOT && it.hideInPilot)),
   }));
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col bg-brand-950 text-brand-100">
