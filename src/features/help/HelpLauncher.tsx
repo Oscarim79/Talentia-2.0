@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check } from 'lucide-react';
+import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check, ClipboardList } from 'lucide-react';
+import { TEAM_PILOT } from '../../core/config';
 import { useHelp } from './HelpContext';
 import { TOUR_STEPS, VIDEO_CHAPTERS } from './tourSteps';
 import { HELP_FAQ } from '../../data/helpFaq';
@@ -78,7 +79,7 @@ function TabBtn({ active, onClick, icon: Icon, label }: { active: boolean; onCli
 
 function ChatTab({ route }: { route: string }) {
   const navigate = useNavigate();
-  const { closePanel } = useHelp();
+  const { closePanel, logQuestion } = useHelp();
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
@@ -107,6 +108,7 @@ function ChatTab({ route }: { route: string }) {
     const res = await providers.llm.helpReply({ question: text, route });
     if (gen !== genRef.current) return;
     setThinking(false);
+    logQuestion({ question: text, route, answered: res.matched });
     setMsgs((m) => [...m, { role: 'bot', text: res.answer, route: res.route, routeLabel: res.routeLabel, related: res.related }]);
   }
 
@@ -178,7 +180,7 @@ function ChatTab({ route }: { route: string }) {
           <Send className="h-4 w-4" />
         </Button>
       </div>
-      <p className="border-t border-stone-100 px-4 py-2 text-[10px] text-stone-400">Demo: respuestas desde la guía de uso. En producción responde la IA con la guía como contexto.</p>
+      <p className="border-t border-stone-100 px-4 py-2 text-[10px] text-stone-400">Tus preguntas se guardan en Configuración → Preguntas al chat, para mejorar la ayuda. Demo: responde desde la guía de uso; en producción, la IA con la guía como contexto.</p>
     </>
   );
 }
@@ -204,6 +206,21 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           <Compass className="h-4 w-4" /> {done ? 'Repetir el tour' : 'Iniciar el tour'}
         </Button>
       </div>
+      {TEAM_PILOT && (
+        <button
+          onClick={() => {
+            navigate('/ronda-de-prueba');
+            closePanel();
+          }}
+          className="mb-4 flex w-full items-center gap-3 rounded-xl border border-gold-300 bg-gold-100/60 p-3 text-left hover:bg-gold-100"
+        >
+          <ClipboardList className="h-5 w-5 shrink-0 text-gold-700" />
+          <span>
+            <span className="block text-sm font-bold text-stone-800">Ronda de prueba del equipo</span>
+            <span className="block text-xs text-stone-600">El guion de la semana: qué probar cada día y cómo enviar tus comentarios.</span>
+          </span>
+        </button>
+      )}
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos</p>
       <ol className="space-y-1">
         {TOUR_STEPS.map((s, i) => (

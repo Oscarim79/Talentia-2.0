@@ -1,6 +1,7 @@
 import { ChevronDown, Menu, Sparkles } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { Badge } from '../ui/primitives';
+import { TEAM_PILOT } from '../../core/config';
 
 export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { tenant, plan, tenants, setTenantId } = useTenant();
@@ -20,6 +21,11 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
         <span className="hidden font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-stone-400 sm:inline">
           Empresa
         </span>
+        {TEAM_PILOT ? (
+          <span className="rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm font-semibold text-stone-800">
+            {tenant.logoEmoji} {tenant.name}
+          </span>
+        ) : (
         <div className="relative">
           <select
             value={tenant.id}
@@ -34,6 +40,7 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
           </select>
           <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
         </div>
+        )}
         <span className="hidden truncate text-xs text-stone-400 md:inline">{tenant.industry}</span>
       </div>
 

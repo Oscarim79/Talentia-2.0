@@ -14,3 +14,15 @@ export const APP = {
  * cambia — solo se intercambian los adaptadores en core/providers.ts.
  */
 export const DEMO_MODE = true;
+
+/**
+ * TEAM_PILOT: la app queda lista para que el equipo de RR.HH. la pruebe.
+ * - El selector de empresa se oculta (siempre Americana 2000).
+ * - La consola "Admin" del SaaS sale del menú (no es para RR.HH.).
+ * - El guion de la ronda de prueba queda disponible en /ronda-de-prueba.
+ * Poner en false para volver a la vista multi-empresa completa (demo al CEO / Oscar).
+ */
+export const TEAM_PILOT = true;
+
+/** Correo al que el equipo envía sus preguntas y comentarios de la ronda de prueba. */
+export const FEEDBACK_EMAIL = 'me@oscarimorales.com';
