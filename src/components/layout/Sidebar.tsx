@@ -50,9 +50,9 @@ const groups: { label: string | null; items: NavItem[] }[] = [
     ],
   },
   {
-    label: 'Negocio',
+    label: 'Gestión',
     items: [
-      { to: '/metricas', label: 'Métricas · ROI', icon: TrendingUp },
+      { to: '/metricas', label: 'Métricas RR.HH.', icon: TrendingUp },
       { to: '/configuracion', label: 'Configuración', icon: Settings },
       { to: '/admin', label: 'Admin', icon: Shield },
     ],

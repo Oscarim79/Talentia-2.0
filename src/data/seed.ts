@@ -29,6 +29,9 @@ export const TENANTS: Tenant[] = [
 
 export const USERS: User[] = [
   { id: 'u_oscar', tenantId: 't_americana', name: 'Oscar Morales', email: 'me@oscarimorales.com', role: 'owner' },
+  { id: 'u_karla', tenantId: 't_americana', name: 'Karla Méndez', email: 'karla@americana2000.gt', role: 'recruiter' },
+  { id: 'u_luis', tenantId: 't_americana', name: 'Luis Ortiz', email: 'luis@americana2000.gt', role: 'recruiter' },
+  { id: 'u_mayra', tenantId: 't_americana', name: 'Mayra Chávez', email: 'mayra@americana2000.gt', role: 'recruiter' },
   { id: 'u_contacta', tenantId: 't_contacta', name: 'Lucía Reyes', email: 'lucia@contacta.gt', role: 'owner' },
   { id: 'u_nova', tenantId: 't_novapay', name: 'Diego Paz', email: 'diego@novapay.io', role: 'owner' },
 ];
@@ -77,7 +80,7 @@ function c(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastNam
   } as Candidate;
 }
 
-export const CANDIDATES: Candidate[] = [
+const RAW_CANDIDATES: Candidate[] = [
   c({ id: 'cand_01', firstName: 'María', lastName: 'González', screeningScore: 94, matchPercent: 96, stage: 'interview',
     justification: 'Cumple 3/3 requisitos clave con 6 años en ventas de motos y manejo de crédito. Perfil fuerte, recomendado para entrevista.',
     parsed: { skills: ['Ventas', 'Crédito', 'Atención al cliente', 'CRM'], totalYears: 6, education: 'Diversificado', experience: [{ company: 'MultiMotos', role: 'Asesor de Ventas', years: 4 }] },
@@ -154,7 +157,59 @@ export const CANDIDATES: Candidate[] = [
   // --- Cola de errores (PDFs ilegibles) ---
   c({ id: 'cand_08', firstName: 'Roberto', lastName: 'Díaz', screeningStatus: 'error', errorReason: 'illegible_pdf', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Roberto_Diaz_scan.pdf' }),
   c({ id: 'cand_09', firstName: 'Gabriela', lastName: 'Solís', screeningStatus: 'error', errorReason: 'password_protected', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Gabriela_foto_cv.pdf' }),
+
+  // --- Cajero de Sucursal (2 plazas): pipeline de otro reclutador, alimenta las métricas de RR.HH. ---
+  k({ id: 'cand_20', firstName: 'Diana', lastName: 'Aguilar', screeningScore: 92, matchPercent: 94, stage: 'hired', hiredAt: '2026-06-18', appliedAt: '2026-06-09', ownerId: 'u_mayra', timeline: { screened: '2026-06-09', replied: '2026-06-09', interviewed: '2026-06-11', offered: '2026-06-15' }, skills: ['Caja', 'Arqueos', 'Atención al cliente'], years: 4, company: 'Banrural', role: 'Cajera', caja: true }),
+  k({ id: 'cand_21', firstName: 'Kevin', lastName: 'Barrios', screeningScore: 87, matchPercent: 89, stage: 'offer', appliedAt: '2026-06-10', ownerId: 'u_mayra', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13', offered: '2026-06-17' }, skills: ['Caja', 'Excel', 'Atención al cliente'], years: 3, company: 'Pollo Campero', role: 'Cajero', caja: true }),
+  k({ id: 'cand_22', firstName: 'Fernanda', lastName: 'Ruiz', screeningScore: 81, matchPercent: 83, stage: 'interview', appliedAt: '2026-06-11', ownerId: 'u_luis', timeline: { screened: '2026-06-13', replied: '2026-06-14', interviewed: '2026-06-17' }, skills: ['Caja', 'Cobros'], years: 2, company: 'Farmacias Galeno', role: 'Cajera', caja: true }),
+  k({ id: 'cand_23', firstName: 'Byron', lastName: 'Tzul', screeningScore: 78, matchPercent: 80, stage: 'interview', appliedAt: '2026-06-12', ownerId: 'u_karla', timeline: { screened: '2026-06-12', replied: '2026-06-12', interviewed: '2026-06-15' }, skills: ['Caja', 'Inventarios'], years: 3, company: 'Despensa Familiar', role: 'Cajero', caja: true }),
+  k({ id: 'cand_24', firstName: 'Paola', lastName: 'Marroquín', screeningScore: 74, matchPercent: 76, stage: 'screening', appliedAt: '2026-06-13', ownerId: 'u_luis', timeline: { screened: '2026-06-16', replied: '2026-06-18' }, skills: ['Caja', 'Atención al cliente'], years: 1, company: 'Elektra', role: 'Cajera', caja: true }),
+  k({ id: 'cand_25', firstName: 'Josué', lastName: 'Ixcoy', screeningScore: 69, matchPercent: 70, stage: 'screening', appliedAt: '2026-06-14', ownerId: 'u_luis', timeline: { screened: '2026-06-17' }, skills: ['Caja'], years: 1, company: 'Tienda La Bendición', role: 'Dependiente', caja: true }),
+  k({ id: 'cand_26', firstName: 'Melissa', lastName: 'Orellana', screeningScore: 66, matchPercent: 68, stage: 'screening', appliedAt: '2026-06-15', ownerId: 'u_karla', timeline: { screened: '2026-06-15' }, skills: ['Atención al cliente', 'Ventas'], years: 2, company: 'Claro', role: 'Asesora', caja: false }),
+  k({ id: 'cand_27', firstName: 'Rodrigo', lastName: 'Cifuentes', screeningScore: 72, matchPercent: 73, stage: 'applied', appliedAt: '2026-06-16', ownerId: 'u_mayra', timeline: {}, skills: ['Caja', 'Excel'], years: 2, company: 'Cemaco', role: 'Cajero', caja: true }),
+  k({ id: 'cand_28', firstName: 'Alejandra', lastName: 'Pineda', screeningScore: 61, matchPercent: 63, stage: 'applied', appliedAt: '2026-06-17', ownerId: 'u_mayra', timeline: {}, skills: ['Atención al cliente'], years: 1, company: 'McDonald\'s', role: 'Crew', caja: false }),
+  k({ id: 'cand_29', firstName: 'Estuardo', lastName: 'Monroy', screeningScore: 55, matchPercent: 57, stage: 'applied', appliedAt: '2026-06-19', ownerId: 'u_karla', timeline: {}, skills: ['Bodega'], years: 3, company: 'Walmart GT', role: 'Auxiliar de bodega', caja: false }),
+  k({ id: 'cand_30', firstName: 'Wendy', lastName: 'Sagastume', screeningScore: 44, matchPercent: 45, stage: 'rejected', appliedAt: '2026-06-10', ownerId: 'u_karla', timeline: { screened: '2026-06-11', rejected: '2026-06-11' }, skills: ['Limpieza'], years: 2, company: 'Hotel Barceló', role: 'Camarera', caja: false }),
+  k({ id: 'cand_31', firstName: 'Héctor', lastName: 'Pacheco', screeningScore: 79, matchPercent: 80, stage: 'rejected', appliedAt: '2026-06-11', ownerId: 'u_luis', timeline: { screened: '2026-06-12', replied: '2026-06-13', interviewed: '2026-06-16', rejected: '2026-06-19' }, skills: ['Caja', 'Cobros'], years: 5, company: 'Banco Industrial', role: 'Receptor pagador', caja: true }),
 ];
+
+/** Candidato para Cajero de Sucursal, con evidencia sobre el criterio "Caja". */
+function k(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastName'> & { skills: string[]; years: number; company: string; role: string; caja: boolean }): Candidate {
+  const { skills, years, company, role, caja, ...rest } = p;
+  return c({
+    jobId: 'job_cajero', source: hashString(p.id) % 2 ? 'Computrabajo' : 'Referido',
+    justification: caja
+      ? `Cumple el requisito de caja con ${years} año${years === 1 ? '' : 's'} de experiencia. Perfil apto para sucursal.`
+      : `Sin experiencia directa en caja (${years} año${years === 1 ? '' : 's'} en otra función). Perfil parcial.`,
+    parsed: { skills, totalYears: years, education: 'Diversificado', experience: [{ company, role, years }] },
+    evidence: [{ criterion: 'Caja', matched: caja, quote: caja ? `"${role} en ${company} — ${years} año${years === 1 ? '' : 's'}"` : '— sin evidencia en el CV —' }],
+    ...rest,
+  });
+}
+
+/**
+ * "Hoy" del set de demostración. Los datos están fechados en junio de 2026; las
+ * métricas de espera (días sin atender) se calculan contra esta fecha y no contra
+ * el reloj real, para que la demo se vea igual cualquier día que se presente.
+ */
+export const DEMO_NOW = '2026-06-20';
+
+/** Dueño y línea de tiempo de RR.HH. para los candidatos de Asesor de Ventas. */
+const HR_TRACK: Record<string, Pick<Candidate, 'ownerId' | 'timeline' | 'appliedAt'>> = {
+  cand_01: { ownerId: 'u_karla', appliedAt: '2026-06-10', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13' } },
+  cand_02: { ownerId: 'u_karla', appliedAt: '2026-06-12', timeline: { screened: '2026-06-12', replied: '2026-06-13' } },
+  cand_03: { ownerId: 'u_luis', appliedAt: '2026-06-12', timeline: { screened: '2026-06-14' } },
+  cand_04: { ownerId: 'u_luis', appliedAt: '2026-06-12', timeline: { screened: '2026-06-15' } },
+  cand_05: { ownerId: 'u_mayra', appliedAt: '2026-06-12', timeline: {} },
+  cand_06: { ownerId: 'u_mayra', appliedAt: '2026-06-11', timeline: { screened: '2026-06-11', rejected: '2026-06-11' } },
+  cand_07: { ownerId: 'u_mayra', appliedAt: '2026-06-15', timeline: {} },
+  cand_10: { ownerId: 'u_karla', appliedAt: '2026-06-03', timeline: { screened: '2026-06-03', replied: '2026-06-03', interviewed: '2026-06-05', offered: '2026-06-09' } },
+  cand_11: { ownerId: 'u_luis', appliedAt: '2026-06-05', timeline: { screened: '2026-06-06', replied: '2026-06-06', interviewed: '2026-06-10', offered: '2026-06-16' } },
+  cand_08: { ownerId: 'u_karla', appliedAt: '2026-06-16', timeline: {} },
+  cand_09: { ownerId: 'u_luis', appliedAt: '2026-06-17', timeline: {} },
+};
+
+export const CANDIDATES: Candidate[] = RAW_CANDIDATES.map((cand) => ({ ...cand, ...HR_TRACK[cand.id] }));
 
 // ---------------- Módulo Talento: 9-Box (la joya, datos demo) ----------------
 const CULTURE_KEYS = [

@@ -118,10 +118,27 @@ export interface EvidenceMatch {
   quote: string;
 }
 
+/** Fechas en que RR.HH. movió al candidato de etapa (alimentan las métricas de tiempos). */
+export interface CandidateTimeline {
+  /** RR.HH. revisó el CV (con el resultado de la IA) y lo pasó a screening. */
+  screened?: string;
+  /** Se le envió la respuesta para agendar entrevista. */
+  replied?: string;
+  /** Entrevista realizada. */
+  interviewed?: string;
+  /** Oferta enviada. */
+  offered?: string;
+  /** Descartado. */
+  rejected?: string;
+}
+
 export interface Candidate {
   id: string;
   tenantId: string;
   jobId: string;
+  /** Usuario de RR.HH. responsable del candidato. */
+  ownerId?: string;
+  timeline?: CandidateTimeline;
   firstName: string;
   lastName: string;
   email: string;
