@@ -51,3 +51,8 @@ Documento de arquitectura completo: [`docs/ARQUITECTURA_TALENTIA_SAAS.md`](docs/
 - **F2:** Entrevistas IA por texto/WhatsApp + agendamiento + export XML LinkedIn.
 - **F3:** Voz + Video + monitoreo en tiempo real + métricas completas.
 - **F4:** Consola super-admin, tutoriales, avatares, onboarding y contratos automáticos.
+
+
+## Demo publicada (GitHub Pages)
+
+Cada push a `main` publica la demo en **https://oscarim79.github.io/Talentia-2.0/** mediante `.github/workflows/deploy-pages.yml` (requiere repo público y Pages con origen "GitHub Actions"). El build de Pages usa `GITHUB_PAGES=true` para servir bajo `/Talentia-2.0/`; en local la base sigue siendo `/`.
