@@ -14,10 +14,13 @@ import type {
   GrowthPlanInput,
   GrowthPlanResult,
   MessagingPort,
+  HelpReplyInput,
+  HelpReplyResult,
   VoicePort,
   BillingPort,
 } from '../ports';
 import type { ParsedCv } from '../../types';
+import { HELP_FAQ } from '../../data/helpFaq';
 import { hashString } from '../../lib/utils';
 
 const SKILLS = [
@@ -278,7 +281,37 @@ export const mockLlm: LlmPort = {
       `(${focusVal?.toFixed(1) ?? '—'}/5). El enfoque de este periodo es ${h.habit}: ${COVEY_RATIONALE[key]}`;
     return delay({ habit: h.habit, focusArea, summary, actions: h.actions, courses: h.courses }, 900);
   },
+  helpReply: mockHelpReply,
 };
+
+// ---------- Ayuda en la app (búsqueda por palabras clave sobre la FAQ) ----------
+function normalize(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+export async function mockHelpReply({ question, route }: HelpReplyInput): Promise<HelpReplyResult> {
+  const q = normalize(question);
+  const scored = HELP_FAQ.map((f) => {
+    let score = 0;
+    for (const k of f.keywords) if (q.includes(normalize(k))) score += k.length > 6 ? 3 : 2;
+    if (score > 0 && f.route && f.route === route) score += 1; // desempata a favor de la pantalla actual
+    return { f, score };
+  }).sort((a, b) => b.score - a.score);
+  const best = scored[0];
+  const related = scored.slice(1, 4).filter((x) => x.score > 0).map((x) => x.f.question);
+  if (!best || best.score === 0) {
+    const here = HELP_FAQ.filter((f) => f.route === route).slice(0, 3).map((f) => f.question);
+    return delay(
+      {
+        answer:
+          'No encontré eso en la guía. Prueba con otras palabras (por ejemplo "subir CVs", "responder", "metas", "vacante") o elige una de estas preguntas.',
+        related: here.length ? here : HELP_FAQ.slice(0, 3).map((f) => f.question),
+      },
+      500,
+    );
+  }
+  return delay({ answer: best.f.answer, route: best.f.route, routeLabel: best.f.routeLabel, related }, 700);
+}
 
 // ---------- WhatsApp ----------
 export const mockMessaging: MessagingPort = {

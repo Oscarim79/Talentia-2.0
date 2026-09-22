@@ -2,11 +2,16 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { HelpProvider } from '../../features/help/HelpContext';
+import { HelpLauncher } from '../../features/help/HelpLauncher';
+import { Tour } from '../../features/help/Tour';
+import { WelcomeModal } from '../../features/help/WelcomeModal';
 
 export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
+    <HelpProvider>
     <div className="flex h-screen overflow-hidden bg-canvas">
       {/* Sidebar fija en escritorio */}
       <div className="hidden lg:block">
@@ -32,6 +37,10 @@ export function AppShell() {
           <Outlet />
         </main>
       </div>
+      <HelpLauncher />
+      <Tour />
+      <WelcomeModal />
     </div>
+    </HelpProvider>
   );
 }

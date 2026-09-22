@@ -25,7 +25,7 @@ export default function CandidatesPage() {
           Sin candidatos para esta empresa todavía.
         </Card>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 overflow-x-auto pb-4" data-tour="candidates:board">
           {COLUMNS.map((col) => {
             const items = cands.filter((c) => c.stage === col.key);
             return (

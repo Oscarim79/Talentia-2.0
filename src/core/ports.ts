@@ -68,6 +68,22 @@ export interface GrowthPlanResult {
   courses: string[]; // cursos recomendados
 }
 
+// ---- Ayuda en la app (chat de soporte) ----
+export interface HelpReplyInput {
+  question: string;
+  /** Ruta actual, para contextualizar la respuesta. */
+  route: string;
+}
+
+export interface HelpReplyResult {
+  answer: string;
+  /** Sugerencia de a dónde ir para hacerlo. */
+  route?: string;
+  routeLabel?: string;
+  /** Preguntas relacionadas que el usuario puede tocar. */
+  related: string[];
+}
+
 export interface LlmPort {
   generateJobDescription(input: {
     title: string;
@@ -78,6 +94,7 @@ export interface LlmPort {
   scoreCandidate(input: ScoreInput): Promise<ScoreResult>;
   interviewReply(input: InterviewReplyInput): Promise<InterviewReplyResult>;
   generateGrowthPlan(input: GrowthPlanInput): Promise<GrowthPlanResult>;
+  helpReply(input: HelpReplyInput): Promise<HelpReplyResult>;
 }
 
 // ---- Mensajería: WhatsApp (Twilio / Meta) y correo (Resend / SES) en producción ----

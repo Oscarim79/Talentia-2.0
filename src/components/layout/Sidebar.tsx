@@ -104,6 +104,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                   key={to}
                   to={to}
                   end={end}
+                  data-tour={`nav:${to}`}
                   onClick={onClose}
                   className={({ isActive }) =>
                     cn(

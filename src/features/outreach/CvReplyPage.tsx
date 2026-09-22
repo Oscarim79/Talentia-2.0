@@ -206,7 +206,7 @@ export default function CvReplyPage() {
       />
 
       {/* Filtros */}
-      <Card className="mb-5 p-5">
+      <Card className="mb-5 p-5" dataTour="reply:filters">
         <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
           <Filter className="h-3.5 w-3.5" /> Filtro de CVs
         </div>
@@ -274,7 +274,7 @@ export default function CvReplyPage() {
                 {filtered.length} {filtered.length === 1 ? 'CV cumple' : 'CVs cumplen'} el filtro
               </h2>
             </div>
-            <Button onClick={() => sendTo(selectedCands)} disabled={sending || pendingSelected === 0}>
+            <Button onClick={() => sendTo(selectedCands)} disabled={sending || pendingSelected === 0} dataTour="reply:send">
               <Send className="h-4 w-4" />
               {sending ? 'Enviando…' : `Responder a ${pendingSelected} seleccionado${pendingSelected === 1 ? '' : 's'}`}
             </Button>

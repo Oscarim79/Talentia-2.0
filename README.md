@@ -23,6 +23,7 @@ npm run build    # build de producción
 - **Candidatos** — pipeline por etapas.
 - **Respuestas a CVs** — filtra los CVs puntuados y responde automáticamente (WhatsApp/correo) con una plantilla estándar para agendar la entrevista; regla automática por score y bandeja de envíos.
 - **Entrevistas IA** *(módulo opcional, apagado por defecto; se activa en Configuración)* — agente conversacional (transcripción, scoring, detección de discrepancias CV vs. respuestas).
+- **Ayuda integrada** — bienvenida en la primera visita, tour guiado de 9 pasos por las pantallas, video de recorrido con subtítulos y capítulos, y chat de ayuda (botón flotante) que explica cómo hacer cada cosa y lleva a la pantalla correcta.
 - **Configuración** — equipo de RR.HH. (agregar/quitar personas), metas de servicio editables (días por etapa) y catálogo fijo de módulos opcionales (se encienden o apagan).
 - **Talento · 9-Box** — la "joya" heredada de Americana 2000: matriz 9-Box (1–5) + Cultura 360° de 10 dimensiones.
 - **Admin** — planes, créditos y consumo multi-tenant.

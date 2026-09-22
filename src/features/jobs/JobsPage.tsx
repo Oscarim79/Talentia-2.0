@@ -34,7 +34,7 @@ export default function JobsPage() {
         title="Vacantes"
         subtitle="Crea vacantes con IA: descripción, preguntas y link de postulación."
         actions={
-          <Button onClick={() => setWizardOpen(true)}>
+          <Button onClick={() => setWizardOpen(true)} dataTour="jobs:new">
             <Plus className="h-4 w-4" /> Nueva vacante
           </Button>
         }
