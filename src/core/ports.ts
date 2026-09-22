@@ -80,9 +80,10 @@ export interface LlmPort {
   generateGrowthPlan(input: GrowthPlanInput): Promise<GrowthPlanResult>;
 }
 
-// ---- Mensajería WhatsApp (Twilio / Meta en producción) ----
+// ---- Mensajería: WhatsApp (Twilio / Meta) y correo (Resend / SES) en producción ----
 export interface MessagingPort {
   sendWhatsApp(input: { to: string; body: string }): Promise<{ id: string; status: string }>;
+  sendEmail(input: { to: string; subject: string; body: string }): Promise<{ id: string; status: string }>;
 }
 
 // ---- Voz / telefonía (Vapi / Retell en producción) ----
