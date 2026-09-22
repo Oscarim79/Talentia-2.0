@@ -206,3 +206,22 @@ export interface CultureDimension {
   group: CultureGroup;
   score: number; // 1-5
 }
+
+// ---------- Respuestas automáticas a CVs (agendar entrevista) ----------
+export type OutreachChannel = 'whatsapp' | 'email';
+export type OutreachStatus = 'queued' | 'delivered' | 'confirmed' | 'no_reply';
+
+export interface OutreachMessage {
+  id: string;
+  tenantId: string;
+  candidateId: string;
+  candidateName: string;
+  jobId: string;
+  channel: OutreachChannel;
+  to: string;
+  body: string;
+  status: OutreachStatus;
+  sentAt: string;
+  /** Horario que el candidato confirmó (cuando status === 'confirmed'). */
+  confirmedSlot?: string;
+}

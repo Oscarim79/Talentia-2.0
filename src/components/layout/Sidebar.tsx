@@ -9,15 +9,25 @@ import {
   ClipboardCheck,
   TrendingUp,
   Shield,
+  Settings,
+  MailCheck,
   X,
 } from 'lucide-react';
 import { APP } from '../../core/config';
 import { cn } from '../../lib/utils';
+import { useSettings } from '../../context/SettingsContext';
+import type { ModuleId } from '../../core/modules';
 
-const groups: {
-  label: string | null;
-  items: { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean }[];
-}[] = [
+type NavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  end?: boolean;
+  /** Solo se muestra si el módulo opcional está activo para la empresa. */
+  module?: ModuleId;
+};
+
+const groups: { label: string | null; items: NavItem[] }[] = [
   {
     label: null,
     items: [{ to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true }],
@@ -28,7 +38,8 @@ const groups: {
       { to: '/vacantes', label: 'Vacantes', icon: Briefcase },
       { to: '/screening', label: 'Screening IA', icon: ScanSearch },
       { to: '/candidatos', label: 'Candidatos', icon: Users },
-      { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare },
+      { to: '/respuestas', label: 'Respuestas a CVs', icon: MailCheck },
+      { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare, module: 'interviewsAi' },
     ],
   },
   {
@@ -42,12 +53,18 @@ const groups: {
     label: 'Negocio',
     items: [
       { to: '/metricas', label: 'Métricas · ROI', icon: TrendingUp },
+      { to: '/configuracion', label: 'Configuración', icon: Settings },
       { to: '/admin', label: 'Admin', icon: Shield },
     ],
   },
 ];
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {
+  const { isModuleEnabled } = useSettings();
+  const visibleGroups = groups.map((g) => ({
+    ...g,
+    items: g.items.filter((it) => !it.module || isModuleEnabled(it.module)),
+  }));
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col bg-brand-950 text-brand-100">
       <div className="flex items-center gap-3 px-5 pb-4 pt-5">
@@ -74,7 +91,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-2">
-        {groups.map((g) => (
+        {visibleGroups.map((g) => (
           <div key={g.label ?? 'main'} className="mb-1">
             {g.label && (
               <p className="mb-1 mt-4 px-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.22em] text-brand-400/80">

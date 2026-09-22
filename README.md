@@ -21,7 +21,9 @@ npm run build    # build de producción
 - **Screening IA (MVP)** — carga de CVs que ejecuta el pipeline en vivo: parseo → scoring → evidencia anclada al CV, filtros +/−, ranking y **cola de errores** (PDF ilegible).
 - **Vacantes** — generación de descripción y preguntas con IA (mock).
 - **Candidatos** — pipeline por etapas.
-- **Entrevistas IA** — vista previa del agente (transcripción, scoring, detección de discrepancias CV vs. respuestas).
+- **Respuestas a CVs** — filtra los CVs puntuados y responde automáticamente (WhatsApp/correo) con una plantilla estándar para agendar la entrevista; regla automática por score y bandeja de envíos.
+- **Entrevistas IA** *(módulo opcional, apagado por defecto; se activa en Configuración)* — agente conversacional (transcripción, scoring, detección de discrepancias CV vs. respuestas).
+- **Configuración** — catálogo fijo de módulos opcionales por empresa (software opinado: se encienden o apagan, no se configuran).
 - **Talento · 9-Box** — la "joya" heredada de Americana 2000: matriz 9-Box (1–5) + Cultura 360° de 10 dimensiones.
 - **Admin** — planes, créditos y consumo multi-tenant.
 
@@ -38,7 +40,7 @@ src/
   data/seed.ts       # datos demo
   context/           # TenantContext (multi-tenant)
   components/        # UI + NineBoxMatrix (portada)
-  features/          # dashboard, jobs, screening, candidates, interviews, talent, admin
+  features/          # dashboard, jobs, screening, candidates, outreach, interviews, talent, settings, admin
 ```
 
 Documento de arquitectura completo: [`docs/ARQUITECTURA_TALENTIA_SAAS.md`](docs/ARQUITECTURA_TALENTIA_SAAS.md).

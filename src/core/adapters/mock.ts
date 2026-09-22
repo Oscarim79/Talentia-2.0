@@ -285,6 +285,9 @@ export const mockMessaging: MessagingPort = {
   async sendWhatsApp({ to }) {
     return delay({ id: `wamid.mock.${hashString(to)}`, status: 'queued' }, 300);
   },
+  async sendEmail({ to }) {
+    return delay({ id: `email.mock.${hashString(to)}`, status: 'queued' }, 300);
+  },
 };
 
 // ---------- Voz / telefonía ----------
