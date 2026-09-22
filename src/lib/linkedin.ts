@@ -46,7 +46,7 @@ export function jobToLinkedInXml(job: Job, tenant: Tenant): string {
   <publisherUrl>https://talentia.app</publisherUrl>
   <job>
     <partnerJobId>${cdata(job.id)}</partnerJobId>
-    <company>${cdata(tenant.name)}</company>
+    <company>${cdata(job.brand || tenant.name)}</company>
     <title>${cdata(job.title)}</title>
     <description>${cdata(html)}</description>
     <applyUrl>${cdata(applyUrl)}</applyUrl>

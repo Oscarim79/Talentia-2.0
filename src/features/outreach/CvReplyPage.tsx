@@ -43,12 +43,13 @@ interface ReplyOptions {
 function composeMessage(cand: Candidate, job: Job | undefined, tenant: Tenant, o: ReplyOptions): string {
   const mod = MODALITIES.find((m) => m.key === o.modality)?.phrase ?? '';
   const place = o.place.trim() ? `\n${o.place.trim()}` : '';
+  const brand = job?.brand ?? tenant.name;
   return (
-    `Hola ${cand.firstName}, gracias por enviar tu CV para la vacante de ${job?.title ?? 'la posición'} en ${tenant.name}. ` +
+    `Hola ${cand.firstName}, gracias por enviar tu CV para la vacante de ${job?.title ?? 'la posición'} en ${brand}. ` +
     `Tu perfil cumple con lo que buscamos y queremos conocerte en una entrevista ${mod}.\n\n` +
     `Opciones de horario:\n1) ${o.slots[0]}\n2) ${o.slots[1]}\n\n` +
     `Responde con el número de la opción que te funcione, o proponnos otra.${place}\n\n` +
-    `— ${o.contact.trim() || 'Recursos Humanos'} · ${tenant.name}`
+    `— ${o.contact.trim() || 'Recursos Humanos'} · ${brand}`
   );
 }
 
@@ -169,7 +170,7 @@ export default function CvReplyPage() {
       pending.map((c) => ({
         candidate: c,
         channel,
-        subject: `Entrevista para ${jobOf(c)?.title ?? 'la vacante'} · ${tenant.name}`,
+        subject: `Entrevista para ${jobOf(c)?.title ?? 'la vacante'} · ${jobOf(c)?.brand ?? tenant.name}`,
         body: composeMessage(c, jobOf(c), tenant, opts),
         slots: [...slots],
       })),
@@ -306,7 +307,7 @@ export default function CvReplyPage() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-stone-800">
                         {c.firstName} {c.lastName}
-                        <span className="ml-2 text-xs font-normal text-stone-400">{j?.title}</span>
+                        <span className="ml-2 text-xs font-normal text-stone-400">{j?.title}{j?.brand ? ` · ${j.brand}` : ''}</span>
                       </p>
                       <p className="truncate text-[11px] text-stone-400">
                         {c.phone} · {c.email} · {(c.parsed?.skills ?? []).slice(0, 3).join(', ')}

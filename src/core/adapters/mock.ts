@@ -23,7 +23,7 @@ import { hashString } from '../../lib/utils';
 const SKILLS = [
   'Ventas', 'Atención al cliente', 'Negociación', 'CRM', 'Excel',
   'Motocicletas', 'Crédito', 'Cobranza', 'Liderazgo', 'Inglés',
-  'Logística', 'Inventarios', 'Call center', 'Seguros', 'Caja',
+  'Logística', 'Inventarios', 'Call center', 'Seguros', 'Caja', 'Gestión de tienda', 'Liderazgo de equipo',
 ];
 const COMPANIES = ['Distribuidora El Sol', 'MultiMotos', 'Banco Industrial', 'Tigo', 'Walmart GT', 'Seguros G&T'];
 const ROLES = ['Asesor de Ventas', 'Cajero', 'Supervisor', 'Agente de Call Center', 'Ejecutivo de Crédito'];

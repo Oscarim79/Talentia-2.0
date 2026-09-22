@@ -11,7 +11,8 @@ import {
 } from 'recharts';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES, USAGE_EVENTS, USERS, DEMO_NOW } from '../../data/seed';
+import { CANDIDATES, USAGE_EVENTS, DEMO_NOW } from '../../data/seed';
+import { useSettings } from '../../context/SettingsContext';
 import { Card, PageHeader, StatCard, Badge, ProgressBar } from '../../components/ui/primitives';
 import { teamKpis } from '../metrics/hrMetrics';
 import { scoreVariant } from '../../components/ui/primitives';
@@ -27,13 +28,14 @@ const STAGES: { key: string; label: string; color: string }[] = [
 export default function DashboardPage() {
   const { tenant } = useTenant();
   const { jobs: allJobs } = useJobs();
+  const { settings, hrTeam } = useSettings();
   const jobs = allJobs.filter((j) => j.tenantId === tenant.id);
   const cands = CANDIDATES.filter((c) => c.tenantId === tenant.id);
   const usage = USAGE_EVENTS.filter((u) => u.tenantId === tenant.id);
 
   const openJobs = jobs.filter((j) => j.status === 'open').length;
   const screeningUsed = usage.filter((u) => u.type === 'screening').reduce((s, u) => s + u.amount, 0);
-  const kpis = teamKpis(cands, jobs, USERS.filter((u) => u.tenantId === tenant.id), DEMO_NOW);
+  const kpis = teamKpis(cands, jobs, hrTeam, DEMO_NOW, settings.sla);
 
   const funnel = STAGES.map((s) => ({
     label: s.label,

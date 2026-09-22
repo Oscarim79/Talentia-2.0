@@ -25,6 +25,8 @@ export interface Tenant {
   slug: string;
   logoEmoji: string;
   industry: string;
+  /** Marcas comerciales bajo las que la empresa publica vacantes (ej. Americana, Abiq, Friotec). */
+  brands: string[];
   planId: string;
   status: 'active' | 'trial' | 'suspended';
   createdAt: string;
@@ -38,6 +40,8 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  /** Cargo dentro de RR.HH. (ej. "Jefe de RR.HH."). */
+  title?: string;
 }
 
 export type UsageType = 'screening' | 'interview_min' | 'whatsapp_msg' | 'llm_tokens';
@@ -74,6 +78,8 @@ export interface Job {
   id: string;
   tenantId: string;
   title: string;
+  /** Marca comercial para la que se contrata (una de `Tenant.brands`). */
+  brand: string;
   department: string;
   location: string;
   employmentType: 'Full-time' | 'Part-time' | 'Contract';

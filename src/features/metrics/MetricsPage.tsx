@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Timer, MailCheck, UserCheck, AlertTriangle, Users, Hourglass } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Timer, MailCheck, UserCheck, AlertTriangle, Users, Hourglass, Settings } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -13,10 +14,11 @@ import {
 } from 'recharts';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES, USERS, DEMO_NOW } from '../../data/seed';
+import { useSettings } from '../../context/SettingsContext';
+import { CANDIDATES, DEMO_NOW } from '../../data/seed';
 import { Card, PageHeader, StatCard, Badge } from '../../components/ui/primitives';
 import { cn } from '../../lib/utils';
-import { SLA, alerts, jobStats, recruiterStats, stageTimes, teamKpis, type RecruiterStats } from './hrMetrics';
+import { alerts, jobStats, recruiterStats, stageTimes, teamKpis, type RecruiterStats, type SlaGoals } from './hrMetrics';
 
 const fmtDays = (d: number | null) => (d == null ? '—' : d === 1 ? '1 día' : `${d} días`);
 const fmtPct = (p: number | null) => (p == null ? '—' : `${p}%`);
@@ -32,8 +34,9 @@ function slaTone(avg: number | null, sla: number): 'green' | 'amber' | 'red' | '
 export default function MetricsPage() {
   const { tenant } = useTenant();
   const { jobs: allJobs } = useJobs();
+  const { settings, hrTeam: users } = useSettings();
+  const SLA = settings.sla;
   const jobs = useMemo(() => allJobs.filter((j) => j.tenantId === tenant.id), [allJobs, tenant.id]);
-  const users = useMemo(() => USERS.filter((u) => u.tenantId === tenant.id), [tenant.id]);
 
   const [jobId, setJobId] = useState('all');
   const [userId, setUserId] = useState('all');
@@ -46,14 +49,14 @@ export default function MetricsPage() {
     [tenant.id, jobId, userId],
   );
 
-  const kpis = useMemo(() => teamKpis(cands, jobs, users, DEMO_NOW), [cands, jobs, users]);
-  const byPerson = useMemo(() => recruiterStats(cands, users, DEMO_NOW), [cands, users]);
-  const stages = useMemo(() => stageTimes(cands), [cands]);
+  const kpis = useMemo(() => teamKpis(cands, jobs, users, DEMO_NOW, SLA), [cands, jobs, users, SLA]);
+  const byPerson = useMemo(() => recruiterStats(cands, users, DEMO_NOW, SLA), [cands, users, SLA]);
+  const stages = useMemo(() => stageTimes(cands, SLA), [cands, SLA]);
   const byJob = useMemo(
     () => jobStats(jobId === 'all' ? jobs : jobs.filter((j) => j.id === jobId), cands, DEMO_NOW),
     [jobs, jobId, cands],
   );
-  const pending = useMemo(() => alerts(cands, users, DEMO_NOW), [cands, users]);
+  const pending = useMemo(() => alerts(cands, users, DEMO_NOW, SLA), [cands, users, SLA]);
 
   const bottleneck = stages.filter((s) => s.avg != null).sort((a, b) => b.avg! / b.sla - a.avg! / a.sla)[0];
 
@@ -154,7 +157,7 @@ export default function MetricsPage() {
                 </thead>
                 <tbody>
                   {byPerson.map((r) => (
-                    <PersonRow key={r.user.id} r={r} />
+                    <PersonRow key={r.user.id} r={r} sla={SLA} />
                   ))}
                 </tbody>
               </table>
@@ -227,7 +230,12 @@ export default function MetricsPage() {
               );
             })}
           </div>
-          <p className="mt-3 text-[11px] text-stone-400">La marca vertical es la meta de cada etapa. Metas fijas de TALENTIA: revisar {SLA.review} d · responder {SLA.reply} d · entrevistar {SLA.interview} d · decidir {SLA.decide} d · cerrar {SLA.close} d.</p>
+          <p className="mt-3 flex flex-wrap items-center gap-x-2 text-[11px] text-stone-400">
+            <span>La marca vertical es la meta de cada etapa: revisar {SLA.review} d · responder {SLA.reply} d · entrevistar {SLA.interview} d · decidir {SLA.decide} d · cerrar {SLA.close} d.</span>
+            <Link to="/configuracion" className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline">
+              <Settings className="h-3 w-3" /> Editar metas
+            </Link>
+          </p>
         </Card>
 
         {/* Embudo / conversión */}
@@ -340,7 +348,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
   );
 }
 
-function PersonRow({ r }: { r: RecruiterStats }) {
+function PersonRow({ r, sla: SLA }: { r: RecruiterStats; sla: SlaGoals }) {
   const initials = r.user.name.split(' ').map((p) => p[0]).slice(0, 2).join('');
   return (
     <tr className="border-b border-stone-50 last:border-0">
@@ -349,7 +357,7 @@ function PersonRow({ r }: { r: RecruiterStats }) {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">{initials}</div>
           <div>
             <p className="font-semibold text-stone-800">{r.user.name}</p>
-            <p className="text-[11px] text-stone-400">{r.user.role === 'owner' ? 'Jefatura RR.HH.' : 'Reclutador/a'}</p>
+            <p className="text-[11px] text-stone-400">{r.user.title ?? (r.user.role === 'admin' ? 'Jefe de RR.HH.' : 'Reclutador/a')}</p>
           </div>
         </div>
       </td>
