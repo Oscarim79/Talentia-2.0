@@ -44,6 +44,10 @@ Bugs reales encontrados por la auditoría técnica + QA (detalle completo en `.g
 5. ✅ **Entrevistas IA como módulo opcional + Respuestas a CVs** *(hecho 2026-09-22; pendiente menor: cuando haya persistencia, la "Entrevista agendada" debe mover al candidato a la etapa `interview` del pipeline y el estado del módulo pasa de `localStorage` a `tenant_settings`).*
 6. **Persistencia (Supabase)** — DIFERIDO: se hará DESPUÉS de validar la demo con el CEO (corre con datos mock, más seguro en vivo). Cuenta free de Supabase ya creada por Oscar; pendiente: schema + RLS multi-tenant + auth, por capas.
 
+## Demo en línea
+- **URL:** https://oscarim79.github.io/Talentia-2.0/ — se publica sola en cada push a `main` (`.github/workflows/deploy-pages.yml`). Decisión de Oscar (2026-09-22): repo público + GitHub Pages para que el CEO la abra sin instalar nada. La app corre con datos mock; no expone claves.
+- `package-lock.json` regenerado en Linux: el anterior venía de Windows y no traía los binarios opcionales de Linux (rollup/lightningcss/oxide), lo que rompía `npm ci` en CI.
+
 ## Cómo continuar en el móvil
 1. Abre **claude.ai** en el teléfono.
 2. Selecciona este repositorio (TALENTIA 2.0).
