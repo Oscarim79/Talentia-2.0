@@ -46,6 +46,7 @@ Bugs reales encontrados por la auditoría técnica + QA (detalle completo en `.g
 - **Guion de 5 días** (`src/features/help/PilotGuidePage.tsx`, copia en `docs/RONDA_DE_PRUEBA_EQUIPO.md` y página compartible publicada como artifact): antes de empezar, tareas por día, 7 preguntas finales, cómo enviar comentarios.
 - **Registro de preguntas al chat**: cada pregunta se guarda (`talentia.help.v1.questions`, con ruta, fecha y si tuvo respuesta). En **Configuración → Preguntas al chat de ayuda**: lista con "Sin respuesta" marcado, **"Enviar a Oscar"** (`mailto:` a `FEEDBACK_EMAIL` con las preguntas + plantilla para las 7 respuestas), Copiar, Descargar .txt, Borrar. El chat avisa "tu pregunta quedó registrada" cuando no encuentra respuesta.
 - **Restablecer la demo** (Configuración, al pie): borra metas/equipo/módulos/preguntas/tour de ese navegador y recarga.
+- Correos reales (2026-09-22): Reynaldo `reynaldo.velasquez@americana2000.com.gt`, Jessica `rrhh@americana2000.com.gt`; comentarios a Oscar `omorales@americana2000.com` (`FEEDBACK_EMAIL`).
 - Datos iniciales: Reynaldo y Jessica como equipo, metas de fábrica (2/1/5/3/5), Entrevistas IA apagada, regla automática apagada, 2 vacantes de Americana con 23 candidatos.
 - Al recibir la retroalimentación: ampliar `helpFaq.ts` con las preguntas sin respuesta, ajustar `tourSteps.ts`, metas reales y campos faltantes → insumo del esquema de Supabase.
 
