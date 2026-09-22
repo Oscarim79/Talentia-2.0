@@ -1,0 +1,22 @@
+[
+  {"id":"intro","text":"Bienvenido a TALENTIA dos punto cero, la herramienta de reclutamiento con inteligencia artificial para el equipo de Recursos Humanos. Al entrar, la aplicación te da la bienvenida y te ofrece un tour guiado y este video."},
+  {"id":"menu","text":"El menú de la izquierda sigue el orden real del trabajo: primero la vacante, luego los currículums, después las respuestas a los candidatos, el seguimiento y, al final, las métricas."},
+  {"id":"vac","text":"Paso uno: Vacantes. Cada plaza pertenece a una marca: Americana, Abiq o Friotec. El botón Nueva vacante abre un asistente de cinco pasos."},
+  {"id":"vac1","text":"En el primer paso escribes el título, eliges la marca, el departamento, el número de plazas y el salario."},
+  {"id":"vac2","text":"En el segundo, la descripción se genera con inteligencia artificial y la puedes editar a tu gusto."},
+  {"id":"vac3","text":"En el tercero defines los filtros de screening. Son los requisitos con los que la inteligencia artificial puntuará cada currículum de cero a cien."},
+  {"id":"vac4","text":"En el cuarto se generan las preguntas de entrevista."},
+  {"id":"vac5","text":"Y en el quinto revisas todo y creas la vacante. Desde aquí también puedes descargar el archivo para publicarla en LinkedIn."},
+  {"id":"scr","text":"Paso dos: Screening. Eliges la vacante y arrastras los currículums, en PDF, Word o imagen. La inteligencia artificial los lee y los puntúa."},
+  {"id":"scr2","text":"Cada archivo avanza en la barra del lote. Los que no se pueden leer, como escaneos o fotos, quedan en la pestaña de errores para pedir una versión legible."},
+  {"id":"scr3","text":"El resultado es un ranking ordenado de mejor a peor, con la evidencia textual de cada requisito."},
+  {"id":"rep","text":"Paso tres: Respuestas a currículums. Aquí filtras por vacante, puntaje mínimo o requisito cumplido. Solo ves los candidatos que cumplen."},
+  {"id":"rep2","text":"Marcas a los candidatos y respondes con un clic. El mensaje es una plantilla estándar por WhatsApp o correo, con dos opciones de horario para la entrevista. Puedes ver la vista previa antes de enviar."},
+  {"id":"rep3","text":"La bandeja de envíos muestra quién confirmó la entrevista y quién no contestó. Y si activas la regla automática, TALENTIA responde sola a todo currículum que supere el puntaje que definas."},
+  {"id":"cand","text":"Paso cuatro: Candidatos. Cada persona aparece en su etapa, desde aplicados hasta contratados, con su puntaje."},
+  {"id":"met","text":"Paso cinco: Métricas de Recursos Humanos. Aquí ves cuánto tarda cada persona del equipo en revisar un currículum, responder, entrevistar y cerrar, comparado con la meta de cada etapa."},
+  {"id":"met2","text":"Verde significa dentro de la meta, ámbar hasta una vez y media, y rojo después. Abajo aparecen los pendientes fuera de meta, con su responsable."},
+  {"id":"conf","text":"Paso seis: Configuración. Aquí administras el equipo de Recursos Humanos, las metas en días y los módulos opcionales. Nada más se configura: el proceso ya viene definido."},
+  {"id":"help","text":"¿Tienes dudas? El botón de ayuda siempre está ahí. Tiene un chat que te explica cómo hacer cada cosa y te lleva a la pantalla correcta, la guía del tour y este video."},
+  {"id":"end","text":"TALENTIA dos punto cero. Un solo proceso, claro y medible."}
+]
