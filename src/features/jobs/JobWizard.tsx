@@ -26,6 +26,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
 
   // ---- Paso 1: básicos ----
   const [title, setTitle] = useState('');
+  const [brand, setBrand] = useState(tenant.brands[0] ?? tenant.name);
   const [department, setDepartment] = useState('');
   const [location, setLocation] = useState('Guatemala, GT');
   const [employmentType, setEmploymentType] = useState<Job['employmentType']>('Full-time');
@@ -83,6 +84,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
       id: `job_${Date.now()}`,
       tenantId: tenant.id,
       title: title.trim(),
+      brand,
       department: department.trim(),
       location: location.trim(),
       employmentType,
@@ -158,9 +160,20 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
         <div className="flex-1 overflow-y-auto px-6 py-5">
           {step === 0 && (
             <div className="space-y-4">
-              <Field label="Título del puesto *">
-                <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej. Asesor de Ventas - Motocicletas" />
-              </Field>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
+                  <Field label="Título del puesto *">
+                    <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej. Asesor de Ventas" />
+                  </Field>
+                </div>
+                <Field label="Marca *">
+                  <select className={inputCls} value={brand} onChange={(e) => setBrand(e.target.value)}>
+                    {(tenant.brands.length ? tenant.brands : [tenant.name]).map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Departamento *">
                   <input className={inputCls} value={department} onChange={(e) => setDepartment(e.target.value)} placeholder="Ventas" />

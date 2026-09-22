@@ -1,22 +1,119 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Puzzle, Lock, ArrowUpRight } from 'lucide-react';
+import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useSettings } from '../../context/SettingsContext';
 import { MODULES } from '../../core/modules';
-import { Card, PageHeader, Badge } from '../../components/ui/primitives';
+import { DEFAULT_SLA, SLA_LABELS, type SlaGoals } from '../metrics/hrMetrics';
+import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
 import { cn } from '../../lib/utils';
+
+const inputCls =
+  'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
 export default function SettingsPage() {
   const { tenant } = useTenant();
-  const { isModuleEnabled, setModuleEnabled } = useSettings();
+  const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
+  const [newName, setNewName] = useState('');
+  const [newTitle, setNewTitle] = useState('');
+  const slaIsDefault = (Object.keys(DEFAULT_SLA) as (keyof SlaGoals)[]).every((k) => settings.sla[k] === DEFAULT_SLA[k]);
+
+  function submitMember() {
+    if (!newName.trim()) return;
+    addTeamMember(newName, newTitle || 'Reclutador/a');
+    setNewName('');
+    setNewTitle('');
+  }
 
   return (
     <div>
       <PageHeader
         eyebrow="Gestión"
         title="Configuración"
-        subtitle={`Módulos opcionales de ${tenant.name}. Se encienden o apagan; no se configuran.`}
+        subtitle={`Equipo de RR.HH., metas de servicio y módulos opcionales de ${tenant.name}.`}
       />
+
+      {/* Equipo de RR.HH. */}
+      <Card className="mb-6 overflow-hidden">
+        <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
+          <Users className="h-4 w-4 text-brand-600" />
+          <h2 className="text-sm font-bold text-stone-700">Equipo de RR.HH.</h2>
+          <span className="ml-auto text-xs text-stone-400">Las personas que aparecen en "Cada quien" de Métricas</span>
+        </div>
+        <ul className="divide-y divide-stone-100">
+          {hrTeam.map((u) => {
+            const added = settings.team.some((m) => m.id === u.id);
+            return (
+              <li key={u.id} className="flex items-center gap-3 px-6 py-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
+                  {u.name.split(' ').map((p) => p[0]).slice(0, 2).join('')}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-stone-800">{u.name}</p>
+                  <p className="text-xs text-stone-500">{u.title ?? (u.role === 'admin' ? 'Jefe de RR.HH.' : 'Reclutador/a')}{u.email ? ` · ${u.email}` : ''}</p>
+                </div>
+                {added ? (
+                  <button onClick={() => removeTeamMember(u.id)} aria-label={`Quitar a ${u.name}`} className="rounded-lg p-1.5 text-stone-400 hover:bg-red-50 hover:text-red-600">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <Badge variant="stone">Base</Badge>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        <div className="flex flex-wrap items-end gap-2 border-t border-stone-100 bg-stone-50/60 px-6 py-4">
+          <label className="min-w-[200px] flex-1">
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">Nombre</span>
+            <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Nombre y apellido" className={inputCls} />
+          </label>
+          <label className="min-w-[180px] flex-1">
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">Cargo</span>
+            <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Reclutador/a" className={inputCls} />
+          </label>
+          <Button onClick={submitMember} disabled={!newName.trim()}>
+            <Plus className="h-4 w-4" /> Agregar
+          </Button>
+        </div>
+      </Card>
+
+      {/* Metas de servicio */}
+      <Card className="mb-6 overflow-hidden">
+        <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
+          <Timer className="h-4 w-4 text-brand-600" />
+          <h2 className="text-sm font-bold text-stone-700">Metas de servicio (días)</h2>
+          <span className="ml-auto flex items-center gap-2">
+            {!slaIsDefault && <Badge variant="gold">Personalizadas</Badge>}
+            <Button variant="ghost" onClick={() => setSla({ ...DEFAULT_SLA })} disabled={slaIsDefault}>
+              <RotateCcw className="h-4 w-4" /> Restablecer
+            </Button>
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2 lg:grid-cols-5">
+          {(Object.keys(SLA_LABELS) as (keyof SlaGoals)[]).map((k) => (
+            <label key={k} className="block">
+              <span className="block text-sm font-semibold text-stone-800">{SLA_LABELS[k].label}</span>
+              <span className="mb-2 block text-[11px] text-stone-400">{SLA_LABELS[k].help}</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={1}
+                  max={60}
+                  value={settings.sla[k]}
+                  onChange={(e) => setSla({ ...settings.sla, [k]: Math.max(1, Math.min(60, Math.round(Number(e.target.value) || 1))) })}
+                  aria-label={`Meta: ${SLA_LABELS[k].label}`}
+                  className={cn(inputCls, 'w-20')}
+                />
+                <span className="text-xs text-stone-500">días</span>
+              </div>
+            </label>
+          ))}
+        </div>
+        <p className="border-t border-stone-100 px-6 py-3 text-[11px] text-stone-400">
+          Las metas definen el semáforo y los "pendientes fuera de meta" en Métricas RR.HH. y en el Dashboard. Se aplican al instante.
+        </p>
+      </Card>
 
       <Card className="mb-6 overflow-hidden">
         <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
@@ -61,7 +158,8 @@ export default function SettingsPage() {
             <p className="mt-1 text-stone-500">
               TALENTIA no tiene pantallas de configuración flexible: el proceso de reclutamiento ya viene
               definido y la empresa se adapta a él. Los datos entran por plantillas estándar (Colaboradores,
-              KPIs de Desempeño y Cultura 360°). Aquí solo se decide qué módulos opcionales están encendidos.
+              KPIs de Desempeño y Cultura 360°). Aquí solo se decide quién está en el equipo, qué tan rápido
+              debe atender cada etapa y qué módulos opcionales están encendidos.
             </p>
           </div>
         </div>

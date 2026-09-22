@@ -4,14 +4,24 @@
 // ============================================================
 import type { Candidate, Job, User } from '../../types';
 
-/** Metas de servicio (software opinado: fijas, en días). */
-export const SLA = {
-  review: 2, // revisar el CV desde que llega
-  reply: 1, // responder al candidato desde que se revisó
-  interview: 5, // entrevistar desde que se le respondió
-  decide: 3, // decidir (oferta o descarte) desde la entrevista
-  close: 5, // cerrar la oferta (contratar) desde que se envió
-} as const;
+/** Metas de servicio en días. Editables por empresa en Configuración; estos son los valores de fábrica. */
+export interface SlaGoals {
+  review: number; // revisar el CV desde que llega
+  reply: number; // responder al candidato desde que se revisó
+  interview: number; // entrevistar desde que se le respondió
+  decide: number; // decidir (oferta o descarte) desde la entrevista
+  close: number; // cerrar la oferta (contratar) desde que se envió
+}
+
+export const DEFAULT_SLA: SlaGoals = { review: 2, reply: 1, interview: 5, decide: 3, close: 5 };
+
+export const SLA_LABELS: Record<keyof SlaGoals, { label: string; help: string }> = {
+  review: { label: 'Revisar el CV', help: 'desde que llega el CV' },
+  reply: { label: 'Responder al candidato', help: 'desde que se revisó el CV' },
+  interview: { label: 'Entrevistar', help: 'desde que se le respondió' },
+  decide: { label: 'Decidir tras la entrevista', help: 'oferta o descarte' },
+  close: { label: 'Cerrar la oferta', help: 'desde que se envió la oferta' },
+};
 
 export function daysBetween(a: string, b: string): number {
   return Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000));
@@ -34,7 +44,7 @@ function decidedAt(c: Candidate): string | undefined {
 
 // ---------- Tiempos por etapa ----------
 export interface StageTime {
-  key: keyof typeof SLA;
+  key: keyof SlaGoals;
   label: string;
   /** Promedio en días (null si no hay casos). */
   avg: number | null;
@@ -45,7 +55,7 @@ export interface StageTime {
 }
 
 /** Duraciones por transición para un conjunto de candidatos. */
-export function stageTimes(cands: Candidate[]): StageTime[] {
+export function stageTimes(cands: Candidate[], sla: SlaGoals): StageTime[] {
   const dur = (from: (c: Candidate) => string | undefined, to: (c: Candidate) => string | undefined) =>
     cands
       .map((c) => {
@@ -55,7 +65,7 @@ export function stageTimes(cands: Candidate[]): StageTime[] {
       })
       .filter((v): v is number => v != null);
 
-  const defs: { key: keyof typeof SLA; label: string; xs: number[] }[] = [
+  const defs: { key: keyof SlaGoals; label: string; xs: number[] }[] = [
     { key: 'review', label: 'Revisar el CV', xs: dur((c) => c.appliedAt, (c) => c.timeline?.screened) },
     { key: 'reply', label: 'Responder al candidato', xs: dur((c) => c.timeline?.screened, (c) => c.timeline?.replied) },
     { key: 'interview', label: 'Entrevistar', xs: dur((c) => c.timeline?.replied, (c) => c.timeline?.interviewed) },
@@ -67,8 +77,8 @@ export function stageTimes(cands: Candidate[]): StageTime[] {
     label: d.label,
     avg: avg(d.xs),
     n: d.xs.length,
-    sla: SLA[d.key],
-    onTime: pct(d.xs.filter((v) => v <= SLA[d.key]).length, d.xs.length),
+    sla: sla[d.key],
+    onTime: pct(d.xs.filter((v) => v <= sla[d.key]).length, d.xs.length),
   }));
 }
 
@@ -95,7 +105,7 @@ export interface RecruiterStats {
   avgWaiting: number | null;
 }
 
-export function recruiterStats(cands: Candidate[], users: User[], now: string): RecruiterStats[] {
+export function recruiterStats(cands: Candidate[], users: User[], now: string, sla: SlaGoals): RecruiterStats[] {
   return users
     .map((user) => {
       const mine = cands.filter((c) => c.ownerId === user.id);
@@ -125,11 +135,11 @@ export function recruiterStats(cands: Candidate[], users: User[], now: string): 
         reviewed: reviewedList.length,
         pendingReview: pendingReviewList.length,
         avgReview: avg(reviewDays),
-        reviewOnTime: pct(reviewDays.filter((d) => d <= SLA.review).length, reviewDays.length),
+        reviewOnTime: pct(reviewDays.filter((d) => d <= sla.review).length, reviewDays.length),
         replied: repliedList.length,
         pendingReply: pendingReplyList.length,
         avgReply: avg(replyDays),
-        replyOnTime: pct(replyDays.filter((d) => d <= SLA.reply).length, replyDays.length),
+        replyOnTime: pct(replyDays.filter((d) => d <= sla.reply).length, replyDays.length),
         interviews: interviewList.length,
         avgToInterview: avg(toInterview),
         offers: mine.filter((c) => c.timeline?.offered).length,
@@ -138,8 +148,7 @@ export function recruiterStats(cands: Candidate[], users: User[], now: string): 
         avgTimeToHire: avg(hiredList.map((c) => daysBetween(c.appliedAt, c.hiredAt!))),
         avgWaiting: avg(waiting),
       };
-    })
-    .filter((r) => r.assigned > 0);
+    });
 }
 
 // ---------- Por vacante ----------
@@ -185,34 +194,34 @@ export interface HrAlert {
   overdue: boolean;
 }
 
-export function alerts(cands: Candidate[], users: User[], now: string): HrAlert[] {
+export function alerts(cands: Candidate[], users: User[], now: string, sla: SlaGoals): HrAlert[] {
   const owner = (c: Candidate) => users.find((u) => u.id === c.ownerId);
   const out: HrAlert[] = [];
   for (const c of cands) {
     if (c.stage === 'hired' || c.stage === 'rejected') continue;
     const t = c.timeline ?? {};
     if (c.screeningStatus === 'error') {
-      out.push({ kind: 'cv_error', label: 'CV ilegible: pedir versión legible', candidate: c, owner: owner(c), daysWaiting: daysBetween(c.appliedAt, now), sla: SLA.review, overdue: daysBetween(c.appliedAt, now) > SLA.review });
+      out.push({ kind: 'cv_error', label: 'CV ilegible: pedir versión legible', candidate: c, owner: owner(c), daysWaiting: daysBetween(c.appliedAt, now), sla: sla.review, overdue: daysBetween(c.appliedAt, now) > sla.review });
       continue;
     }
     if (!t.screened) {
       const d = daysBetween(c.appliedAt, now);
-      out.push({ kind: 'review', label: 'Revisar el CV', candidate: c, owner: owner(c), daysWaiting: d, sla: SLA.review, overdue: d > SLA.review });
+      out.push({ kind: 'review', label: 'Revisar el CV', candidate: c, owner: owner(c), daysWaiting: d, sla: sla.review, overdue: d > sla.review });
       continue;
     }
     if (!t.replied) {
       const d = daysBetween(t.screened, now);
-      out.push({ kind: 'reply', label: 'Responder al candidato', candidate: c, owner: owner(c), daysWaiting: d, sla: SLA.reply, overdue: d > SLA.reply });
+      out.push({ kind: 'reply', label: 'Responder al candidato', candidate: c, owner: owner(c), daysWaiting: d, sla: sla.reply, overdue: d > sla.reply });
       continue;
     }
     if (t.interviewed && !decidedAt(c)) {
       const d = daysBetween(t.interviewed, now);
-      out.push({ kind: 'decide', label: 'Decidir tras la entrevista', candidate: c, owner: owner(c), daysWaiting: d, sla: SLA.decide, overdue: d > SLA.decide });
+      out.push({ kind: 'decide', label: 'Decidir tras la entrevista', candidate: c, owner: owner(c), daysWaiting: d, sla: sla.decide, overdue: d > sla.decide });
       continue;
     }
     if (t.offered && !c.hiredAt) {
       const d = daysBetween(t.offered, now);
-      out.push({ kind: 'close', label: 'Cerrar la oferta', candidate: c, owner: owner(c), daysWaiting: d, sla: SLA.close, overdue: d > SLA.close });
+      out.push({ kind: 'close', label: 'Cerrar la oferta', candidate: c, owner: owner(c), daysWaiting: d, sla: sla.close, overdue: d > sla.close });
     }
   }
   return out.sort((a, b) => Number(b.overdue) - Number(a.overdue) || b.daysWaiting - a.daysWaiting);
@@ -234,8 +243,8 @@ export interface TeamKpis {
   conversion: { label: string; value: number; pct: number | null }[];
 }
 
-export function teamKpis(cands: Candidate[], jobs: Job[], users: User[], now: string): TeamKpis {
-  const st = stageTimes(cands);
+export function teamKpis(cands: Candidate[], jobs: Job[], users: User[], now: string, sla: SlaGoals): TeamKpis {
+  const st = stageTimes(cands, sla);
   const hired = cands.filter((c) => c.stage === 'hired' && c.hiredAt);
   const reviewed = cands.filter((c) => c.timeline?.screened).length;
   const replied = cands.filter((c) => c.timeline?.replied).length;
@@ -257,7 +266,7 @@ export function teamKpis(cands: Candidate[], jobs: Job[], users: User[], now: st
     avgReply: st.find((s) => s.key === 'reply')?.avg ?? null,
     avgTimeToHire: avg(hired.map((c) => daysBetween(c.appliedAt, c.hiredAt!))),
     avgTimeToFill: avg(ttf),
-    overdue: alerts(cands, users, now).filter((a) => a.overdue).length,
+    overdue: alerts(cands, users, now, sla).filter((a) => a.overdue).length,
     conversion: [
       { label: 'Recibidos', value: cands.length, pct: 100 },
       { label: 'Revisados', value: reviewed, pct: pct(reviewed, cands.length) },

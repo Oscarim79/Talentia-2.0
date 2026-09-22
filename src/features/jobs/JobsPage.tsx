@@ -62,7 +62,8 @@ function JobCard({ job: j }: { job: Job }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-bold text-stone-900">{j.title}</h3>
-          <p className="mt-1 flex items-center gap-3 text-xs text-stone-500">
+          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-500">
+            <Badge variant="gold">{j.brand}</Badge>
             <span>{j.department}</span>
             <span className="flex items-center gap-1">
               <MapPin className="h-3 w-3" /> {j.location}

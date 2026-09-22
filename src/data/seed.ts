@@ -22,16 +22,15 @@ export const PLANS: Plan[] = [
 
 // ---------------- Tenants (empresas cliente) ----------------
 export const TENANTS: Tenant[] = [
-  { id: 't_americana', name: 'Americana 2000', slug: 'americana', logoEmoji: '🏬', industry: 'Retail · cadena multitienda (línea blanca, muebles, motos, tecnología)', planId: 'plan_growth', status: 'active', createdAt: '2026-01-12' },
-  { id: 't_contacta', name: 'Contacta BPO', slug: 'contacta', logoEmoji: '🎧', industry: 'Call Center', planId: 'plan_starter', status: 'active', createdAt: '2026-03-04' },
-  { id: 't_novapay', name: 'NovaPay', slug: 'novapay', logoEmoji: '💳', industry: 'Fintech', planId: 'plan_scale', status: 'trial', createdAt: '2026-05-20' },
+  { id: 't_americana', name: 'Americana 2000', slug: 'americana', logoEmoji: '🏬', industry: 'Retail · cadena multitienda (línea blanca, muebles, motos, tecnología)', brands: ['Americana', 'Abiq', 'Friotec'], planId: 'plan_growth', status: 'active', createdAt: '2026-01-12' },
+  { id: 't_contacta', name: 'Contacta BPO', slug: 'contacta', logoEmoji: '🎧', industry: 'Call Center', brands: ['Contacta BPO'], planId: 'plan_starter', status: 'active', createdAt: '2026-03-04' },
+  { id: 't_novapay', name: 'NovaPay', slug: 'novapay', logoEmoji: '💳', industry: 'Fintech', brands: ['NovaPay'], planId: 'plan_scale', status: 'trial', createdAt: '2026-05-20' },
 ];
 
 export const USERS: User[] = [
   { id: 'u_oscar', tenantId: 't_americana', name: 'Oscar Morales', email: 'me@oscarimorales.com', role: 'owner' },
-  { id: 'u_karla', tenantId: 't_americana', name: 'Karla Méndez', email: 'karla@americana2000.gt', role: 'recruiter' },
-  { id: 'u_luis', tenantId: 't_americana', name: 'Luis Ortiz', email: 'luis@americana2000.gt', role: 'recruiter' },
-  { id: 'u_mayra', tenantId: 't_americana', name: 'Mayra Chávez', email: 'mayra@americana2000.gt', role: 'recruiter' },
+  { id: 'u_reynaldo', tenantId: 't_americana', name: 'Reynaldo Velásquez', email: 'rvelasquez@americana2000.gt', role: 'admin', title: 'Jefe de RR.HH.' },
+  { id: 'u_jessica', tenantId: 't_americana', name: 'Jessica Ventura', email: 'jventura@americana2000.gt', role: 'recruiter', title: 'Asistente de RR.HH.' },
   { id: 'u_contacta', tenantId: 't_contacta', name: 'Lucía Reyes', email: 'lucia@contacta.gt', role: 'owner' },
   { id: 'u_nova', tenantId: 't_novapay', name: 'Diego Paz', email: 'diego@novapay.io', role: 'owner' },
 ];
@@ -39,10 +38,10 @@ export const USERS: User[] = [
 // ---------------- Vacantes ----------------
 export const JOBS: Job[] = [
   {
-    id: 'job_motos', tenantId: 't_americana', title: 'Asesor de Ventas (Piso de tienda)',
+    id: 'job_motos', tenantId: 't_americana', title: 'Asesor de Ventas', brand: 'Americana',
     department: 'Ventas', location: 'Guatemala, GT', employmentType: 'Full-time', status: 'open',
     salaryMin: 4000, salaryMax: 6500, openings: 8, applySlug: 'americana/asesor-ventas', createdAt: '2026-06-01',
-    description: 'Asesor comercial para sala de ventas de la tienda (electrodomésticos, muebles, motos y tecnología). Atención al cliente, cierre de ventas y seguimiento de crédito.',
+    description: 'Asesor comercial para sala de ventas de tienda Americana (electrodomésticos, muebles, motos y tecnología). Atención al cliente, cierre de ventas y seguimiento de crédito.',
     questions: [
       { id: 'q1', text: '¿Qué experiencia tienes en ventas de productos de alto valor?', source: 'ai', weight: 30, idealAnswer: 'Experiencia en ventas con metas y manejo de crédito.' },
       { id: 'q2', text: '¿Cómo manejas a un cliente indeciso?', source: 'manual', weight: 25 },
@@ -56,18 +55,26 @@ export const JOBS: Job[] = [
     ],
   },
   {
-    id: 'job_cajero', tenantId: 't_americana', title: 'Cajero de Sucursal',
-    department: 'Administración', location: 'Mixco, GT', employmentType: 'Full-time', status: 'open',
-    salaryMin: 3500, salaryMax: 4200, openings: 2, applySlug: 'americana/cajero', createdAt: '2026-06-08',
-    description: 'Manejo de caja, arqueos y atención al cliente en sucursal.',
-    questions: [], filters: [{ id: 'f5', polarity: 'positive', criterion: 'Caja', weight: 50 }],
+    id: 'job_jefe', tenantId: 't_americana', title: 'Jefe de Tienda', brand: 'Americana',
+    department: 'Operaciones de tienda', location: 'Mixco, GT', employmentType: 'Full-time', status: 'open',
+    salaryMin: 8000, salaryMax: 11000, openings: 2, applySlug: 'americana/jefe-de-tienda', createdAt: '2026-06-08',
+    description: 'Responsable de la operación completa de una tienda Americana: metas de venta, equipo de piso, inventario, caja y experiencia del cliente.',
+    questions: [
+      { id: 'q4', text: '¿Cuántas personas has tenido a tu cargo y cómo las evaluabas?', source: 'manual', weight: 30 },
+      { id: 'q5', text: 'Cuéntame de un mes en que la tienda no llegó a la meta: ¿qué hiciste?', source: 'ai', weight: 30 },
+    ],
+    filters: [
+      { id: 'f5', polarity: 'positive', criterion: 'Gestión de tienda', weight: 40 },
+      { id: 'f6', polarity: 'positive', criterion: 'Liderazgo de equipo', weight: 30 },
+      { id: 'f7', polarity: 'positive', criterion: 'Ventas', weight: 20 },
+    ],
   },
   {
-    id: 'job_agente', tenantId: 't_contacta', title: 'Agente de Call Center Bilingüe',
+    id: 'job_agente', tenantId: 't_contacta', title: 'Agente de Call Center Bilingüe', brand: 'Contacta BPO',
     department: 'Operaciones', location: 'Remoto', employmentType: 'Full-time', status: 'open',
     salaryMin: 5000, salaryMax: 7000, openings: 20, applySlug: 'contacta/agente-bilingue', createdAt: '2026-06-05',
     description: 'Atención telefónica inbound en inglés y español para cuenta de EE.UU.',
-    questions: [], filters: [{ id: 'f6', polarity: 'positive', criterion: 'Inglés', weight: 60 }],
+    questions: [], filters: [{ id: 'f8', polarity: 'positive', criterion: 'Inglés', weight: 60 }],
   },
 ];
 
@@ -79,6 +86,8 @@ function c(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastNam
     cvFileName: `${p.firstName}_${p.lastName}.pdf`, screeningStatus: 'scored', ...p,
   } as Candidate;
 }
+
+const JEFE_CRITERIA = ['Gestión de tienda', 'Liderazgo de equipo', 'Ventas'] as const;
 
 const RAW_CANDIDATES: Candidate[] = [
   c({ id: 'cand_01', firstName: 'María', lastName: 'González', screeningScore: 94, matchPercent: 96, stage: 'interview',
@@ -158,31 +167,33 @@ const RAW_CANDIDATES: Candidate[] = [
   c({ id: 'cand_08', firstName: 'Roberto', lastName: 'Díaz', screeningStatus: 'error', errorReason: 'illegible_pdf', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Roberto_Diaz_scan.pdf' }),
   c({ id: 'cand_09', firstName: 'Gabriela', lastName: 'Solís', screeningStatus: 'error', errorReason: 'password_protected', stage: 'applied', screeningScore: undefined, matchPercent: undefined, cvFileName: 'Gabriela_foto_cv.pdf' }),
 
-  // --- Cajero de Sucursal (2 plazas): pipeline de otro reclutador, alimenta las métricas de RR.HH. ---
-  k({ id: 'cand_20', firstName: 'Diana', lastName: 'Aguilar', screeningScore: 92, matchPercent: 94, stage: 'hired', hiredAt: '2026-06-18', appliedAt: '2026-06-09', ownerId: 'u_mayra', timeline: { screened: '2026-06-09', replied: '2026-06-09', interviewed: '2026-06-11', offered: '2026-06-15' }, skills: ['Caja', 'Arqueos', 'Atención al cliente'], years: 4, company: 'Banrural', role: 'Cajera', caja: true }),
-  k({ id: 'cand_21', firstName: 'Kevin', lastName: 'Barrios', screeningScore: 87, matchPercent: 89, stage: 'offer', appliedAt: '2026-06-10', ownerId: 'u_mayra', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13', offered: '2026-06-17' }, skills: ['Caja', 'Excel', 'Atención al cliente'], years: 3, company: 'Pollo Campero', role: 'Cajero', caja: true }),
-  k({ id: 'cand_22', firstName: 'Fernanda', lastName: 'Ruiz', screeningScore: 81, matchPercent: 83, stage: 'interview', appliedAt: '2026-06-11', ownerId: 'u_luis', timeline: { screened: '2026-06-13', replied: '2026-06-14', interviewed: '2026-06-17' }, skills: ['Caja', 'Cobros'], years: 2, company: 'Farmacias Galeno', role: 'Cajera', caja: true }),
-  k({ id: 'cand_23', firstName: 'Byron', lastName: 'Tzul', screeningScore: 78, matchPercent: 80, stage: 'interview', appliedAt: '2026-06-12', ownerId: 'u_karla', timeline: { screened: '2026-06-12', replied: '2026-06-12', interviewed: '2026-06-15' }, skills: ['Caja', 'Inventarios'], years: 3, company: 'Despensa Familiar', role: 'Cajero', caja: true }),
-  k({ id: 'cand_24', firstName: 'Paola', lastName: 'Marroquín', screeningScore: 74, matchPercent: 76, stage: 'screening', appliedAt: '2026-06-13', ownerId: 'u_luis', timeline: { screened: '2026-06-16', replied: '2026-06-18' }, skills: ['Caja', 'Atención al cliente'], years: 1, company: 'Elektra', role: 'Cajera', caja: true }),
-  k({ id: 'cand_25', firstName: 'Josué', lastName: 'Ixcoy', screeningScore: 69, matchPercent: 70, stage: 'screening', appliedAt: '2026-06-14', ownerId: 'u_luis', timeline: { screened: '2026-06-17' }, skills: ['Caja'], years: 1, company: 'Tienda La Bendición', role: 'Dependiente', caja: true }),
-  k({ id: 'cand_26', firstName: 'Melissa', lastName: 'Orellana', screeningScore: 66, matchPercent: 68, stage: 'screening', appliedAt: '2026-06-15', ownerId: 'u_karla', timeline: { screened: '2026-06-15' }, skills: ['Atención al cliente', 'Ventas'], years: 2, company: 'Claro', role: 'Asesora', caja: false }),
-  k({ id: 'cand_27', firstName: 'Rodrigo', lastName: 'Cifuentes', screeningScore: 72, matchPercent: 73, stage: 'applied', appliedAt: '2026-06-16', ownerId: 'u_mayra', timeline: {}, skills: ['Caja', 'Excel'], years: 2, company: 'Cemaco', role: 'Cajero', caja: true }),
-  k({ id: 'cand_28', firstName: 'Alejandra', lastName: 'Pineda', screeningScore: 61, matchPercent: 63, stage: 'applied', appliedAt: '2026-06-17', ownerId: 'u_mayra', timeline: {}, skills: ['Atención al cliente'], years: 1, company: 'McDonald\'s', role: 'Crew', caja: false }),
-  k({ id: 'cand_29', firstName: 'Estuardo', lastName: 'Monroy', screeningScore: 55, matchPercent: 57, stage: 'applied', appliedAt: '2026-06-19', ownerId: 'u_karla', timeline: {}, skills: ['Bodega'], years: 3, company: 'Walmart GT', role: 'Auxiliar de bodega', caja: false }),
-  k({ id: 'cand_30', firstName: 'Wendy', lastName: 'Sagastume', screeningScore: 44, matchPercent: 45, stage: 'rejected', appliedAt: '2026-06-10', ownerId: 'u_karla', timeline: { screened: '2026-06-11', rejected: '2026-06-11' }, skills: ['Limpieza'], years: 2, company: 'Hotel Barceló', role: 'Camarera', caja: false }),
-  k({ id: 'cand_31', firstName: 'Héctor', lastName: 'Pacheco', screeningScore: 79, matchPercent: 80, stage: 'rejected', appliedAt: '2026-06-11', ownerId: 'u_luis', timeline: { screened: '2026-06-12', replied: '2026-06-13', interviewed: '2026-06-16', rejected: '2026-06-19' }, skills: ['Caja', 'Cobros'], years: 5, company: 'Banco Industrial', role: 'Receptor pagador', caja: true }),
+  // --- Jefe de Tienda (2 plazas): segundo pipeline, alimenta las métricas de RR.HH. ---
+  k({ id: 'cand_20', firstName: 'Diana', lastName: 'Aguilar', screeningScore: 92, matchPercent: 94, stage: 'hired', hiredAt: '2026-06-18', appliedAt: '2026-06-09', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-09', replied: '2026-06-09', interviewed: '2026-06-11', offered: '2026-06-15' }, skills: ['Gestión de tienda', 'Liderazgo de equipo', 'Ventas', 'Inventarios'], years: 6, company: 'Elektra', role: 'Jefa de Tienda', meets: [true, true, true] }),
+  k({ id: 'cand_21', firstName: 'Kevin', lastName: 'Barrios', screeningScore: 87, matchPercent: 89, stage: 'offer', appliedAt: '2026-06-10', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13', offered: '2026-06-17' }, skills: ['Gestión de tienda', 'Ventas', 'Caja'], years: 5, company: 'La Curacao', role: 'Encargado de Sucursal', meets: [true, true, true] }),
+  k({ id: 'cand_22', firstName: 'Fernanda', lastName: 'Ruiz', screeningScore: 81, matchPercent: 83, stage: 'interview', appliedAt: '2026-06-11', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-13', replied: '2026-06-14', interviewed: '2026-06-17' }, skills: ['Liderazgo de equipo', 'Ventas', 'Atención al cliente'], years: 4, company: 'Agencias Way', role: 'Supervisora de Piso', meets: [false, true, true] }),
+  k({ id: 'cand_23', firstName: 'Byron', lastName: 'Tzul', screeningScore: 78, matchPercent: 80, stage: 'interview', appliedAt: '2026-06-12', ownerId: 'u_jessica', timeline: { screened: '2026-06-12', replied: '2026-06-12', interviewed: '2026-06-15' }, skills: ['Gestión de tienda', 'Inventarios'], years: 4, company: 'Despensa Familiar', role: 'Subgerente de Tienda', meets: [true, true, false] }),
+  k({ id: 'cand_24', firstName: 'Paola', lastName: 'Marroquín', screeningScore: 74, matchPercent: 76, stage: 'screening', appliedAt: '2026-06-13', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-16', replied: '2026-06-18' }, skills: ['Ventas', 'Liderazgo de equipo'], years: 3, company: 'El Gallo más Gallo', role: 'Supervisora de Ventas', meets: [false, true, true] }),
+  k({ id: 'cand_25', firstName: 'Josué', lastName: 'Ixcoy', screeningScore: 69, matchPercent: 70, stage: 'screening', appliedAt: '2026-06-14', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-17' }, skills: ['Ventas', 'Caja'], years: 3, company: 'Tienda La Bendición', role: 'Encargado', meets: [true, false, true] }),
+  k({ id: 'cand_26', firstName: 'Melissa', lastName: 'Orellana', screeningScore: 66, matchPercent: 68, stage: 'screening', appliedAt: '2026-06-15', ownerId: 'u_jessica', timeline: { screened: '2026-06-15' }, skills: ['Atención al cliente', 'Ventas'], years: 3, company: 'Claro', role: 'Asesora Senior', meets: [false, false, true] }),
+  k({ id: 'cand_27', firstName: 'Rodrigo', lastName: 'Cifuentes', screeningScore: 72, matchPercent: 73, stage: 'applied', appliedAt: '2026-06-16', ownerId: 'u_jessica', timeline: {}, skills: ['Gestión de tienda', 'Excel'], years: 4, company: 'Cemaco', role: 'Coordinador de Tienda', meets: [true, false, true] }),
+  k({ id: 'cand_28', firstName: 'Alejandra', lastName: 'Pineda', screeningScore: 61, matchPercent: 63, stage: 'applied', appliedAt: '2026-06-17', ownerId: 'u_jessica', timeline: {}, skills: ['Liderazgo de equipo', 'Atención al cliente'], years: 3, company: "McDonald's", role: 'Gerente de Turno', meets: [false, true, false] }),
+  k({ id: 'cand_29', firstName: 'Estuardo', lastName: 'Monroy', screeningScore: 55, matchPercent: 57, stage: 'applied', appliedAt: '2026-06-19', ownerId: 'u_jessica', timeline: {}, skills: ['Bodega', 'Inventarios'], years: 5, company: 'Walmart GT', role: 'Jefe de Bodega', meets: [false, true, false] }),
+  k({ id: 'cand_30', firstName: 'Wendy', lastName: 'Sagastume', screeningScore: 44, matchPercent: 45, stage: 'rejected', appliedAt: '2026-06-10', ownerId: 'u_jessica', timeline: { screened: '2026-06-11', rejected: '2026-06-11' }, skills: ['Limpieza', 'Hotelería'], years: 2, company: 'Hotel Barceló', role: 'Supervisora de Camareras', meets: [false, true, false] }),
+  k({ id: 'cand_31', firstName: 'Héctor', lastName: 'Pacheco', screeningScore: 79, matchPercent: 80, stage: 'rejected', appliedAt: '2026-06-11', ownerId: 'u_reynaldo', timeline: { screened: '2026-06-12', replied: '2026-06-13', interviewed: '2026-06-16', rejected: '2026-06-19' }, skills: ['Gestión de tienda', 'Ventas'], years: 7, company: 'Max', role: 'Jefe de Tienda', meets: [true, false, true] }),
 ];
 
-/** Candidato para Cajero de Sucursal, con evidencia sobre el criterio "Caja". */
-function k(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastName'> & { skills: string[]; years: number; company: string; role: string; caja: boolean }): Candidate {
-  const { skills, years, company, role, caja, ...rest } = p;
+
+/** Candidato para Jefe de Tienda; `meets` indica qué criterios cumple (gestión, liderazgo, ventas). */
+function k(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastName'> & { skills: string[]; years: number; company: string; role: string; meets: [boolean, boolean, boolean] }): Candidate {
+  const { skills, years, company, role, meets, ...rest } = p;
+  const met = meets.filter(Boolean).length;
   return c({
-    jobId: 'job_cajero', source: hashString(p.id) % 2 ? 'Computrabajo' : 'Referido',
-    justification: caja
-      ? `Cumple el requisito de caja con ${years} año${years === 1 ? '' : 's'} de experiencia. Perfil apto para sucursal.`
-      : `Sin experiencia directa en caja (${years} año${years === 1 ? '' : 's'} en otra función). Perfil parcial.`,
+    jobId: 'job_jefe', source: hashString(p.id) % 2 ? 'Computrabajo' : 'Referido',
+    justification: met === 3
+      ? `Cumple 3/3 requisitos con ${years} años como ${role.toLowerCase()}. Perfil fuerte, recomendado para entrevista.`
+      : `Cumple ${met}/3 requisitos con ${years} años de experiencia (${role.toLowerCase()} en ${company}). Perfil parcial.`,
     parsed: { skills, totalYears: years, education: 'Diversificado', experience: [{ company, role, years }] },
-    evidence: [{ criterion: 'Caja', matched: caja, quote: caja ? `"${role} en ${company} — ${years} año${years === 1 ? '' : 's'}"` : '— sin evidencia en el CV —' }],
+    evidence: JEFE_CRITERIA.map((criterion, i) => ({ criterion, matched: meets[i], quote: meets[i] ? `"${role} en ${company} — ${years} años"` : '— sin evidencia en el CV —' })),
     ...rest,
   });
 }
@@ -194,19 +205,19 @@ function k(p: Partial<Candidate> & Pick<Candidate, 'id' | 'firstName' | 'lastNam
  */
 export const DEMO_NOW = '2026-06-20';
 
-/** Dueño y línea de tiempo de RR.HH. para los candidatos de Asesor de Ventas. */
+/** Dueño y línea de tiempo de RR.HH. para los candidatos de Asesor de Ventas (Jessica lleva la mayoría; Reynaldo, los suyos). */
 const HR_TRACK: Record<string, Pick<Candidate, 'ownerId' | 'timeline' | 'appliedAt'>> = {
-  cand_01: { ownerId: 'u_karla', appliedAt: '2026-06-10', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13' } },
-  cand_02: { ownerId: 'u_karla', appliedAt: '2026-06-12', timeline: { screened: '2026-06-12', replied: '2026-06-13' } },
-  cand_03: { ownerId: 'u_luis', appliedAt: '2026-06-12', timeline: { screened: '2026-06-14' } },
-  cand_04: { ownerId: 'u_luis', appliedAt: '2026-06-12', timeline: { screened: '2026-06-15' } },
-  cand_05: { ownerId: 'u_mayra', appliedAt: '2026-06-12', timeline: {} },
-  cand_06: { ownerId: 'u_mayra', appliedAt: '2026-06-11', timeline: { screened: '2026-06-11', rejected: '2026-06-11' } },
-  cand_07: { ownerId: 'u_mayra', appliedAt: '2026-06-15', timeline: {} },
-  cand_10: { ownerId: 'u_karla', appliedAt: '2026-06-03', timeline: { screened: '2026-06-03', replied: '2026-06-03', interviewed: '2026-06-05', offered: '2026-06-09' } },
-  cand_11: { ownerId: 'u_luis', appliedAt: '2026-06-05', timeline: { screened: '2026-06-06', replied: '2026-06-06', interviewed: '2026-06-10', offered: '2026-06-16' } },
-  cand_08: { ownerId: 'u_karla', appliedAt: '2026-06-16', timeline: {} },
-  cand_09: { ownerId: 'u_luis', appliedAt: '2026-06-17', timeline: {} },
+  cand_01: { ownerId: 'u_jessica', appliedAt: '2026-06-10', timeline: { screened: '2026-06-10', replied: '2026-06-11', interviewed: '2026-06-13' } },
+  cand_02: { ownerId: 'u_jessica', appliedAt: '2026-06-12', timeline: { screened: '2026-06-12', replied: '2026-06-13' } },
+  cand_03: { ownerId: 'u_reynaldo', appliedAt: '2026-06-12', timeline: { screened: '2026-06-14' } },
+  cand_04: { ownerId: 'u_reynaldo', appliedAt: '2026-06-12', timeline: { screened: '2026-06-15' } },
+  cand_05: { ownerId: 'u_jessica', appliedAt: '2026-06-12', timeline: {} },
+  cand_06: { ownerId: 'u_jessica', appliedAt: '2026-06-11', timeline: { screened: '2026-06-11', rejected: '2026-06-11' } },
+  cand_07: { ownerId: 'u_jessica', appliedAt: '2026-06-15', timeline: {} },
+  cand_10: { ownerId: 'u_jessica', appliedAt: '2026-06-03', timeline: { screened: '2026-06-03', replied: '2026-06-03', interviewed: '2026-06-05', offered: '2026-06-09' } },
+  cand_11: { ownerId: 'u_reynaldo', appliedAt: '2026-06-05', timeline: { screened: '2026-06-06', replied: '2026-06-06', interviewed: '2026-06-10', offered: '2026-06-16' } },
+  cand_08: { ownerId: 'u_jessica', appliedAt: '2026-06-16', timeline: {} },
+  cand_09: { ownerId: 'u_reynaldo', appliedAt: '2026-06-17', timeline: {} },
 };
 
 export const CANDIDATES: Candidate[] = RAW_CANDIDATES.map((cand) => ({ ...cand, ...HR_TRACK[cand.id] }));
