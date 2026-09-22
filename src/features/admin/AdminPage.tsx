@@ -14,7 +14,7 @@ export default function AdminPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Negocio" title="Administración" subtitle="Consola multi-tenant: planes, créditos y consumo." />
+      <PageHeader eyebrow="Gestión" title="Administración" subtitle="Consola multi-tenant: planes, créditos y consumo." />
 
       {/* Uso del plan actual */}
       <Card className="mb-6 p-6">

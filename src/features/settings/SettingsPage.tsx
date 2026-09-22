@@ -13,7 +13,7 @@ export default function SettingsPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Negocio"
+        eyebrow="Gestión"
         title="Configuración"
         subtitle={`Módulos opcionales de ${tenant.name}. Se encienden o apagan; no se configuran.`}
       />

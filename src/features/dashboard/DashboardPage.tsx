@@ -1,4 +1,4 @@
-import { Briefcase, Users, ScanSearch, DollarSign } from 'lucide-react';
+import { Briefcase, Users, ScanSearch, Timer } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -11,9 +11,9 @@ import {
 } from 'recharts';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES, USAGE_EVENTS } from '../../data/seed';
+import { CANDIDATES, USAGE_EVENTS, USERS, DEMO_NOW } from '../../data/seed';
 import { Card, PageHeader, StatCard, Badge, ProgressBar } from '../../components/ui/primitives';
-import { fmtMoney } from '../../lib/utils';
+import { teamKpis } from '../metrics/hrMetrics';
 import { scoreVariant } from '../../components/ui/primitives';
 
 const STAGES: { key: string; label: string; color: string }[] = [
@@ -33,7 +33,7 @@ export default function DashboardPage() {
 
   const openJobs = jobs.filter((j) => j.status === 'open').length;
   const screeningUsed = usage.filter((u) => u.type === 'screening').reduce((s, u) => s + u.amount, 0);
-  const totalCost = usage.reduce((s, u) => s + u.costUsd, 0);
+  const kpis = teamKpis(cands, jobs, USERS.filter((u) => u.tenantId === tenant.id), DEMO_NOW);
 
   const funnel = STAGES.map((s) => ({
     label: s.label,
@@ -58,7 +58,13 @@ export default function DashboardPage() {
         <StatCard label="Vacantes abiertas" value={String(openJobs)} icon={<Briefcase className="h-5 w-5" />} />
         <StatCard label="Candidatos" value={String(cands.length)} delta={cands.length ? '+ activos esta semana' : undefined} icon={<Users className="h-5 w-5" />} />
         <StatCard label="CVs analizados (IA)" value={String(screeningUsed)} icon={<ScanSearch className="h-5 w-5" />} />
-        <StatCard label="Costo IA acumulado" value={fmtMoney(totalCost)} icon={<DollarSign className="h-5 w-5" />} />
+        <StatCard
+          label="Pendientes fuera de meta"
+          value={String(kpis.overdue)}
+          delta={kpis.avgReview != null ? `revisión de CV: ${kpis.avgReview} días promedio` : undefined}
+          deltaTone={kpis.overdue > 0 ? 'warn' : 'up'}
+          icon={<Timer className="h-5 w-5" />}
+        />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
