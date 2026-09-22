@@ -153,6 +153,6 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Cómo vuelvo a ver el tour o el video?',
     keywords: ['tour', 'video', 'guia', 'guía', 'tutorial', 'ayuda', 'aprender', 'capacitacion', 'capacitación'],
     answer:
-      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour paso a paso por las pantallas y la pestaña "Video" tiene el recorrido de 2 minutos con capítulos.',
+      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour paso a paso por las pantallas y la pestaña "Video" tiene el recorrido narrado de 3 minutos con capítulos.',
   },
 ];

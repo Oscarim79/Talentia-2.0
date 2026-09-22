@@ -67,11 +67,11 @@ export const TOUR_STEPS: TourStep[] = [
 /** Capítulos del video de recorrido (segundos aproximados). */
 export const VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es TALENTIA y el orden del trabajo' },
-  { t: 11, label: 'Crear la vacante con IA (5 pasos)' },
-  { t: 33, label: 'Subir CVs y ver el ranking' },
-  { t: 48, label: 'Filtrar y responder para agendar entrevista' },
-  { t: 66, label: 'Seguir candidatos por etapa' },
-  { t: 71, label: 'Métricas: cuánto tarda cada quien' },
-  { t: 83, label: 'Configuración: equipo, metas y módulos' },
-  { t: 91, label: 'El botón de ayuda' },
+  { t: 27, label: 'Crear la vacante con IA (5 pasos)' },
+  { t: 73, label: 'Subir CVs y ver el ranking' },
+  { t: 100, label: 'Filtrar y responder para agendar entrevista' },
+  { t: 134, label: 'Seguir candidatos por etapa' },
+  { t: 142, label: 'Métricas: cuánto tarda cada quien' },
+  { t: 164, label: 'Configuración: equipo, metas y módulos' },
+  { t: 176, label: 'El botón de ayuda' },
 ];

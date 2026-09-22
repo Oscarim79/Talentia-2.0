@@ -16,7 +16,8 @@ interface ChatMsg {
   related?: string[];
 }
 
-const VIDEO_SRC = `${import.meta.env.BASE_URL}ayuda/tour-talentia.webm`;
+const VIDEO_MP4 = `${import.meta.env.BASE_URL}ayuda/tour-talentia.mp4`;
+const VIDEO_WEBM = `${import.meta.env.BASE_URL}ayuda/tour-talentia.webm`;
 
 /** Botón flotante de ayuda + panel con Chat, Guía y Video. */
 export function HelpLauncher() {
@@ -239,10 +240,12 @@ function VideoTab() {
   }
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <video ref={ref} controls preload="metadata" className="w-full rounded-xl bg-brand-950" src={VIDEO_SRC}>
+      <video ref={ref} controls preload="metadata" className="w-full rounded-xl bg-brand-950">
+        <source src={VIDEO_MP4} type="video/mp4" />
+        <source src={VIDEO_WEBM} type="video/webm" />
         Tu navegador no puede reproducir este video.
       </video>
-      <p className="mt-2 text-xs text-stone-500">Recorrido completo de TALENTIA, con subtítulos. Toca un capítulo para ir directo.</p>
+      <p className="mt-2 text-xs text-stone-500">Recorrido completo de TALENTIA (3 min), narrado y con subtítulos. Toca un capítulo para ir directo.</p>
       <ol className="mt-3 space-y-1">
         {VIDEO_CHAPTERS.map((c) => (
           <li key={c.t}>

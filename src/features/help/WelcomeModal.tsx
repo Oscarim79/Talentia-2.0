@@ -24,7 +24,7 @@ export function WelcomeModal() {
         </div>
         <div className="grid gap-2 p-4 sm:p-5">
           <ChoiceButton icon={Compass} title="Iniciar el tour guiado" desc="Te lleva pantalla por pantalla, en el orden real del trabajo. 8 pasos." onClick={startTour} primary />
-          <ChoiceButton icon={PlayCircle} title="Ver el video (2 min)" desc="Recorrido completo con capítulos, para verlo cuando quieras." onClick={() => { dismissWelcome(); openPanel('video'); }} />
+          <ChoiceButton icon={PlayCircle} title="Ver el video (3 min)" desc="Recorrido completo narrado, con subtítulos y capítulos." onClick={() => { dismissWelcome(); openPanel('video'); }} />
           <ChoiceButton icon={MessageCircleQuestion} title="Explorar por mi cuenta" desc="El botón de ayuda queda abajo a la derecha: pregunta lo que sea, cuando sea." onClick={dismissWelcome} />
         </div>
       </div>
