@@ -25,4 +25,4 @@ export const DEMO_MODE = true;
 export const TEAM_PILOT = true;
 
 /** Correo al que el equipo envía sus preguntas y comentarios de la ronda de prueba. */
-export const FEEDBACK_EMAIL = 'me@oscarimorales.com';
+export const FEEDBACK_EMAIL = 'omorales@americana2000.com';

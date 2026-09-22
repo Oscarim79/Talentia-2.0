@@ -55,4 +55,4 @@ Objetivo: definir las metas de servicio reales de Americana.
 7. ¿Qué pregunta le hicieron al chat de ayuda que no supo responder?
 
 ## Cómo enviar los comentarios
-Todo lo que le pregunten al chat de ayuda queda guardado. Al terminar la semana: **Configuración → Preguntas al chat de ayuda → "Enviar a Oscar"** abre un correo con las preguntas y espacio para responder las 7 de arriba. También pueden escribir directo a me@oscarimorales.com.
+Todo lo que le pregunten al chat de ayuda queda guardado. Al terminar la semana: **Configuración → Preguntas al chat de ayuda → "Enviar a Oscar"** abre un correo con las preguntas y espacio para responder las 7 de arriba. También pueden escribir directo a omorales@americana2000.com.
