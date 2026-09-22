@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/utils';
 
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
+export function Card({ className, children, dataTour }: { className?: string; children: ReactNode; dataTour?: string }) {
   return (
     <div
+      data-tour={dataTour}
       className={cn(
         'rounded-2xl border border-stone-200/80 bg-white shadow-[0_1px_2px_rgba(33,49,43,0.05),0_4px_16px_-8px_rgba(33,49,43,0.06)]',
         className,
@@ -82,12 +83,14 @@ export function Button({
   children,
   onClick,
   disabled,
+  dataTour,
 }: {
   variant?: 'primary' | 'secondary' | 'ghost';
   className?: string;
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  dataTour?: string;
 }) {
   const variants = {
     primary:
@@ -99,6 +102,7 @@ export function Button({
     <button
       onClick={onClick}
       disabled={disabled}
+      data-tour={dataTour}
       className={cn(
         'inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
         variants[variant],

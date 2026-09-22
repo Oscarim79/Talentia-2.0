@@ -181,6 +181,7 @@ export default function ScreeningPage() {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
+        data-tour="screening:dropzone"
         onClick={() => !busy && inputRef.current?.click()}
         role="button"
         tabIndex={0}

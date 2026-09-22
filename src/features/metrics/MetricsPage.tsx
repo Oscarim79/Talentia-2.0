@@ -127,7 +127,7 @@ export default function MetricsPage() {
       </div>
 
       {/* Cada quien */}
-      <Card className="mt-6 overflow-hidden">
+      <Card className="mt-6 overflow-hidden" dataTour="metrics:people">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 px-5 py-4">
           <h2 className="flex items-center gap-2 text-sm font-bold text-stone-700">
             <Users className="h-4 w-4 text-brand-600" /> Cada quien: tiempos y carga por persona

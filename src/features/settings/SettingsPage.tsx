@@ -79,7 +79,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* Metas de servicio */}
-      <Card className="mb-6 overflow-hidden">
+      <Card className="mb-6 overflow-hidden" dataTour="settings:goals">
         <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
           <Timer className="h-4 w-4 text-brand-600" />
           <h2 className="text-sm font-bold text-stone-700">Metas de servicio (días)</h2>
