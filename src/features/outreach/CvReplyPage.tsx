@@ -27,10 +27,11 @@ import { Toggle } from '../settings/SettingsPage';
 // ---------- Plantilla estándar (software opinado: una sola, con campos fijos) ----------
 
 type Modality = 'presencial' | 'llamada' | 'videollamada';
+// Americana 2000 entrevista por videollamada (cadena en todo el país): es la opción por defecto.
 const MODALITIES: { key: Modality; label: string; phrase: string }[] = [
-  { key: 'presencial', label: 'Presencial', phrase: 'presencial' },
-  { key: 'llamada', label: 'Llamada telefónica', phrase: 'por llamada telefónica' },
   { key: 'videollamada', label: 'Videollamada', phrase: 'por videollamada' },
+  { key: 'llamada', label: 'Llamada telefónica', phrase: 'por llamada telefónica' },
+  { key: 'presencial', label: 'Presencial', phrase: 'presencial' },
 ];
 
 interface ReplyOptions {
@@ -98,9 +99,9 @@ export default function CvReplyPage() {
 
   // ---- Respuesta ----
   const [channel, setChannel] = useState<OutreachChannel>('whatsapp');
-  const [modality, setModality] = useState<Modality>('presencial');
+  const [modality, setModality] = useState<Modality>('videollamada');
   const [slots, setSlots] = useState<[string, string]>(defaultSlots);
-  const [place, setPlace] = useState('Trae tu DPI y una copia impresa de tu CV.');
+  const [place, setPlace] = useState('Al confirmar tu horario te enviaremos el enlace de la videollamada. Ten a mano tu DPI.');
   const [contact, setContact] = useState('Recursos Humanos');
   const [preview, setPreview] = useState<Candidate | null>(null);
 
