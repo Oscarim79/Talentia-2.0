@@ -80,12 +80,13 @@ await p.hover('nav a:has-text("Entrevistas IA")'); await spot('[data-tour="nav:/
 await seg('preg'); await p.click('nav a:has-text("Vacantes")'); await p.waitForSelector('h1:has-text("Vacantes")'); await wait(1800);
 await spot('[data-tour="jobs:questions"]', 6000); await p.hover('[data-tour="jobs:questions"]'); await endSeg();
 
-// 5. Agendar por videollamada y avisar en Indicaciones
-await seg('agenda'); await p.click('nav a:has-text("Respuestas a CVs")'); await p.waitForSelector('h1'); await wait(1500);
-await scrollTo('[data-tour="reply:template"]'); await wait(1200); await spot('[data-tour="reply:template"]', 9000);
-const ind = p.locator('[data-tour="reply:template"] label:has-text("Indicaciones") input');
-await ind.click(); await ind.fill('');
-await ind.pressSequentially('Te entrevistará el asistente de IA de RR.HH. por videollamada; la entrevista se grabará para evaluarla.', { delay: 28 });
+// 5. Agendar por Zoom con horario por candidato y la casilla del aviso de IA
+await seg('agenda'); await p.click('nav a:has-text("Respuestas a CVs")'); await p.waitForSelector('h1'); await wait(1200);
+await p.locator('main ul li input[type=checkbox]').first().check(); await wait(800);
+await spot('[data-tour="reply:slot"]', 3500, true); await wait(2500);
+await scrollTo('[data-tour="reply:ai-notice"]'); await wait(900); await spot('[data-tour="reply:ai-notice"]', 6000); await wait(4500);
+await p.locator('main ul li').first().locator('button[aria-label="Vista previa del mensaje"]').click(); await wait(5000);
+await p.keyboard.press('Escape');
 await endSeg();
 
 // 6. La videollamada (canales)

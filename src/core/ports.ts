@@ -73,6 +73,8 @@ export interface HelpReplyInput {
   question: string;
   /** Ruta actual, para contextualizar la respuesta. */
   route: string;
+  /** Módulo desde cuya ayuda se abrió el chat (ej. 'interviewsAi'): sus respuestas tienen prioridad. */
+  topic?: string | null;
 }
 
 export interface HelpReplyResult {

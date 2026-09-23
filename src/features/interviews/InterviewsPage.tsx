@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
 import { providers } from '../../core/providers';
 import { useHelp } from '../help/HelpContext';
 import type { Candidate, Job, InterviewTurn, Discrepancy } from '../../types';
@@ -21,7 +21,7 @@ import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives'
 
 // Americana 2000 entrevista por videollamada (cadena en todo el país): es el canal principal.
 const CHANNELS = [
-  { icon: Video, label: 'Videollamada', desc: 'El asistente entra a la videollamada (Google Meet), graba y transcribe (Recall.ai)', tag: 'Fase 3' },
+  { icon: Video, label: 'Videollamada', desc: 'El asistente de IA entra a la videollamada de Zoom, graba y transcribe (Recall.ai)', tag: 'Fase 3' },
   { icon: MessageCircle, label: 'WhatsApp', desc: 'Entrevista por texto + agendamiento', tag: 'Fase 2' },
   { icon: Phone, label: 'Teléfono', desc: 'Agente de voz (Vapi/Retell)', tag: 'Fase 3' },
 ];
@@ -37,17 +37,13 @@ export default function InterviewsPage() {
   const { tenant } = useTenant();
   const { jobs } = useJobs();
   const { openModuleIntro } = useHelp();
+  const { candidates: tenantCands } = useCandidates();
 
-  // Candidatos entrevistables del tenant (ya puntuados en screening).
+  // Candidatos entrevistables del tenant (ya puntuados en screening; incluye los CVs cargados
+  // y a quienes confirmaron su entrevista en Respuestas a CVs).
   const candidates = useMemo(
-    () =>
-      CANDIDATES.filter(
-        (c) =>
-          c.tenantId === tenant.id &&
-          c.screeningStatus === 'scored' &&
-          (c.stage === 'interview' || c.stage === 'screening'),
-      ),
-    [tenant.id],
+    () => tenantCands.filter((c) => c.screeningStatus === 'scored' && (c.stage === 'interview' || c.stage === 'screening')),
+    [tenantCands],
   );
 
   const [candId, setCandId] = useState('');
@@ -129,7 +125,7 @@ export default function InterviewsPage() {
       <PageHeader
         eyebrow="Reclutamiento"
         title="Entrevistas IA"
-        subtitle="El asistente entrevista por videollamada con el banco de preguntas de la vacante, transcribe y evalúa. RR.HH. decide."
+        subtitle="El asistente de IA entrevista por videollamada (Zoom) con el banco de preguntas de la vacante, transcribe y evalúa. RR.HH. decide."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="brand">
@@ -204,9 +200,9 @@ export default function InterviewsPage() {
                 <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                   <Bot className="h-10 w-10 text-brand-300" />
                   <p className="max-w-xs text-sm text-stone-500">
-                    El asistente hará {questionTexts.length} preguntas del banco de la vacante. En la demo la videollamada se simula con este chat: responde como lo haría el candidato.
+                    El asistente de IA hará {questionTexts.length} preguntas del banco de la vacante. En la demo la videollamada se simula con este chat: responde como lo haría el candidato.
                   </p>
-                  <Button onClick={startInterview} disabled={thinking}>
+                  <Button onClick={startInterview} disabled={thinking} dataTour="interviews:start">
                     <Sparkles className="h-4 w-4" /> Iniciar entrevista
                   </Button>
                 </div>

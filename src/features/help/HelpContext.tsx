@@ -48,7 +48,8 @@ interface HelpCtxValue {
   tourStep: number | null;
   startTour: (tour?: TourId) => void;
   setTourStep: (i: number) => void;
-  endTour: () => void;
+  /** Cierra el tour; solo se marca como visto si se terminó (botón "Terminar"). */
+  endTour: (completed?: boolean) => void;
   isTourDone: (tour: TourId) => boolean;
   showWelcome: boolean;
   dismissWelcome: () => void;
@@ -111,13 +112,15 @@ export function HelpProvider({ children }: { children: ReactNode }) {
   // Acepta ser usado directo como onClick (recibe el evento): cualquier cosa que no sea un tour conocido = tour general.
   const startTour = useCallback((t?: TourId) => {
     setPanelOpen(false);
+    setChatTopic(null);
     setModuleIntro(null);
     setState((s) => ({ ...s, welcomeSeen: true }));
     setTour(isTourId(t) ? t : 'main');
     setTourStepState(0);
   }, []);
-  const endTour = useCallback(() => {
+  const endTour = useCallback((completed = false) => {
     setTourStepState(null);
+    if (completed !== true) return; // salir con la X o Escape no cuenta como visto
     setState((s) =>
       tour === 'main'
         ? { ...s, tourDone: true }
@@ -129,6 +132,7 @@ export function HelpProvider({ children }: { children: ReactNode }) {
 
   const openModuleIntro = useCallback((module: ModuleId, justActivated = false) => {
     setPanelOpen(false);
+    setChatTopic(null);
     setModuleIntro({ module, justActivated });
   }, []);
   const closeModuleIntro = useCallback(() => setModuleIntro(null), []);

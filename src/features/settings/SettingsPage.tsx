@@ -41,10 +41,9 @@ export default function SettingsPage() {
     }
   }
   function resetDemo() {
-    if (!window.confirm('Se borrarán metas, equipo agregado, módulos, preguntas y el estado del tour en este navegador. ¿Restablecer la demo?')) return;
+    if (!window.confirm('Se borrarán metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, preguntas y el estado del tour en este navegador. ¿Restablecer la demo?')) return;
     try {
-      localStorage.removeItem('talentia.settings.v1');
-      localStorage.removeItem('talentia.help.v1');
+      for (const k of ['talentia.settings.v1', 'talentia.help.v1', 'talentia.jobs.v1', 'talentia.candidates.v1', 'talentia.outreach.v1']) localStorage.removeItem(k);
     } catch {
       /* sin almacenamiento */
     }

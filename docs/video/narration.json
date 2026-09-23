@@ -9,7 +9,7 @@
   },
   {
     "id": "vac",
-    "text": "Paso uno: Vacantes. Cada plaza pertenece a una marca: Americana, Abiq o Friotec. El botón Nueva vacante abre un asistente de cinco pasos."
+    "text": "Paso uno: Vacantes. Cada plaza pertenece a una marca: Americana, Abiq o Friotec. El botón Nueva vacante abre un formulario de cinco pasos."
   },
   {
     "id": "vac1",
@@ -41,7 +41,7 @@
   },
   {
     "id": "scr3",
-    "text": "El resultado es un ranking ordenado de mejor a peor, con la evidencia textual de cada requisito."
+    "text": "El resultado es un ranking ordenado de mejor a peor, con la evidencia textual de cada requisito. Los currículums quedan guardados y pasan a Respuestas a currículums."
   },
   {
     "id": "rep",
@@ -49,11 +49,11 @@
   },
   {
     "id": "rep2",
-    "text": "Marcas a los candidatos y respondes con un clic. El mensaje es una plantilla estándar por WhatsApp o correo, con dos opciones de horario para la entrevista por videollamada. Puedes ver la vista previa antes de enviar."
+    "text": "Marcas a los candidatos y respondes con un clic. El mensaje es una plantilla estándar por WhatsApp o correo para la entrevista virtual por Zoom, con la fecha y hora de cada candidato: se asignan seguidas y puedes cambiar cualquiera según tu agenda. Antes de enviar, revisa la vista previa."
   },
   {
     "id": "rep3",
-    "text": "La bandeja de envíos muestra quién confirmó la entrevista y quién no contestó. Y si activas la regla automática, TALENTIA responde sola a todo currículum que supere el puntaje que definas."
+    "text": "La bandeja de envíos muestra quién confirmó la entrevista y quién no contestó; quien confirma pasa a la etapa de entrevista. Y si activas la regla automática, TALENTIA responde sola a todo currículum que supere el puntaje que definas."
   },
   {
     "id": "cand",
@@ -69,11 +69,11 @@
   },
   {
     "id": "conf",
-    "text": "Paso seis: Configuración. Aquí administras el equipo de Recursos Humanos, las metas en días y los módulos opcionales. Nada más se configura: el proceso ya viene definido."
+    "text": "Paso seis: Configuración. Aquí administras el equipo de Recursos Humanos, las metas en días y los módulos opcionales, como las entrevistas por videollamada con inteligencia artificial, que traen su propia ayuda guiada. Nada más se configura: el proceso ya viene definido."
   },
   {
     "id": "help",
-    "text": "¿Tienes dudas? El botón de ayuda siempre está ahí. Tiene un chat que te explica cómo hacer cada cosa y te lleva a la pantalla correcta, la guía del tour y este video."
+    "text": "¿Tienes dudas? El botón de ayuda siempre está ahí. Tiene un chat que te explica cómo hacer cada cosa y te lleva a la pantalla correcta, la guía del tour y los videos."
   },
   {
     "id": "end",

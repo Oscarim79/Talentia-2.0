@@ -11,7 +11,7 @@ export const PILOT_DAYS: { day: string; title: string; goal: string; tasks: stri
     title: 'Conocer la herramienta',
     goal: 'Entender el orden del trabajo y dónde está cada cosa.',
     tasks: [
-      'Mira el video de 3 minutos (botón Ayuda → Video).',
+      'Mira el video de 3 minutos y medio (botón Ayuda → Video).',
       'Haz el tour guiado completo (botón Ayuda → Guía → Iniciar el tour).',
       'Recorre el menú por tu cuenta y hazle al chat de ayuda al menos 3 preguntas sobre lo que no entendiste.',
     ],
@@ -48,7 +48,7 @@ export const PILOT_DAYS: { day: string; title: string; goal: string; tasks: stri
     goal: 'Probar el mensaje automático y la bandeja de envíos.',
     tasks: [
       'En Respuestas a CVs, filtra por score mínimo 75 y mira la vista previa del mensaje (ojito).',
-      'Cambia la modalidad, los horarios y la firma hasta que el mensaje sea el que ustedes mandarían de verdad. Anota el texto final.',
+      'Cambia la modalidad, el horario de cada candidato y la firma hasta que el mensaje sea el que ustedes mandarían de verdad. Anota el texto final.',
       'Responde a los seleccionados y observa la Bandeja de envíos: quién confirmó y quién no; reenvía a quien no contestó.',
       'Activa la regla automática con el umbral que te parezca sensato y decide si la usarían así.',
     ],
@@ -82,7 +82,7 @@ export const PILOT_QUESTIONS = [
 
 export const PILOT_RULES = [
   'Es una demostración: los datos son de ejemplo y la IA está simulada. Nada de lo que hagan afecta a ningún candidato real.',
-  'Usa siempre el mismo navegador en la misma computadora: lo que configures (metas, equipo, módulos) y tus preguntas se guardan ahí.',
+  'Usa siempre el mismo navegador en la misma computadora: lo que hagas (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) y tus preguntas se guardan ahí.',
   'No hay usuarios ni contraseñas todavía; entra directo con el enlace.',
   'Si algo se rompe o quieres empezar de cero: Configuración → "Restablecer la demo".',
 ];
@@ -109,7 +109,7 @@ export default function PilotGuidePage() {
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
           <button onClick={() => openPanel('video', { video: 'tour' })} className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3.5 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50">
-            <PlayCircle className="h-4 w-4" /> Ver el video (3 min)
+            <PlayCircle className="h-4 w-4" /> Ver el video (3½ min)
           </button>
           <button onClick={() => startTour()} className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700">
             <Compass className="h-4 w-4" /> Iniciar el tour

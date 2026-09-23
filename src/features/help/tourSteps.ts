@@ -23,13 +23,13 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/vacantes',
     target: 'jobs:new',
     title: '1. Crea la vacante',
-    body: 'Todo empieza aquí. "Nueva vacante" abre un asistente de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas de entrevista y revisión. Al final puedes descargar el XML para LinkedIn.',
+    body: 'Todo empieza aquí. "Nueva vacante" abre un formulario de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas de entrevista y revisión. Al final puedes descargar el XML para LinkedIn.',
   },
   {
     route: '/screening',
     target: 'screening:dropzone',
     title: '2. Sube los CVs',
-    body: 'Elige la vacante y arrastra los CVs (PDF, Word o imagen) a esta zona. La IA lee cada uno, lo puntúa de 0 a 100 contra los filtros de la vacante y los ordena. Verás la evidencia textual de cada requisito y, aparte, los archivos que no se pudieron leer.',
+    body: 'Elige la vacante y arrastra los CVs (PDF, Word o imagen) a esta zona. La IA lee cada uno, lo puntúa de 0 a 100 contra los filtros de la vacante y los ordena. Verás la evidencia textual de cada requisito y, aparte, los archivos que no se pudieron leer. Los CVs quedan guardados y pasan a Respuestas a CVs.',
   },
   {
     route: '/respuestas',
@@ -41,7 +41,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/respuestas',
     target: 'reply:send',
     title: '4. Responde y agenda la entrevista',
-    body: 'Con un clic se envía a cada seleccionado el mensaje estándar (WhatsApp o correo) con dos opciones de horario. La Bandeja de envíos de abajo te dice quién confirmó y quién no contestó. La regla automática puede hacer esto sola para todo CV que supere el score que definas.',
+    body: 'Con un clic se envía a cada seleccionado el mensaje estándar (WhatsApp o correo) para la entrevista virtual por Zoom, con su propia fecha y hora: se asignan seguidas desde la primera entrevista y puedes cambiar la de cualquiera en su fila. La Bandeja de envíos te dice quién confirmó y quién no contestó.',
   },
   {
     route: '/candidatos',
@@ -59,7 +59,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/configuracion',
     target: 'settings:goals',
     title: '7. Ajusta metas y equipo',
-    body: 'En Configuración defines las metas en días, agregas personas al equipo de RR.HH. y enciendes módulos opcionales como Entrevistas IA por videollamada (al activarlo, una ayuda guiada te explica cómo funciona). Nada más se configura: el proceso ya viene definido.',
+    body: 'En Configuración defines las metas en días, agregas personas al equipo de RR.HH. y enciendes módulos opcionales como Entrevistas IA por videollamada (al activarlo, se abre una ayuda guiada que explica cómo funciona). Nada más se configura: el proceso ya viene definido.',
   },
   {
     route: '/configuracion',
@@ -70,57 +70,57 @@ export const TOUR_STEPS: TourStep[] = [
 ];
 
 /**
- * Ayuda guiada de Entrevistas IA por videollamada: se ofrece al activar el
- * módulo en Configuración y se repite desde Ayuda → Guía.
+ * Recorrido guiado de Entrevistas IA por videollamada: se ofrece en la ventana que
+ * se abre al activar el módulo en Configuración y se repite desde Ayuda → Guía.
  */
 export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
   {
     route: '/configuracion',
     target: 'settings:module:interviewsAi',
-    title: 'Entrevistas IA quedó activada',
-    body: 'Desde aquí la enciendes o la apagas cuando quieras. Apagarla solo la oculta del menú: no se pierde nada. Este recorrido te enseña cómo funciona y qué te toca hacer a ti.',
+    title: 'Módulo activado',
+    body: 'Desde aquí lo enciendes o lo apagas cuando quieras. Apagarlo solo lo oculta del menú: no se pierde nada. Este recorrido te enseña cómo funciona y qué te toca hacer a ti.',
   },
   {
     route: '/configuracion',
     target: 'nav:/entrevistas',
     title: 'Nueva sección en el menú',
-    body: '"Entrevistas IA" aparece en Reclutamiento, después de Respuestas a CVs, porque ese es su lugar en el proceso: primero agendas la videollamada y luego el asistente de IA entrevista.',
+    body: '"Entrevistas IA" aparece en Reclutamiento, después de Respuestas a CVs, porque ese es su lugar en el proceso: primero agendas la entrevista y luego el asistente de IA la hace.',
   },
   {
     route: '/vacantes',
     target: 'jobs:questions',
     title: '1. Revisa las preguntas de la vacante',
-    body: 'El asistente solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen al crear la vacante (paso 4, "Preguntas IA"); la tarjeta dice cuántas tiene. Si una vacante no tiene preguntas, usa 3 generales.',
+    body: 'El asistente de IA solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen al crear la vacante (paso 4, "Preguntas IA") y hoy no se editan después; la tarjeta dice cuántas tiene. Si una vacante no tiene, usa 3 generales.',
   },
   {
     route: '/respuestas',
-    target: 'reply:template',
-    title: '2. Agenda la videollamada como siempre',
-    body: 'Deja la modalidad en Videollamada y manda los dos horarios. En "Indicaciones" avisa al candidato que lo entrevistará el asistente de IA de RR.HH. y que la entrevista se grabará para evaluarla.',
+    target: 'reply:ai-notice',
+    title: '2. Agenda con el aviso de IA',
+    body: 'Con el módulo activo aparece esta casilla: déjala marcada y el mensaje avisa al candidato que lo entrevistará el asistente de IA y que la entrevista se grabará. Desmárcala si la entrevista la hará una persona del equipo.',
   },
   {
     route: '/entrevistas',
     target: 'interviews:channels',
     title: '3. El asistente entrevista por videollamada',
-    body: 'A la hora acordada entra a la videollamada, saluda, se presenta como asistente de entrevistas y hace las preguntas una por una; todo queda transcrito. En esta demo la videollamada todavía no está conectada (llega con los proveedores reales).',
+    body: 'A la hora acordada entra a la videollamada de Zoom, se presenta como asistente virtual con IA y hace las preguntas una por una; todo queda transcrito. La videollamada real está planeada para la Fase 3.',
   },
   {
     route: '/entrevistas',
-    target: 'interviews:chat',
+    target: 'interviews:start',
     title: '4. Pruébalo aquí',
-    body: 'En la demo la videollamada se simula con este chat: elige un candidato, pulsa "Iniciar entrevista" y escribe las respuestas como lo haría el candidato. "Reiniciar" empieza de nuevo.',
+    body: 'En la demo la videollamada se simula con un chat: elige un candidato, pulsa "Iniciar entrevista" y escribe las respuestas como lo haría el candidato. Quien confirma su entrevista en Respuestas a CVs aparece en la lista.',
   },
   {
     route: '/entrevistas',
     target: 'interviews:evaluation',
     title: '5. Lee la evaluación',
-    body: 'Al terminar aparecen el puntaje global de 0 a 100 (verde desde 80, ámbar desde 60, rojo abajo), el puntaje de 1 a 10 de cada pregunta y las diferencias entre el CV y lo que dijo el candidato.',
+    body: 'Al terminar aparecen el puntaje global de 0 a 100 (verde desde 80, ámbar desde 60, rojo abajo), el de 1 a 10 de cada pregunta y las diferencias entre el CV y lo que dijo el candidato. En la demo el puntaje es aproximado.',
   },
   {
     route: '/candidatos',
     target: 'candidates:board',
     title: '6. RR.HH. decide',
-    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Con la transcripción y la evaluación, tú decides si el candidato pasa a Oferta o se descarta.',
+    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Tú decides si el candidato pasa a Oferta o se descarta. En la demo el tablero solo muestra la etapa (quien confirma su entrevista pasa solo a Entrevista).',
   },
   {
     route: '/entrevistas',
@@ -166,33 +166,34 @@ const asset = (file: string) => `${import.meta.env.BASE_URL}ayuda/${file}`;
 /** Capítulos del video de recorrido (segundos aproximados). */
 export const VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es TALENTIA y el orden del trabajo' },
-  { t: 28, label: 'Crear la vacante con IA (5 pasos)' },
+  { t: 27, label: 'Crear la vacante con IA (5 pasos)' },
   { t: 74, label: 'Subir CVs y ver el ranking' },
-  { t: 101, label: 'Filtrar y responder para agendar entrevista' },
-  { t: 136, label: 'Seguir candidatos por etapa' },
-  { t: 144, label: 'Métricas: cuánto tarda cada quien' },
-  { t: 166, label: 'Configuración: equipo, metas y módulos' },
-  { t: 178, label: 'El botón de ayuda' },
+  { t: 105, label: 'Responder: Zoom y un horario por candidato' },
+  { t: 148, label: 'Seguir candidatos por etapa' },
+  { t: 155, label: 'Métricas: cuánto tarda cada quien' },
+  { t: 177, label: 'Configuración: equipo, metas y módulos' },
+  { t: 195, label: 'El botón de ayuda' },
 ];
 
 /** Capítulos del video de Entrevistas IA por videollamada (segundos aproximados). */
 export const INTERVIEWS_AI_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es Entrevistas IA por videollamada' },
-  { t: 12, label: 'Activarla en Configuración' },
-  { t: 27, label: 'Preguntas de la vacante' },
-  { t: 40, label: 'Agendar y avisar al candidato' },
-  { t: 57, label: 'La entrevista por videollamada' },
-  { t: 66, label: 'Probarla en la demo' },
-  { t: 84, label: 'Leer la evaluación y decidir' },
-  { t: 104, label: 'Dónde pedir ayuda' },
+  { t: 15, label: 'Activar el módulo en Configuración' },
+  { t: 36, label: 'Preguntas de la vacante' },
+  { t: 50, label: 'Agendar por Zoom con el aviso de IA' },
+  { t: 69, label: 'La entrevista por videollamada' },
+  { t: 77, label: 'Probarla en la demo' },
+  { t: 89, label: 'Leer la evaluación' },
+  { t: 103, label: 'RR.HH. decide' },
+  { t: 112, label: 'Dónde pedir ayuda' },
 ];
 
 export const HELP_VIDEOS: HelpVideo[] = [
   {
     id: 'tour',
-    tab: 'Recorrido (3 min)',
+    tab: 'Recorrido (3½ min)',
     title: 'Recorrido completo de TALENTIA',
-    description: 'Recorrido completo de TALENTIA (3 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    description: 'Recorrido completo de TALENTIA (3 min y medio), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('tour-talentia.mp4'),
     webm: asset('tour-talentia.webm'),
     chapters: VIDEO_CHAPTERS,

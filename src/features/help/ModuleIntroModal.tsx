@@ -1,22 +1,38 @@
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, Compass, PlayCircle, MessageCircleQuestion, X, CheckCircle2, ArrowRight, Info, Settings, Check } from 'lucide-react';
 import { useHelp } from './HelpContext';
 import { useSettings } from '../../context/SettingsContext';
 import { MODULE_GUIDES } from './moduleGuides';
 import { TOURS } from './tourSteps';
-import { useEscape } from '../../lib/useEscape';
 import { Badge, Button } from '../../components/ui/primitives';
 
 /**
  * Ayuda guiada de un módulo opcional: se abre sola al activarlo en Configuración
- * (y a pedido desde Ayuda → Guía, Configuración o la pantalla del módulo).
- * Explica cómo funciona, qué le toca hacer a RR.HH. y ofrece el recorrido paso a paso.
+ * (y a pedido con "Cómo funciona" desde Ayuda → Guía, Configuración o la pantalla del módulo).
+ * Explica cómo funciona, qué le toca hacer a RR.HH. y ofrece el recorrido guiado paso a paso.
  */
 export function ModuleIntroModal() {
   const { moduleIntro, closeModuleIntro, startTour, openPanel, isTourDone } = useHelp();
   const { isModuleEnabled } = useSettings();
   const navigate = useNavigate();
-  useEscape(closeModuleIntro);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const open = moduleIntro !== null;
+
+  useEffect(() => {
+    if (!open) return;
+    // El foco entra a la ventana (si se queda en el interruptor, un Enter apagaría el módulo).
+    dialogRef.current?.focus();
+    // Escape cierra solo esta ventana, no los modales de la página que quedan debajo.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopImmediatePropagation();
+      closeModuleIntro();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [open, closeModuleIntro]);
+
   if (!moduleIntro) return null;
 
   const { module, justActivated } = moduleIntro;
@@ -26,16 +42,26 @@ export function ModuleIntroModal() {
     closeModuleIntro();
     navigate(route);
   };
-  const eyebrow = justActivated ? 'Módulo activado' : on ? 'Módulo opcional · activo' : 'Módulo opcional · desactivado';
+  /** Lleva al interruptor del módulo en Configuración. */
+  const goToSwitch = () => {
+    go('/configuracion');
+    window.setTimeout(() => {
+      document.querySelector(`[data-tour="settings:module:${module}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 150);
+  };
+  const activatedNow = justActivated && on;
+  const eyebrow = activatedNow ? 'Módulo activado' : on ? 'Módulo opcional · activo' : 'Módulo opcional · desactivado';
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-950/60 p-4 backdrop-blur-sm" onClick={closeModuleIntro}>
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={`Ayuda guiada: ${guide.title}`}
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl outline-none"
       >
         <div className="shrink-0 bg-brand-950 px-5 py-5 text-white sm:px-6">
           <div className="flex items-start justify-between gap-3">
@@ -50,7 +76,7 @@ export function ModuleIntroModal() {
             </button>
           </div>
           <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">
-            {justActivated ? `Activaste ${guide.title}` : guide.title}
+            {activatedNow ? `Activaste ${guide.title}` : guide.title}
           </h2>
           <p className="mt-1 text-sm text-brand-200">{guide.summary}</p>
         </div>
@@ -102,11 +128,11 @@ export function ModuleIntroModal() {
           <div className="flex flex-wrap items-center gap-2">
             {on ? (
               <Button onClick={() => startTour(module)}>
-                <Compass className="h-4 w-4" /> {isTourDone(module) ? 'Repetir la ayuda guiada' : 'Iniciar la ayuda guiada'} ({TOURS[module].length} pasos)
+                <Compass className="h-4 w-4" /> {isTourDone(module) ? 'Repetir el recorrido guiado' : 'Iniciar el recorrido guiado'} ({TOURS[module].length} pasos)
               </Button>
             ) : (
-              <Button onClick={() => go('/configuracion')}>
-                <Settings className="h-4 w-4" /> Activarla en Configuración
+              <Button onClick={goToSwitch}>
+                <Settings className="h-4 w-4" /> Activar el módulo en Configuración
               </Button>
             )}
             <Button
@@ -131,10 +157,10 @@ export function ModuleIntroModal() {
               Lo veo después
             </Button>
           </div>
-          <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-stone-400">
+          <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-400">
             {isTourDone(module) && (
-              <Badge variant="green">
-                <Check className="h-3 w-3" /> Ya la viste
+              <Badge variant="green" className="shrink-0 whitespace-nowrap">
+                <Check className="h-3 w-3" /> Recorrido visto
               </Badge>
             )}
             Esta ayuda siempre está en el botón Ayuda → Guía.

@@ -13,7 +13,9 @@ interface Rect {
 }
 
 const PAD = 6;
+const GAP = 12;
 const CARD_W = 340;
+const EDGE = 16;
 
 /** Tour guiado: navega a cada pantalla, resalta el elemento y explica el paso. */
 export function Tour() {
@@ -43,7 +45,8 @@ export function Tour() {
       if (cancelled) return;
       const el = step.target ? document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`) : null;
       if (el) {
-        el.scrollIntoView({ block: 'center', inline: 'nearest' });
+        // En móvil la tarjeta ocupa el ancho: el elemento sube para que la tarjeta no lo tape.
+        el.scrollIntoView({ block: window.innerWidth < 640 ? 'start' : 'center', inline: 'nearest' });
         const r = el.getBoundingClientRect();
         // Elemento oculto (ej. sidebar en móvil): sin foco, solo tarjeta.
         if (r.width === 0 || r.height === 0) setRect(null);
@@ -77,12 +80,16 @@ export function Tour() {
   useEffect(() => {
     if (!step) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') endTour();
+      if (e.key === 'Escape') {
+        // Solo cierra el tour: no debe llegar a los modales de la página que quedan debajo.
+        e.stopImmediatePropagation();
+        endTour();
+      }
       if (e.key === 'ArrowRight' && tourStep! < steps.length - 1) setTourStep(tourStep! + 1);
       if (e.key === 'ArrowLeft' && tourStep! > 0) setTourStep(tourStep! - 1);
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [step, steps, tourStep, setTourStep, endTour]);
 
   if (!step || tourStep == null) return null;
@@ -92,16 +99,26 @@ export function Tour() {
   const vh = window.innerHeight;
   const mobile = vw < 640;
 
-  // Posición de la tarjeta: a la derecha del elemento si cabe, si no debajo; en móvil, abajo fija.
+  // Posición de la tarjeta sin tapar el elemento: a la derecha, debajo, arriba o a la izquierda (lo que quepa).
+  // En móvil ocupa el ancho: abajo, o arriba si el elemento quedó en la mitad inferior.
   let cardStyle: React.CSSProperties;
-  if (mobile || !rect) {
-    cardStyle = { left: 16, right: 16, bottom: 16 };
+  if (!rect) {
+    cardStyle = { left: EDGE, right: EDGE, bottom: EDGE };
+  } else if (mobile) {
+    cardStyle = rect.top + rect.height / 2 > vh / 2 ? { left: EDGE, right: EDGE, top: EDGE } : { left: EDGE, right: EDGE, bottom: EDGE };
   } else {
-    const fitsRight = rect.left + rect.width + PAD + 16 + CARD_W < vw;
-    const left = fitsRight ? rect.left + rect.width + PAD + 16 : Math.min(Math.max(16, rect.left), vw - CARD_W - 16);
-    const maxTop = Math.max(16, vh - cardH - 16);
-    const top = fitsRight ? Math.min(Math.max(16, rect.top), maxTop) : Math.min(rect.top + rect.height + PAD + 12, maxTop);
-    cardStyle = { left, top, width: CARD_W };
+    const clampTop = (t: number) => Math.min(Math.max(EDGE, t), Math.max(EDGE, vh - cardH - EDGE));
+    const clampLeft = (l: number) => Math.min(Math.max(EDGE, l), vw - CARD_W - EDGE);
+    const right = rect.left + rect.width + PAD + EDGE;
+    const below = rect.top + rect.height + PAD + GAP;
+    const above = rect.top - PAD - GAP - cardH;
+    const leftSide = rect.left - PAD - EDGE - CARD_W;
+    if (right + CARD_W + EDGE <= vw) cardStyle = { left: right, top: clampTop(rect.top) };
+    else if (below + cardH + EDGE <= vh) cardStyle = { left: clampLeft(rect.left), top: below };
+    else if (above >= EDGE) cardStyle = { left: clampLeft(rect.left + rect.width - CARD_W), top: above };
+    else if (leftSide >= EDGE) cardStyle = { left: leftSide, top: clampTop(rect.top) };
+    else cardStyle = { left: clampLeft(rect.left), top: clampTop(below) };
+    cardStyle.width = CARD_W;
   }
 
   return (
@@ -127,7 +144,7 @@ export function Tour() {
           <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-600">
             {tour !== 'main' && `${TOUR_LABELS[tour]} · `}Paso {tourStep + 1} de {steps.length}
           </p>
-          <button onClick={endTour} aria-label="Salir del tour" className="rounded-lg p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
+          <button onClick={() => endTour()} aria-label="Salir del tour" className="rounded-lg p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -144,7 +161,7 @@ export function Tour() {
               <ChevronLeft className="h-4 w-4" /> Atrás
             </Button>
             {last ? (
-              <Button onClick={endTour}>
+              <Button onClick={() => endTour(true)}>
                 <Check className="h-4 w-4" /> Terminar
               </Button>
             ) : (

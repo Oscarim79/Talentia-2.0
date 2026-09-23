@@ -245,6 +245,8 @@ export interface OutreachMessage {
   body: string;
   status: OutreachStatus;
   sentAt: string;
+  /** Fecha y hora propuesta al candidato en el mensaje. */
+  slot?: string;
   /** Horario que el candidato confirmó (cuando status === 'confirmed'). */
   confirmedSlot?: string;
 }

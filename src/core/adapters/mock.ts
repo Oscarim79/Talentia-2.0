@@ -249,8 +249,8 @@ export const mockLlm: LlmPort = {
     // Apertura: saludo + primera pregunta del banco aprobado.
     if (asked === 0) {
       const opener = questions.length
-        ? `¡Hola ${firstName}! Soy el asistente de entrevistas de TALENTIA para la vacante de **${jobTitle}**. Te haré ${questions.length} preguntas cortas; responde con naturalidad.\n\n${questions[0]}`
-        : `¡Hola ${firstName}! Soy el asistente de entrevistas de TALENTIA para la vacante de **${jobTitle}**. Cuéntame, ¿por qué te interesa este puesto?`;
+        ? `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. La entrevista se graba para que RR.HH. la evalúe. Te haré ${questions.length} preguntas cortas; responde con naturalidad.\n\n${questions[0]}`
+        : `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. La entrevista se graba para que RR.HH. la evalúe. Cuéntame, ¿por qué te interesa este puesto?`;
       return delay({ message: opener, done: false }, 700);
     }
 
@@ -289,20 +289,27 @@ function normalize(s: string): string {
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-export async function mockHelpReply({ question, route }: HelpReplyInput): Promise<HelpReplyResult> {
+/** La palabra clave aparece al inicio de una palabra de la pregunta ("cvs" cuenta para "cv"; "desactivo" no cuenta para "activo"). */
+function hasKeyword(q: string, k: string): boolean {
+  for (let i = q.indexOf(k); i !== -1; i = q.indexOf(k, i + 1)) if (i === 0 || !/[a-z0-9ñ]/.test(q[i - 1])) return true;
+  return false;
+}
+
+export async function mockHelpReply({ question, route, topic }: HelpReplyInput): Promise<HelpReplyResult> {
   const q = normalize(question);
   const scored = HELP_FAQ.map((f) => {
     let score = 0;
     // Frases de varias palabras pesan más que palabras sueltas: son más específicas
     // (ej. "preguntas de la entrevista" gana a "entrevista").
-    for (const k of f.keywords) if (q.includes(normalize(k))) score += k.includes(' ') ? 4 : k.length > 6 ? 3 : 2;
+    for (const k of f.keywords) if (hasKeyword(q, normalize(k))) score += k.includes(' ') ? 4 : k.length > 6 ? 3 : 2;
     if (score > 0 && f.route && f.route === route) score += 1; // desempata a favor de la pantalla actual
+    if (score > 0 && topic && f.topic === topic) score += 3; // chat abierto desde la ayuda de un módulo
     return { f, score };
   }).sort((a, b) => b.score - a.score);
   const best = scored[0];
   const related = scored.slice(1, 4).filter((x) => x.score > 0).map((x) => x.f.question);
   if (!best || best.score === 0) {
-    const here = HELP_FAQ.filter((f) => f.route === route).slice(0, 3).map((f) => f.question);
+    const here = HELP_FAQ.filter((f) => (topic ? f.topic === topic : f.route === route)).slice(0, 3).map((f) => f.question);
     return delay(
       {
         answer:

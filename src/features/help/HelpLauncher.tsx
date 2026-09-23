@@ -110,7 +110,7 @@ function ChatTab({ route, topic }: { route: string; topic: ModuleId | null }) {
     setMsgs((m) => [...m, { role: 'user', text }]);
     setInput('');
     setThinking(true);
-    const res = await providers.llm.helpReply({ question: text, route });
+    const res = await providers.llm.helpReply({ question: text, route, topic });
     if (gen !== genRef.current) return;
     setThinking(false);
     logQuestion({ question: text, route, answered: res.matched });
@@ -243,17 +243,17 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
                     <p className="text-sm font-bold text-stone-800">{guide.title}</p>
                     <Badge variant={on ? 'green' : 'stone'}>{on ? 'Activo' : 'Desactivado'}</Badge>
                     {isTourDone(m.id) && (
-                      <Badge variant="green">
-                        <Check className="h-3 w-3" /> Ya la viste
+                      <Badge variant="green" className="whitespace-nowrap">
+                        <Check className="h-3 w-3" /> Recorrido visto
                       </Badge>
                     )}
                   </div>
                   <p className="mt-1 text-xs text-stone-500">{guide.summary}</p>
-                  {!on && <p className="mt-1 text-[11px] text-stone-400">Se activa en Configuración → Módulos opcionales. Al activarla se abre esta ayuda guiada.</p>}
+                  {!on && <p className="mt-1 text-[11px] text-stone-400">Se activa en Configuración → Módulos opcionales. Al activarlo se abre esta ayuda guiada.</p>}
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {on && (
                       <Button onClick={() => startTour(m.id)}>
-                        <Compass className="h-4 w-4" /> {isTourDone(m.id) ? 'Repetir la ayuda guiada' : 'Iniciar la ayuda guiada'}
+                        <Compass className="h-4 w-4" /> {isTourDone(m.id) ? 'Repetir el recorrido guiado' : 'Iniciar el recorrido guiado'}
                       </Button>
                     )}
                     <Button variant="secondary" onClick={() => openModuleIntro(m.id)}>

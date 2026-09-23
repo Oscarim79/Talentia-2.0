@@ -15,23 +15,23 @@
   },
   {
     "id": "preg",
-    "text": "Primero, revisa las preguntas de cada vacante. El asistente solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen en el paso cuatro del asistente de vacantes."
+    "text": "Primero, revisa las preguntas de cada vacante. El asistente solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen en el paso cuatro del formulario de nueva vacante."
   },
   {
     "id": "agenda",
-    "text": "Luego agendas la entrevista como siempre, desde Respuestas a currículums, con la modalidad videollamada. En Indicaciones, avísale al candidato que lo entrevistará el asistente de inteligencia artificial y que la entrevista se grabará para evaluarla."
+    "text": "Luego agendas la entrevista desde Respuestas a currículums, virtual por Zoom, con la fecha y hora de cada candidato. Deja marcada la casilla: la entrevista la hará el asistente de inteligencia artificial. Así el mensaje le avisa al candidato que lo entrevistará una inteligencia artificial y que la entrevista se grabará."
   },
   {
     "id": "llamada",
-    "text": "A la hora acordada, el asistente entra a la videollamada, se presenta, hace las preguntas una por una y transcribe las respuestas."
+    "text": "A la hora acordada, el asistente entra a la videollamada de Zoom, se presenta, hace las preguntas una por una y transcribe las respuestas."
   },
   {
     "id": "demo",
-    "text": "En esta demostración la videollamada todavía no está conectada: se simula con un chat. Eliges un candidato, pulsas Iniciar entrevista y respondes como lo haría el candidato."
+    "text": "La videollamada real llegará en la fase tres; en esta demostración se simula con un chat. Eliges un candidato, pulsas Iniciar entrevista y respondes como lo haría el candidato."
   },
   {
     "id": "eval",
-    "text": "Al terminar ves el puntaje global de cero a cien, el puntaje de cada pregunta y las diferencias entre el currículum y lo que dijo el candidato."
+    "text": "Al terminar ves el puntaje global de cero a cien, el puntaje de cada pregunta y las diferencias entre el currículum y lo que dijo el candidato. En la demostración, el puntaje es aproximado."
   },
   {
     "id": "decide",
