@@ -13,7 +13,7 @@
 
 ## Día 1 — Conocer la herramienta
 Objetivo: entender el orden del trabajo y dónde está cada cosa.
-1. Mira el video de 3 minutos (botón Ayuda → Video).
+1. Mira el video de 3 minutos y medio (botón Ayuda → Video).
 2. Haz el tour guiado completo (botón Ayuda → Guía → Iniciar el tour).
 3. Recorre el menú por tu cuenta y hazle al chat de ayuda al menos 3 preguntas sobre lo que no entendiste.
 
@@ -34,7 +34,7 @@ Objetivo: ver cómo la IA ordena los CVs y qué pasa con los ilegibles.
 ## Día 4 — Responder y agendar entrevistas
 Objetivo: probar el mensaje automático y la bandeja de envíos.
 1. En Respuestas a CVs, filtra por score mínimo 75 y mira la vista previa del mensaje (ojito).
-2. Cambia la modalidad, los horarios y la firma hasta que el mensaje sea el que ustedes mandarían de verdad. Anota el texto final.
+2. Cambia la modalidad, el horario de cada candidato y la firma hasta que el mensaje sea el que ustedes mandarían de verdad. Anota el texto final.
 3. Responde a los seleccionados y observa la Bandeja de envíos: quién confirmó y quién no; reenvía a quien no contestó.
 4. Activa la regla automática con el umbral que te parezca sensato y decide si la usarían así.
 

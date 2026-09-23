@@ -12,12 +12,15 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  CalendarClock,
+  RotateCcw,
+  Bot,
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { useSettings } from '../../context/SettingsContext';
 import { useOutreach } from '../../context/OutreachContext';
-import { CANDIDATES } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
 import { useEscape } from '../../lib/useEscape';
 import { cn } from '../../lib/utils';
 import type { Candidate, Job, OutreachChannel, OutreachMessage, Tenant } from '../../types';
@@ -27,47 +30,85 @@ import { Toggle } from '../settings/SettingsPage';
 // ---------- Plantilla estándar (software opinado: una sola, con campos fijos) ----------
 
 type Modality = 'presencial' | 'llamada' | 'videollamada';
-// Americana 2000 entrevista por videollamada (cadena en todo el país): es la opción por defecto.
-const MODALITIES: { key: Modality; label: string; phrase: string }[] = [
-  { key: 'videollamada', label: 'Videollamada', phrase: 'por videollamada' },
-  { key: 'llamada', label: 'Llamada telefónica', phrase: 'por llamada telefónica' },
-  { key: 'presencial', label: 'Presencial', phrase: 'presencial' },
+// Americana 2000 entrevista en línea por Zoom (cadena en todo el país): es la opción por defecto.
+// Cada modalidad trae su indicación por defecto (se puede editar).
+const MODALITIES: { key: Modality; label: string; phrase: string; place: string }[] = [
+  { key: 'videollamada', label: 'Virtual por Zoom', phrase: 'virtual por Zoom', place: 'Al confirmar tu horario te enviaremos el enlace de la entrevista por Zoom.' },
+  { key: 'llamada', label: 'Llamada telefónica', phrase: 'por llamada telefónica', place: 'Al confirmar tu horario te llamaremos a este número.' },
+  { key: 'presencial', label: 'Presencial', phrase: 'presencial', place: 'Al confirmar tu horario te enviaremos la dirección. Ten a mano tu DPI.' },
 ];
+
+/** Aviso que el mensaje agrega cuando la entrevista la hará el asistente de IA (módulo Entrevistas IA). */
+const AI_NOTICE = 'La entrevista la hará nuestro asistente virtual con inteligencia artificial y se grabará para evaluarla.';
 
 interface ReplyOptions {
   modality: Modality;
-  slots: [string, string];
   place: string;
   contact: string;
+  /** La entrevista la hace el asistente de IA: agrega el aviso de IA y grabación. */
+  aiInterview: boolean;
 }
 
-function composeMessage(cand: Candidate, job: Job | undefined, tenant: Tenant, o: ReplyOptions): string {
+/** Mensaje estándar acordado con RR.HH. de Americana (Reynaldo, 2026-09-22): un solo horario por candidato. */
+function composeMessage(cand: Candidate, job: Job | undefined, tenant: Tenant, o: ReplyOptions, slot: string): string {
   const mod = MODALITIES.find((m) => m.key === o.modality)?.phrase ?? '';
-  const place = o.place.trim() ? `\n${o.place.trim()}` : '';
   const brand = job?.brand ?? tenant.name;
-  return (
+  return [
     `Hola ${cand.firstName}, gracias por enviar tu CV para la vacante de ${job?.title ?? 'la posición'} en ${brand}. ` +
-    `Tu perfil cumple con lo que buscamos y queremos conocerte en una entrevista ${mod}.\n\n` +
-    `Opciones de horario:\n1) ${o.slots[0]}\n2) ${o.slots[1]}\n\n` +
-    `Responde con el número de la opción que te funcione, o proponnos otra.${place}\n\n` +
-    `— ${o.contact.trim() || 'Recursos Humanos'} · ${brand}`
-  );
+      `Tu perfil cumple con lo que buscamos y queremos conocerte en una entrevista ${mod}.`,
+    slot,
+    o.aiInterview ? AI_NOTICE : '',
+    o.place.trim(),
+    `— ${o.contact.trim() || 'Recursos Humanos'} · ${brand}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
-/** Próximos días hábiles formateados en español (ej. "martes 23 de septiembre, 10:00"). */
-function defaultSlots(): [string, string] {
-  const fmt = new Intl.DateTimeFormat('es-GT', { weekday: 'long', day: 'numeric', month: 'long' });
-  const next = (from: Date, days: number) => {
-    const d = new Date(from);
-    let left = days;
-    while (left > 0) {
-      d.setDate(d.getDate() + 1);
-      if (d.getDay() !== 0 && d.getDay() !== 6) left--;
-    }
-    return d;
-  };
-  const now = new Date();
-  return [`${fmt.format(next(now, 1))}, 10:00`, `${fmt.format(next(now, 2))}, 15:00`];
+// ---------- Horarios: uno por candidato ----------
+
+/** Duraciones posibles de cada entrevista (minutos). */
+const DURATIONS = [15, 20, 30, 45, 60];
+/** Hora de cierre de la agenda: si un horario la pasa, sigue el siguiente día hábil. */
+const DAY_END_MIN = 17 * 60;
+
+/** Siguiente día hábil después de `from`, a la hora y minuto dados. */
+function nextBusinessDay(from: Date, hour: number, minute = 0): Date {
+  const d = new Date(from);
+  do d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6);
+  d.setHours(hour, minute, 0, 0);
+  return d;
+}
+
+/** Valor de `<input type="datetime-local">` (hora local): "2026-09-24T10:00". */
+function toInput(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function fromInput(v: string): Date | null {
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Como va en el mensaje: "miércoles, 23 de septiembre, 10:00 a.m.". */
+function formatSlot(d: Date): string {
+  const day = new Intl.DateTimeFormat('es-GT', { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+  const h = d.getHours();
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${day}, ${h12}:${String(d.getMinutes()).padStart(2, '0')} ${h < 12 ? 'a.m.' : 'p.m.'}`;
+}
+
+/** Horarios seguidos desde `start`, uno cada `minutes`; al pasar las 17:00 sigue el siguiente día hábil. */
+function sequence(start: Date, n: number, minutes: number): Date[] {
+  const out: Date[] = [];
+  let d = new Date(start);
+  for (let i = 0; i < n; i++) {
+    out.push(new Date(d));
+    d = new Date(d.getTime() + minutes * 60_000);
+    if (d.getHours() * 60 + d.getMinutes() + minutes > DAY_END_MIN) d = nextBusinessDay(d, start.getHours(), start.getMinutes());
+  }
+  return out;
 }
 
 function requirementsMet(c: Candidate): { met: number; total: number } {
@@ -80,13 +121,17 @@ function requirementsMet(c: Candidate): { met: number; total: number } {
 export default function CvReplyPage() {
   const { tenant } = useTenant();
   const { jobs: allJobs } = useJobs();
-  const { settings, setAutoReply } = useSettings();
+  const { settings, setAutoReply, isModuleEnabled } = useSettings();
   const { messages, send, sending, lastFor } = useOutreach();
+  const { candidates } = useCandidates();
+  const aiModule = isModuleEnabled('interviewsAi');
 
   const jobs = useMemo(() => allJobs.filter((j) => j.tenantId === tenant.id), [allJobs, tenant.id]);
+  // Incluye los CVs cargados en Screening IA (CandidatesContext), no solo los de ejemplo.
+  // Quien ya tiene oferta, fue contratado o descartado no recibe invitación a entrevista.
   const tenantCands = useMemo(
-    () => CANDIDATES.filter((c) => c.tenantId === tenant.id && c.screeningStatus === 'scored'),
-    [tenant.id],
+    () => candidates.filter((c) => c.screeningStatus === 'scored' && !['offer', 'hired', 'rejected'].includes(c.stage)),
+    [candidates],
   );
 
   // ---- Filtros ----
@@ -100,9 +145,14 @@ export default function CvReplyPage() {
   // ---- Respuesta ----
   const [channel, setChannel] = useState<OutreachChannel>('whatsapp');
   const [modality, setModality] = useState<Modality>('videollamada');
-  const [slots, setSlots] = useState<[string, string]>(defaultSlots);
-  const [place, setPlace] = useState('Al confirmar tu horario te enviaremos el enlace de la videollamada. Ten a mano tu DPI.');
+  const [place, setPlace] = useState(MODALITIES[0].place);
   const [contact, setContact] = useState('Recursos Humanos');
+  const [aiChoice, setAiChoice] = useState(true);
+  const aiInterview = aiModule && aiChoice;
+  // Agenda: primera entrevista + duración → horarios seguidos; cada fila puede cambiar el suyo.
+  const [firstSlot, setFirstSlot] = useState(() => toInput(nextBusinessDay(new Date(), 10)));
+  const [duration, setDuration] = useState(30);
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<Candidate | null>(null);
 
   // Al cambiar de empresa: limpiar selección y filtros dependientes.
@@ -141,7 +191,26 @@ export default function CvReplyPage() {
       .sort((a, b) => (b.screeningScore ?? 0) - (a.screeningScore ?? 0));
   }, [tenantCands, jobId, minScore, criterion, query, replyFilter, lastFor]);
 
-  const opts: ReplyOptions = { modality, slots, place, contact };
+  const opts: ReplyOptions = { modality, place, contact, aiInterview };
+
+  /** Horario de cada candidato, en orden: el que se cambió a mano o el siguiente de la agenda. */
+  function assignSlots(cands: Candidate[]): Map<string, Date> {
+    const start = fromInput(firstSlot) ?? nextBusinessDay(new Date(), 10);
+    const auto = cands.filter((c) => !(overrides[c.id] && fromInput(overrides[c.id])));
+    const seq = sequence(start, auto.length, duration);
+    const map = new Map<string, Date>();
+    auto.forEach((c, i) => map.set(c.id, seq[i]));
+    cands.forEach((c) => {
+      const o = overrides[c.id] && fromInput(overrides[c.id]);
+      if (o) map.set(c.id, o);
+    });
+    return map;
+  }
+  function changeModality(m: Modality) {
+    // Si la indicación es la de fábrica, cambia junto con la modalidad; si la editaste, se respeta.
+    if (MODALITIES.some((x) => x.place === place)) setPlace(MODALITIES.find((x) => x.key === m)!.place);
+    setModality(m);
+  }
   const jobOf = (c: Candidate) => jobs.find((j) => j.id === c.jobId);
   /** Se puede responder si nunca se le escribió o si no contestó (reenvío). */
   const canReply = (c: Candidate) => {
@@ -164,19 +233,23 @@ export default function CvReplyPage() {
     });
   }
 
-  async function sendTo(cands: Candidate[]) {
+  async function sendTo(cands: Candidate[], slotsOf: Map<string, Date> = assignSlots(cands.filter(canReply))) {
     const pending = cands.filter(canReply);
     if (pending.length === 0) return;
     await send(
-      pending.map((c) => ({
-        candidate: c,
-        channel,
-        subject: `Entrevista para ${jobOf(c)?.title ?? 'la vacante'} · ${jobOf(c)?.brand ?? tenant.name}`,
-        body: composeMessage(c, jobOf(c), tenant, opts),
-        slots: [...slots],
-      })),
+      pending.map((c) => {
+        const slot = formatSlot(slotsOf.get(c.id)!);
+        return {
+          candidate: c,
+          channel,
+          subject: `Entrevista para ${jobOf(c)?.title ?? 'la vacante'} · ${jobOf(c)?.brand ?? tenant.name}`,
+          body: composeMessage(c, jobOf(c), tenant, opts, slot),
+          slot,
+        };
+      }),
     );
     setSelected(new Set());
+    setOverrides((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => !pending.some((c) => c.id === id))));
   }
 
   // Regla automática: responde a todo CV puntuado ≥ umbral que aún no tenga respuesta.
@@ -190,7 +263,11 @@ export default function CvReplyPage() {
   }
 
   const tenantMessages = messages.filter((m) => m.tenantId === tenant.id);
-  const pendingSelected = selectedCands.filter(canReply).length;
+  const queue = selectedCands.filter(canReply);
+  const pendingSelected = queue.length;
+  const queueSlots = assignSlots(queue);
+  /** Horario que recibiría `c`: el suyo si está en la cola; si no, el siguiente libre. */
+  const slotFor = (c: Candidate) => queueSlots.get(c.id) ?? assignSlots([...queue, c]).get(c.id)!;
 
   return (
     <div>
@@ -330,6 +407,30 @@ export default function CvReplyPage() {
                         <Eye className="h-4 w-4" />
                       </button>
                     </div>
+                    {selected.has(c.id) && canReply(c) && (
+                      <div className="flex w-full flex-wrap items-center gap-2 pl-7 sm:pl-[64px]" data-tour={c.id === queue[0]?.id ? 'reply:slot' : undefined}>
+                        <CalendarClock className="h-3.5 w-3.5 text-brand-600" />
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-stone-400">Entrevista</span>
+                        <input
+                          type="datetime-local"
+                          value={toInput(queueSlots.get(c.id)!)}
+                          onChange={(e) => setOverrides((prev) => ({ ...prev, [c.id]: e.target.value }))}
+                          aria-label={`Horario de la entrevista de ${c.firstName} ${c.lastName}`}
+                          className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        />
+                        <span className="text-[11px] text-stone-500">{formatSlot(queueSlots.get(c.id)!)}</span>
+                        {overrides[c.id] ? (
+                          <button
+                            onClick={() => setOverrides((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => id !== c.id)))}
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 hover:underline"
+                          >
+                            <RotateCcw className="h-3 w-3" /> Usar el de la agenda
+                          </button>
+                        ) : (
+                          <span className="text-[11px] text-stone-400">(de la agenda)</span>
+                        )}
+                      </div>
+                    )}
                   </li>
                 );
               })}
@@ -339,7 +440,7 @@ export default function CvReplyPage() {
 
         {/* Respuesta automática */}
         <div className="space-y-4">
-          <Card className="p-5">
+          <Card className="p-5" dataTour="reply:template">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-700">
               <CalendarCheck className="h-4 w-4 text-brand-600" /> Mensaje para agendar entrevista
             </h3>
@@ -351,27 +452,45 @@ export default function CvReplyPage() {
                 </div>
               </Field>
               <Field label="Modalidad">
-                <select value={modality} onChange={(e) => setModality(e.target.value as Modality)} className={inputCls}>
+                <select value={modality} onChange={(e) => changeModality(e.target.value as Modality)} className={inputCls}>
                   {MODALITIES.map((m) => (
                     <option key={m.key} value={m.key}>{m.label}</option>
                   ))}
                 </select>
               </Field>
-              <Field label="Opción de horario 1">
-                <input value={slots[0]} onChange={(e) => setSlots([e.target.value, slots[1]])} className={inputCls} />
-              </Field>
-              <Field label="Opción de horario 2">
-                <input value={slots[1]} onChange={(e) => setSlots([slots[0], e.target.value])} className={inputCls} />
-              </Field>
+              <div className="space-y-3" data-tour="reply:agenda">
+                <Field label="Primera entrevista (fecha y hora)">
+                  <input type="datetime-local" value={firstSlot} onChange={(e) => e.target.value && setFirstSlot(e.target.value)} className={inputCls} />
+                </Field>
+                <Field label="Duración de cada entrevista">
+                  <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={inputCls}>
+                    {DURATIONS.map((d) => (
+                      <option key={d} value={d}>{d} minutos</option>
+                    ))}
+                  </select>
+                </Field>
+                <p className="text-[11px] text-stone-400">
+                  Cada seleccionado recibe su propio horario, uno seguido del otro (después de las 5:00 p.m. pasa al siguiente día hábil). Cámbialo en su fila si tu agenda lo pide.
+                </p>
+              </div>
+              {aiModule && (
+                <label className="flex items-start gap-2.5 rounded-lg border border-brand-200 bg-brand-50/60 p-3" data-tour="reply:ai-notice">
+                  <input type="checkbox" checked={aiChoice} onChange={(e) => setAiChoice(e.target.checked)} className="mt-0.5 h-4 w-4 accent-brand-600" />
+                  <span className="text-xs text-stone-700">
+                    <span className="flex items-center gap-1 font-semibold text-stone-800"><Bot className="h-3.5 w-3.5 text-brand-600" /> La entrevista la hará el asistente de IA</span>
+                    Agrega al mensaje: "{AI_NOTICE}" Desmárcala si la entrevista la hará una persona del equipo.
+                  </span>
+                </label>
+              )}
               <Field label="Indicaciones (opcional)">
-                <input value={place} onChange={(e) => setPlace(e.target.value)} className={inputCls} />
+                <textarea value={place} onChange={(e) => setPlace(e.target.value)} rows={2} className={cn(inputCls, 'resize-y')} />
               </Field>
               <Field label="Firma">
                 <input value={contact} onChange={(e) => setContact(e.target.value)} className={inputCls} />
               </Field>
             </div>
             <p className="mt-3 text-[11px] text-stone-400">
-              Plantilla estándar de TALENTIA: el nombre, la vacante y la empresa se completan solos por cada candidato.
+              Plantilla estándar de TALENTIA: el nombre, la vacante, la marca y el horario se completan solos por cada candidato.
             </p>
           </Card>
 
@@ -443,7 +562,9 @@ export default function CvReplyPage() {
                     </td>
                     <td className="px-5 py-3 text-stone-600">{m.channel === 'whatsapp' ? 'WhatsApp' : 'Correo'}</td>
                     <td className="px-5 py-3"><StatusBadge msg={m} /></td>
-                    <td className="px-5 py-3 text-stone-600">{m.confirmedSlot ?? '—'}</td>
+                    <td className="px-5 py-3 text-stone-600">
+                      {m.confirmedSlot ?? (m.slot ? <span className="text-stone-400">{m.slot} (propuesto)</span> : '—')}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -455,10 +576,10 @@ export default function CvReplyPage() {
       {preview && (
         <PreviewModal
           candidate={preview}
-          text={canReply(preview) ? composeMessage(preview, jobOf(preview), tenant, opts) : lastFor(preview.id)!.body}
+          text={canReply(preview) ? composeMessage(preview, jobOf(preview), tenant, opts, formatSlot(slotFor(preview))) : lastFor(preview.id)!.body}
           channel={canReply(preview) ? channel : lastFor(preview.id)!.channel}
           onClose={() => setPreview(null)}
-          onSend={canReply(preview) ? () => { sendTo([preview]); setPreview(null); } : undefined}
+          onSend={canReply(preview) ? () => { sendTo([preview], new Map([[preview.id, slotFor(preview)]])); setPreview(null); } : undefined}
           resend={!!lastFor(preview.id)}
         />
       )}

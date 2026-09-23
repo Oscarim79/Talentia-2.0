@@ -8,7 +8,8 @@ os.makedirs('audio', exist_ok=True)
 segs = json.load(open('narration.json'))
 out = {}
 for s in segs:
-    a = tts.generate(s['text'], sid=0, speed=1.0)
+    # 'say' (opcional): cómo se pronuncia cuando difiere del subtítulo (ej. "IA" → "i a").
+    a = tts.generate(s.get('say', s['text']), sid=0, speed=1.0)
     path = f"audio/{s['id']}.wav"
     sherpa_onnx.write_wave(path, a.samples, a.sample_rate)
     with wave.open(path) as w:

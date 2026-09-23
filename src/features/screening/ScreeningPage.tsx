@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { Upload, CheckCircle2, XCircle, AlertTriangle, Loader2, FileText, UploadCloud, Sparkles } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
 import { providers } from '../../core/providers';
 import { newId } from '../../lib/utils';
 import type { Candidate, Job } from '../../types';
@@ -31,7 +31,9 @@ export default function ScreeningPage() {
   const [jobId, setJobId] = useState(jobs[0]?.id ?? '');
   const job = jobs.find((j) => j.id === jobId);
 
-  const [list, setList] = useState<Candidate[]>([]);
+  // Los CVs cargados viven en CandidatesContext: siguen aquí al volver y llegan a Respuestas a CVs.
+  const { candidates, addCandidate } = useCandidates();
+  const list = useMemo(() => candidates.filter((c) => c.jobId === jobId), [candidates, jobId]);
   const [tab, setTab] = useState<'ranked' | 'errors'>('ranked');
   const [batch, setBatch] = useState<BatchState | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -41,11 +43,10 @@ export default function ScreeningPage() {
   const runRef = useRef(0);
   const busy = batch !== null;
 
-  // Resetea la lista al cambiar de empresa o vacante (aislamiento por tenant)
+  // Al cambiar de empresa o vacante, el lote en curso queda invalidado (aislamiento por tenant).
   useEffect(() => {
     runRef.current += 1;
     setBatch(null);
-    setList(CANDIDATES.filter((c) => c.tenantId === tenant.id && c.jobId === jobId));
     setTab('ranked');
   }, [tenant.id, jobId]);
 
@@ -77,7 +78,7 @@ export default function ScreeningPage() {
       const res = await providers.cvParser.parse(file);
       if (runRef.current !== run) return; // lote viejo: descartar, no contaminar el tenant nuevo
       if (!res.ok || !res.parsed) {
-        setList((prev) => [...prev, makeErrorCandidate(file, job, res.errorReason)]);
+        addCandidate(makeErrorCandidate(file, job, res.errorReason));
         continue;
       }
       const score = await providers.llm.scoreCandidate({
@@ -88,7 +89,7 @@ export default function ScreeningPage() {
         parsed: res.parsed,
       });
       if (runRef.current !== run) return;
-      setList((prev) => [...prev, makeScoredCandidate(file, job, res.parsed!, score)]);
+      addCandidate(makeScoredCandidate(file, job, res.parsed!, score));
     }
 
     setBatch({ total: fileNames.length, done: fileNames.length, current: '' });

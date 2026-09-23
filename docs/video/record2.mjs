@@ -65,8 +65,11 @@ await seg('scr3'); await scrollMain(420); await endSeg();
 
 await seg('rep'); await p.click('nav a:has-text("Respuestas a CVs")'); await p.waitForSelector('h1'); await wait(3500);
 await p.locator('input[aria-label="Score mínimo"]').fill('75'); await endSeg();
-await seg('rep2'); await p.click('input[aria-label="Seleccionar todos"]'); await wait(2500);
-await p.locator('button[aria-label="Vista previa del mensaje"]').first().click(); await wait(5500); await p.keyboard.press('Escape'); await wait(400);
+await seg('rep2'); await p.click('input[aria-label="Seleccionar todos"]'); await wait(2200);
+// Cada candidato trae su horario de la agenda; se cambia uno para mostrar que se puede.
+const slot2 = p.locator('input[aria-label^="Horario de la entrevista"]').nth(1);
+await slot2.fill((await slot2.inputValue()).slice(0, 11) + '15:30'); await wait(1800);
+await p.locator('button[aria-label="Vista previa del mensaje"]').first().click(); await wait(5000); await p.keyboard.press('Escape'); await wait(400);
 await p.locator('button', { hasText: 'Responder a' }).click(); await endSeg();
 await seg('rep3'); await wait(3500); await scrollMain(900); await endSeg();
 

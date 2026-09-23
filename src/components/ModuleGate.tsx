@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
-import { Puzzle, Settings } from 'lucide-react';
+import { Puzzle, Settings, Info } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
+import { useHelp } from '../features/help/HelpContext';
 import { moduleDef, type ModuleId } from '../core/modules';
 import { Card, PageHeader, Badge } from './ui/primitives';
 
 /** Muestra la página solo si el módulo opcional está activo para la empresa. */
 export function ModuleGate({ module, children }: { module: ModuleId; children: React.ReactNode }) {
   const { isModuleEnabled } = useSettings();
+  const { openModuleIntro } = useHelp();
   if (isModuleEnabled(module)) return <>{children}</>;
 
   const def = moduleDef(module);
@@ -23,12 +25,20 @@ export function ModuleGate({ module, children }: { module: ModuleId; children: R
         </div>
         <p className="text-sm font-semibold text-stone-800">Este módulo no está activo para tu empresa.</p>
         <p className="mx-auto mt-2 max-w-md text-sm text-stone-500">{def.description}</p>
-        <Link
-          to="/configuracion"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
-        >
-          <Settings className="h-4 w-4" /> Activar en Configuración
-        </Link>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <Link
+            to="/configuracion"
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+          >
+            <Settings className="h-4 w-4" /> Activar en Configuración
+          </Link>
+          <button
+            onClick={() => openModuleIntro(module)}
+            className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+          >
+            <Info className="h-4 w-4" /> Cómo funciona
+          </button>
+        </div>
       </Card>
     </div>
   );

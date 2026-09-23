@@ -6,6 +6,7 @@ import { HelpProvider } from '../../features/help/HelpContext';
 import { HelpLauncher } from '../../features/help/HelpLauncher';
 import { Tour } from '../../features/help/Tour';
 import { WelcomeModal } from '../../features/help/WelcomeModal';
+import { ModuleIntroModal } from '../../features/help/ModuleIntroModal';
 
 export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,6 +41,7 @@ export function AppShell() {
       <HelpLauncher />
       <Tour />
       <WelcomeModal />
+      <ModuleIntroModal />
     </div>
     </HelpProvider>
   );

@@ -44,8 +44,8 @@ export default function JobsPage() {
         <Card className="p-12 text-center text-sm text-stone-400">Esta empresa aún no tiene vacantes.</Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {jobs.map((j) => (
-            <JobCard key={j.id} job={j} />
+          {jobs.map((j, i) => (
+            <JobCard key={j.id} job={j} tourTarget={i === 0} />
           ))}
         </div>
       )}
@@ -55,7 +55,7 @@ export default function JobsPage() {
   );
 }
 
-function JobCard({ job: j }: { job: Job }) {
+function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
   const { tenant } = useTenant();
   return (
     <Card className="flex flex-col p-5">
@@ -80,9 +80,12 @@ function JobCard({ job: j }: { job: Job }) {
         <Badge variant="brand">
           <Users2 className="h-3 w-3" /> {j.openings} plazas
         </Badge>
-        <Badge variant="blue">
-          <Sparkles className="h-3 w-3" /> {j.questions.length} preguntas IA
-        </Badge>
+        {/* La ayuda guiada de Entrevistas IA resalta las preguntas de la primera vacante. */}
+        <span data-tour={tourTarget ? 'jobs:questions' : undefined} className="inline-flex">
+          <Badge variant="blue">
+            <Sparkles className="h-3 w-3" /> {j.questions.length} preguntas IA
+          </Badge>
+        </span>
       </div>
 
       <div className="mt-4 flex items-center gap-2">

@@ -9,18 +9,21 @@ import {
   Send,
   RotateCcw,
   Sparkles,
+  Compass,
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
-import { CANDIDATES } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
 import { providers } from '../../core/providers';
+import { useHelp } from '../help/HelpContext';
 import type { Candidate, Job, InterviewTurn, Discrepancy } from '../../types';
 import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
 
+// Americana 2000 entrevista por videollamada (cadena en todo el país): es el canal principal.
 const CHANNELS = [
-  { icon: Phone, label: 'Teléfono', desc: 'Agente de voz (Vapi/Retell)', tag: 'Fase 3' },
+  { icon: Video, label: 'Videollamada', desc: 'El asistente de IA entra a la videollamada de Zoom, graba y transcribe (Recall.ai)', tag: 'Fase 3' },
   { icon: MessageCircle, label: 'WhatsApp', desc: 'Entrevista por texto + agendamiento', tag: 'Fase 2' },
-  { icon: Video, label: 'Google Meet', desc: 'Bot que graba y transcribe (Recall.ai)', tag: 'Fase 3' },
+  { icon: Phone, label: 'Teléfono', desc: 'Agente de voz (Vapi/Retell)', tag: 'Fase 3' },
 ];
 
 // Banco de respaldo cuando la vacante no tiene preguntas configuradas.
@@ -33,17 +36,14 @@ const GENERIC_QUESTIONS = [
 export default function InterviewsPage() {
   const { tenant } = useTenant();
   const { jobs } = useJobs();
+  const { openModuleIntro } = useHelp();
+  const { candidates: tenantCands } = useCandidates();
 
-  // Candidatos entrevistables del tenant (ya puntuados en screening).
+  // Candidatos entrevistables del tenant (ya puntuados en screening; incluye los CVs cargados
+  // y a quienes confirmaron su entrevista en Respuestas a CVs).
   const candidates = useMemo(
-    () =>
-      CANDIDATES.filter(
-        (c) =>
-          c.tenantId === tenant.id &&
-          c.screeningStatus === 'scored' &&
-          (c.stage === 'interview' || c.stage === 'screening'),
-      ),
-    [tenant.id],
+    () => tenantCands.filter((c) => c.screeningStatus === 'scored' && (c.stage === 'interview' || c.stage === 'screening')),
+    [tenantCands],
   );
 
   const [candId, setCandId] = useState('');
@@ -125,16 +125,21 @@ export default function InterviewsPage() {
       <PageHeader
         eyebrow="Reclutamiento"
         title="Entrevistas IA"
-        subtitle="El agente entrevista con el banco de preguntas de la vacante, transcribe y evalúa."
+        subtitle="El asistente de IA entrevista por videollamada (Zoom) con el banco de preguntas de la vacante, transcribe y evalúa. RR.HH. decide."
         actions={
-          <Badge variant="brand">
-            <Sparkles className="h-3 w-3" /> Chat en vivo · demo
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="brand">
+              <Sparkles className="h-3 w-3" /> Videollamada simulada con chat · demo
+            </Badge>
+            <Button variant="secondary" onClick={() => openModuleIntro('interviewsAi')}>
+              <Compass className="h-4 w-4" /> Cómo funciona
+            </Button>
+          </div>
         }
       />
 
       {/* Canales (Fases 2–3) */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3" data-tour="interviews:channels">
         {CHANNELS.map((ch) => (
           <Card key={ch.label} className="p-5">
             <div className="flex items-center justify-between">
@@ -178,7 +183,7 @@ export default function InterviewsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Chat interactivo */}
-          <Card className="flex flex-col lg:col-span-2">
+          <Card className="flex flex-col lg:col-span-2" dataTour="interviews:chat">
             <div className="flex items-center justify-between border-b border-stone-100 p-4">
               <h2 className="flex items-center gap-2 text-sm font-bold text-stone-700">
                 <Bot className="h-4 w-4 text-brand-600" /> Entrevista — {cand?.firstName} {cand?.lastName}
@@ -195,9 +200,9 @@ export default function InterviewsPage() {
                 <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                   <Bot className="h-10 w-10 text-brand-300" />
                   <p className="max-w-xs text-sm text-stone-500">
-                    El agente hará {questionTexts.length} preguntas del banco de la vacante. Responde como lo haría el candidato.
+                    El asistente de IA hará {questionTexts.length} preguntas del banco de la vacante. En la demo la videollamada se simula con este chat: responde como lo haría el candidato.
                   </p>
-                  <Button onClick={startInterview} disabled={thinking}>
+                  <Button onClick={startInterview} disabled={thinking} dataTour="interviews:start">
                     <Sparkles className="h-4 w-4" /> Iniciar entrevista
                   </Button>
                 </div>
@@ -235,7 +240,7 @@ export default function InterviewsPage() {
           </Card>
 
           {/* Panel de evaluación (aparece al finalizar) */}
-          <div className="space-y-4">
+          <div className="space-y-4" data-tour="interviews:evaluation">
             {!evaluation ? (
               <Card className="p-5">
                 <h3 className="mb-2 text-sm font-bold text-stone-700">Evaluación</h3>

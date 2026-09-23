@@ -1,5 +1,4 @@
-import { useTenant } from '../../context/TenantContext';
-import { CANDIDATES } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
 import { Card, PageHeader, Badge, scoreVariant } from '../../components/ui/primitives';
 import type { CandidateStage } from '../../types';
 
@@ -13,8 +12,7 @@ const COLUMNS: { key: CandidateStage; label: string }[] = [
 ];
 
 export default function CandidatesPage() {
-  const { tenant } = useTenant();
-  const cands = CANDIDATES.filter((c) => c.tenantId === tenant.id);
+  const { candidates: cands } = useCandidates();
 
   return (
     <div>
