@@ -1,0 +1,48 @@
+[
+  {
+    "id": "intro",
+    "text": "Entrevistas IA por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con las preguntas de la vacante, y te entrega una evaluación.",
+    "say": "Entrevistas i a por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con las preguntas de la vacante, y te entrega una evaluación."
+  },
+  {
+    "id": "act",
+    "text": "Para activarlo, entra a Configuración, busca Módulos opcionales y enciende Entrevistas IA. Al encenderlo se abre esta ayuda guiada: te explica cómo funciona, qué te toca hacer y te ofrece un recorrido paso a paso.",
+    "say": "Para activarlo, entra a Configuración, busca Módulos opcionales y enciende Entrevistas i a. Al encenderlo se abre esta ayuda guiada: te explica cómo funciona, qué te toca hacer y te ofrece un recorrido paso a paso."
+  },
+  {
+    "id": "menu",
+    "text": "La nueva sección aparece en el menú de Reclutamiento, después de Respuestas a currículums."
+  },
+  {
+    "id": "preg",
+    "text": "Primero, revisa las preguntas de cada vacante. El asistente solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen en el paso cuatro del asistente de vacantes."
+  },
+  {
+    "id": "agenda",
+    "text": "Luego agendas la entrevista como siempre, desde Respuestas a currículums, con la modalidad videollamada. En Indicaciones, avísale al candidato que lo entrevistará el asistente de inteligencia artificial y que la entrevista se grabará para evaluarla."
+  },
+  {
+    "id": "llamada",
+    "text": "A la hora acordada, el asistente entra a la videollamada, se presenta, hace las preguntas una por una y transcribe las respuestas."
+  },
+  {
+    "id": "demo",
+    "text": "En esta demostración la videollamada todavía no está conectada: se simula con un chat. Eliges un candidato, pulsas Iniciar entrevista y respondes como lo haría el candidato."
+  },
+  {
+    "id": "eval",
+    "text": "Al terminar ves el puntaje global de cero a cien, el puntaje de cada pregunta y las diferencias entre el currículum y lo que dijo el candidato."
+  },
+  {
+    "id": "decide",
+    "text": "La evaluación es una recomendación: la decisión siempre es de Recursos Humanos. Tú decides si el candidato pasa a oferta o se descarta."
+  },
+  {
+    "id": "help",
+    "text": "¿Tienes dudas? En el botón de ayuda, el chat responde preguntas sobre este módulo, la pestaña Guía repite la ayuda guiada y la pestaña Video tiene este video."
+  },
+  {
+    "id": "end",
+    "text": "Entrevistas por videollamada con inteligencia artificial: las mismas preguntas para todos y el mismo criterio para evaluar."
+  }
+]

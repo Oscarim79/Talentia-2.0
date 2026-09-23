@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check, ClipboardList } from 'lucide-react';
+import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check, ClipboardList, Video, Info } from 'lucide-react';
 import { TEAM_PILOT } from '../../core/config';
 import { useHelp } from './HelpContext';
-import { TOUR_STEPS, VIDEO_CHAPTERS } from './tourSteps';
+import { TOUR_STEPS, HELP_VIDEOS, helpVideo } from './tourSteps';
+import { MODULE_GUIDES } from './moduleGuides';
 import { HELP_FAQ } from '../../data/helpFaq';
 import { providers } from '../../core/providers';
+import { useSettings } from '../../context/SettingsContext';
+import { MODULES, type ModuleId } from '../../core/modules';
 import { Button, Badge } from '../../components/ui/primitives';
 import { cn } from '../../lib/utils';
 
@@ -17,12 +20,9 @@ interface ChatMsg {
   related?: string[];
 }
 
-const VIDEO_MP4 = `${import.meta.env.BASE_URL}ayuda/tour-talentia.mp4`;
-const VIDEO_WEBM = `${import.meta.env.BASE_URL}ayuda/tour-talentia.webm`;
-
 /** Botón flotante de ayuda + panel con Chat, Guía y Video. */
 export function HelpLauncher() {
-  const { panelOpen, tab, openPanel, closePanel, startTour, tourDone, tourStep } = useHelp();
+  const { panelOpen, tab, openPanel, closePanel, startTour, tourDone, tourStep, chatTopic } = useHelp();
   const location = useLocation();
 
   // Durante el tour el panel se cierra; el botón sigue visible para poder resaltarlo.
@@ -45,15 +45,15 @@ export function HelpLauncher() {
         <div className="fixed bottom-20 right-5 z-[55] flex max-h-[min(640px,calc(100vh-110px))] w-[min(400px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-2xl" role="dialog" aria-label="Centro de ayuda">
           <div className="border-b border-stone-100 bg-brand-950 px-4 pb-0 pt-4 text-white">
             <p className="font-display text-base font-semibold">Centro de ayuda</p>
-            <p className="text-xs text-brand-300">Pregunta cómo hacer algo, repite el tour o mira el video.</p>
+            <p className="text-xs text-brand-300">Pregunta cómo hacer algo, repite el tour o mira los videos.</p>
             <div className="mt-3 flex gap-1">
               <TabBtn active={tab === 'chat'} onClick={() => openPanel('chat')} icon={MessageCircle} label="Chat" />
               <TabBtn active={tab === 'guide'} onClick={() => openPanel('guide')} icon={Compass} label="Guía" />
               <TabBtn active={tab === 'video'} onClick={() => openPanel('video')} icon={PlayCircle} label="Video" />
             </div>
           </div>
-          {tab === 'chat' && <ChatTab route={location.pathname} />}
-          {tab === 'guide' && <GuideTab onStart={startTour} done={tourDone} />}
+          {tab === 'chat' && <ChatTab route={location.pathname} topic={chatTopic} />}
+          {tab === 'guide' && <GuideTab onStart={() => startTour()} done={tourDone} />}
           {tab === 'video' && <VideoTab />}
         </div>
       )}
@@ -77,13 +77,15 @@ function TabBtn({ active, onClick, icon: Icon, label }: { active: boolean; onCli
 
 // ---------- Chat ----------
 
-function ChatTab({ route }: { route: string }) {
+function ChatTab({ route, topic }: { route: string; topic: ModuleId | null }) {
   const navigate = useNavigate();
   const { closePanel, logQuestion } = useHelp();
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: 'Hola, soy la ayuda de TALENTIA. Pregúntame cómo hacer algo (por ejemplo "¿cómo subo CVs?") y te explico y te llevo a la pantalla.',
+      text: topic
+        ? `Hola, soy la ayuda de TALENTIA. Pregúntame lo que quieras sobre ${MODULE_GUIDES[topic].title}: cómo funciona, qué hacer después de activarla o cómo leer la evaluación.`
+        : 'Hola, soy la ayuda de TALENTIA. Pregúntame cómo hacer algo (por ejemplo "¿cómo subo CVs?") y te explico y te llevo a la pantalla.',
     },
   ]);
   const [input, setInput] = useState('');
@@ -95,7 +97,10 @@ function ChatTab({ route }: { route: string }) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [msgs, thinking]);
 
-  const suggestions = HELP_FAQ.filter((f) => f.route === route).slice(0, 3).map((f) => f.question);
+  // Sugerencias: las del módulo si se abrió desde su ayuda guiada; si no, las de la pantalla actual.
+  const suggestions = topic
+    ? MODULE_GUIDES[topic].chatSuggestions.flatMap((id) => HELP_FAQ.filter((f) => f.id === id).map((f) => f.question))
+    : HELP_FAQ.filter((f) => f.route === route).slice(0, 3).map((f) => f.question);
   const chips = suggestions.length ? suggestions : HELP_FAQ.slice(0, 3).map((f) => f.question);
 
   async function ask(q: string) {
@@ -189,7 +194,8 @@ function ChatTab({ route }: { route: string }) {
 
 function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
   const navigate = useNavigate();
-  const { closePanel } = useHelp();
+  const { closePanel, startTour, openModuleIntro, isTourDone } = useHelp();
+  const { isModuleEnabled } = useSettings();
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="mb-4 rounded-xl bg-brand-50 p-4">
@@ -221,7 +227,46 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           </span>
         </button>
       )}
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Módulos opcionales</p>
+      <div className="mb-4 space-y-2">
+        {MODULES.map((m) => {
+          const guide = MODULE_GUIDES[m.id];
+          const on = isModuleEnabled(m.id);
+          return (
+            <div key={m.id} className="rounded-xl border border-stone-200 p-3.5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-brand-50 p-2 text-brand-600">
+                  <Video className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <p className="text-sm font-bold text-stone-800">{guide.title}</p>
+                    <Badge variant={on ? 'green' : 'stone'}>{on ? 'Activo' : 'Desactivado'}</Badge>
+                    {isTourDone(m.id) && (
+                      <Badge variant="green">
+                        <Check className="h-3 w-3" /> Ya la viste
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-stone-500">{guide.summary}</p>
+                  {!on && <p className="mt-1 text-[11px] text-stone-400">Se activa en Configuración → Módulos opcionales. Al activarla se abre esta ayuda guiada.</p>}
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {on && (
+                      <Button onClick={() => startTour(m.id)}>
+                        <Compass className="h-4 w-4" /> {isTourDone(m.id) ? 'Repetir la ayuda guiada' : 'Iniciar la ayuda guiada'}
+                      </Button>
+                    )}
+                    <Button variant="secondary" onClick={() => openModuleIntro(m.id)}>
+                      <Info className="h-4 w-4" /> Cómo funciona
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos del tour</p>
       <ol className="space-y-1">
         {TOUR_STEPS.map((s, i) => (
           <li key={i}>
@@ -248,6 +293,8 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
 // ---------- Video ----------
 
 function VideoTab() {
+  const { video: videoId, openPanel } = useHelp();
+  const video = helpVideo(videoId);
   const ref = useRef<HTMLVideoElement>(null);
   function seek(t: number) {
     const v = ref.current;
@@ -257,14 +304,31 @@ function VideoTab() {
   }
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <video ref={ref} controls preload="metadata" className="w-full rounded-xl bg-brand-950">
-        <source src={VIDEO_MP4} type="video/mp4" />
-        <source src={VIDEO_WEBM} type="video/webm" />
+      <div className="mb-3 flex gap-1 rounded-lg bg-stone-100 p-1" role="tablist" aria-label="Videos de ayuda">
+        {HELP_VIDEOS.map((v) => (
+          <button
+            key={v.id}
+            role="tab"
+            aria-selected={v.id === video.id}
+            onClick={() => openPanel('video', { video: v.id })}
+            className={cn(
+              'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-colors',
+              v.id === video.id ? 'bg-white text-brand-800 shadow-sm' : 'text-stone-500 hover:text-stone-800',
+            )}
+          >
+            {v.tab}
+          </button>
+        ))}
+      </div>
+      {/* key: al cambiar de video, el reproductor se vuelve a montar con la nueva fuente. */}
+      <video key={video.id} ref={ref} controls preload="metadata" className="w-full rounded-xl bg-brand-950" aria-label={video.title}>
+        <source src={video.mp4} type="video/mp4" />
+        <source src={video.webm} type="video/webm" />
         Tu navegador no puede reproducir este video.
       </video>
-      <p className="mt-2 text-xs text-stone-500">Recorrido completo de TALENTIA (3 min), narrado y con subtítulos. Toca un capítulo para ir directo.</p>
+      <p className="mt-2 text-xs text-stone-500">{video.description}</p>
       <ol className="mt-3 space-y-1">
-        {VIDEO_CHAPTERS.map((c) => (
+        {video.chapters.map((c) => (
           <li key={c.t}>
             <button onClick={() => seek(c.t)} className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-stone-50">
               <span className="w-10 shrink-0 font-mono text-[11px] text-stone-400">{Math.floor(c.t / 60)}:{String(c.t % 60).padStart(2, '0')}</span>

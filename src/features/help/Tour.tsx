@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
 import { useHelp } from './HelpContext';
-import { TOUR_STEPS } from './tourSteps';
+import { TOURS, TOUR_LABELS } from './tourSteps';
 import { Button } from '../../components/ui/primitives';
 
 interface Rect {
@@ -17,12 +17,16 @@ const CARD_W = 340;
 
 /** Tour guiado: navega a cada pantalla, resalta el elemento y explica el paso. */
 export function Tour() {
-  const { tourStep, setTourStep, endTour } = useHelp();
+  const { tour, tourStep, setTourStep, endTour } = useHelp();
   const navigate = useNavigate();
   const location = useLocation();
   const [rect, setRect] = useState<Rect | null>(null);
+  // Alto real de la tarjeta: los pasos con más texto no deben salirse de la pantalla.
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [cardH, setCardH] = useState(260);
 
-  const step = tourStep != null ? TOUR_STEPS[tourStep] : null;
+  const steps = TOURS[tour];
+  const step = tourStep != null ? steps[tourStep] ?? null : null;
 
   // Cambia de pantalla cuando el paso lo pide.
   useEffect(() => {
@@ -65,20 +69,25 @@ export function Tour() {
     };
   }, [step, location.pathname]);
 
+  useLayoutEffect(() => {
+    const h = cardRef.current?.offsetHeight;
+    if (h && h !== cardH) setCardH(h);
+  });
+
   useEffect(() => {
     if (!step) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') endTour();
-      if (e.key === 'ArrowRight' && tourStep! < TOUR_STEPS.length - 1) setTourStep(tourStep! + 1);
+      if (e.key === 'ArrowRight' && tourStep! < steps.length - 1) setTourStep(tourStep! + 1);
       if (e.key === 'ArrowLeft' && tourStep! > 0) setTourStep(tourStep! - 1);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [step, tourStep, setTourStep, endTour]);
+  }, [step, steps, tourStep, setTourStep, endTour]);
 
   if (!step || tourStep == null) return null;
 
-  const last = tourStep === TOUR_STEPS.length - 1;
+  const last = tourStep === steps.length - 1;
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const mobile = vw < 640;
@@ -90,7 +99,8 @@ export function Tour() {
   } else {
     const fitsRight = rect.left + rect.width + PAD + 16 + CARD_W < vw;
     const left = fitsRight ? rect.left + rect.width + PAD + 16 : Math.min(Math.max(16, rect.left), vw - CARD_W - 16);
-    const top = fitsRight ? Math.min(Math.max(16, rect.top), vh - 260) : Math.min(rect.top + rect.height + PAD + 12, vh - 260);
+    const maxTop = Math.max(16, vh - cardH - 16);
+    const top = fitsRight ? Math.min(Math.max(16, rect.top), maxTop) : Math.min(rect.top + rect.height + PAD + 12, maxTop);
     cardStyle = { left, top, width: CARD_W };
   }
 
@@ -112,10 +122,10 @@ export function Tour() {
         <div className="absolute inset-0 bg-brand-950/62" />
       )}
 
-      <div className="absolute rounded-2xl bg-white p-5 shadow-2xl" style={cardStyle}>
+      <div ref={cardRef} className="absolute max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl" style={cardStyle}>
         <div className="mb-2 flex items-start justify-between gap-3">
           <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-600">
-            Paso {tourStep + 1} de {TOUR_STEPS.length}
+            {tour !== 'main' && `${TOUR_LABELS[tour]} · `}Paso {tourStep + 1} de {steps.length}
           </p>
           <button onClick={endTour} aria-label="Salir del tour" className="rounded-lg p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
             <X className="h-4 w-4" />
@@ -125,7 +135,7 @@ export function Tour() {
         <p className="mt-2 text-sm leading-relaxed text-stone-600">{step.body}</p>
         <div className="mt-4 flex items-center justify-between gap-2">
           <div className="flex gap-1">
-            {TOUR_STEPS.map((_, i) => (
+            {steps.map((_, i) => (
               <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === tourStep ? 'bg-brand-600' : i < tourStep ? 'bg-brand-300' : 'bg-stone-200'}`} />
             ))}
           </div>

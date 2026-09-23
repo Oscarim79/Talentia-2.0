@@ -293,7 +293,9 @@ export async function mockHelpReply({ question, route }: HelpReplyInput): Promis
   const q = normalize(question);
   const scored = HELP_FAQ.map((f) => {
     let score = 0;
-    for (const k of f.keywords) if (q.includes(normalize(k))) score += k.length > 6 ? 3 : 2;
+    // Frases de varias palabras pesan más que palabras sueltas: son más específicas
+    // (ej. "preguntas de la entrevista" gana a "entrevista").
+    for (const k of f.keywords) if (q.includes(normalize(k))) score += k.includes(' ') ? 4 : k.length > 6 ? 3 : 2;
     if (score > 0 && f.route && f.route === route) score += 1; // desempata a favor de la pantalla actual
     return { f, score };
   }).sort((a, b) => b.score - a.score);

@@ -1,5 +1,6 @@
 import { Compass, PlayCircle, MessageCircleQuestion, X } from 'lucide-react';
 import { useHelp } from './HelpContext';
+import { TOUR_STEPS } from './tourSteps';
 import { useEscape } from '../../lib/useEscape';
 import { APP } from '../../core/config';
 
@@ -23,8 +24,8 @@ export function WelcomeModal() {
           <p className="mt-1 text-sm text-brand-200">Reclutamiento con IA para el equipo de RR.HH. En 2 minutos sabrás usarla.</p>
         </div>
         <div className="grid gap-2 p-4 sm:p-5">
-          <ChoiceButton icon={Compass} title="Iniciar el tour guiado" desc="Te lleva pantalla por pantalla, en el orden real del trabajo. 8 pasos." onClick={startTour} primary />
-          <ChoiceButton icon={PlayCircle} title="Ver el video (3 min)" desc="Recorrido completo narrado, con subtítulos y capítulos." onClick={() => { dismissWelcome(); openPanel('video'); }} />
+          <ChoiceButton icon={Compass} title="Iniciar el tour guiado" desc={`Te lleva pantalla por pantalla, en el orden real del trabajo. ${TOUR_STEPS.length} pasos.`} onClick={() => startTour()} primary />
+          <ChoiceButton icon={PlayCircle} title="Ver el video (3 min)" desc="Recorrido completo narrado, con subtítulos y capítulos." onClick={() => { dismissWelcome(); openPanel('video', { video: 'tour' }); }} />
           <ChoiceButton icon={MessageCircleQuestion} title="Explorar por mi cuenta" desc="El botón de ayuda queda abajo a la derecha: pregunta lo que sea, cuando sea." onClick={dismissWelcome} />
         </div>
       </div>

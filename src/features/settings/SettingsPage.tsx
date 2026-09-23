@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList } from 'lucide-react';
+import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList, Compass } from 'lucide-react';
 import { useHelp } from '../help/HelpContext';
 import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
 import { downloadTextFile } from '../../lib/utils';
@@ -19,7 +19,7 @@ export default function SettingsPage() {
   const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
   const [newName, setNewName] = useState('');
   const [newTitle, setNewTitle] = useState('');
-  const { questions, clearQuestions } = useHelp();
+  const { questions, clearQuestions, openModuleIntro } = useHelp();
   const [copied, setCopied] = useState(false);
 
   const questionsText = () => {
@@ -158,7 +158,7 @@ export default function SettingsPage() {
           {MODULES.map((m) => {
             const on = isModuleEnabled(m.id);
             return (
-              <li key={m.id} className="flex flex-wrap items-start justify-between gap-4 px-6 py-5">
+              <li key={m.id} data-tour={`settings:module:${m.id}`} className="flex flex-wrap items-start justify-between gap-4 px-6 py-5">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-bold text-stone-800">{m.name}</p>
@@ -166,16 +166,32 @@ export default function SettingsPage() {
                   </div>
                   <p className="mt-1 max-w-2xl text-sm text-stone-500">{m.description}</p>
                   <p className="mt-2 text-xs text-stone-400">Al activarlo: {m.unlocks}</p>
-                  {on && (
-                    <Link
-                      to={m.route}
-                      className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <button
+                      onClick={() => openModuleIntro(m.id)}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
                     >
-                      Abrir {m.name} <ArrowUpRight className="h-3 w-3" />
-                    </Link>
-                  )}
+                      <Compass className="h-3 w-3" /> Cómo funciona y qué hacer
+                    </button>
+                    {on && (
+                      <Link
+                        to={m.route}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                      >
+                        Abrir {m.name} <ArrowUpRight className="h-3 w-3" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
-                <Toggle checked={on} onChange={(v) => setModuleEnabled(m.id, v)} label={`Activar ${m.name}`} />
+                <Toggle
+                  checked={on}
+                  onChange={(v) => {
+                    setModuleEnabled(m.id, v);
+                    // Al encenderlo, la ayuda guiada del módulo se abre sola.
+                    if (v) openModuleIntro(m.id, true);
+                  }}
+                  label={`Activar ${m.name}`}
+                />
               </li>
             );
           })}

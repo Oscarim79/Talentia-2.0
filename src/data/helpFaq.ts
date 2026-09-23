@@ -3,7 +3,6 @@
 //  Demo: el chat de ayuda responde con esto (búsqueda por palabras clave).
 //  Producción: se entrega como contexto al LLM (Claude) para respuestas libres.
 // ============================================================
-
 export interface FaqEntry {
   id: string;
   question: string;
@@ -36,7 +35,7 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'filtros',
     question: '¿Qué son los filtros de screening?',
-    keywords: ['filtro', 'criterio', 'requisito', 'positivo', 'negativo', 'excluyente', 'puntuar', 'score'],
+    keywords: ['filtro', 'filtros', 'criterio', 'requisito', 'positivo', 'negativo', 'excluyente', 'puntuar', 'score'],
     answer:
       'Son los requisitos de la vacante. Los positivos suman puntos cuando el CV los cumple (ej. "Ventas", "Gestión de tienda"); los negativos son excluyentes (ej. "Sin disponibilidad de fines de semana") y bajan el score. El score va de 0 a 100: verde desde 80, ámbar desde 60, rojo abajo.',
     route: '/vacantes',
@@ -54,7 +53,7 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'errores-cv',
     question: 'Un CV salió en la cola de errores, ¿qué hago?',
-    keywords: ['error', 'ilegible', 'escaneado', 'contraseña', 'password', 'no se pudo leer', 'corrupto'],
+    keywords: ['error', 'errores', 'cola de errores', 'con error', 'ilegible', 'escaneado', 'contraseña', 'password', 'no se pudo leer', 'corrupto'],
     answer:
       'Significa que el archivo no se pudo leer: suele ser un PDF escaneado como imagen, protegido con contraseña o dañado. Pídele al candidato una versión legible (PDF exportado de Word, no foto). En Respuestas a CVs y en Métricas aparece como pendiente "CV ilegible: pedir versión legible".',
     route: '/screening',
@@ -63,7 +62,7 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'responder',
     question: '¿Cómo respondo a los candidatos para agendar entrevista?',
-    keywords: ['responder', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'entrevista', 'citar', 'horario', 'plantilla'],
+    keywords: ['responder', 'respondo', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'agendo', 'entrevista', 'citar', 'horario', 'plantilla'],
     answer:
       'En Respuestas a CVs filtra por vacante y score mínimo, marca a los candidatos y pulsa "Responder a N seleccionados". El mensaje es una plantilla estándar: tú solo eliges canal (WhatsApp o correo), modalidad, dos opciones de horario, indicaciones y firma; el nombre, la vacante y la marca se completan solos. Puedes ver la vista previa con el ojito antes de enviar.',
     route: '/respuestas',
@@ -125,10 +124,82 @@ export const HELP_FAQ: FaqEntry[] = [
   },
   {
     id: 'entrevistas-ia',
-    question: '¿Dónde está Entrevistas IA?',
-    keywords: ['entrevistas ia', 'agente', 'modulo', 'módulo', 'activar', 'desactivado', 'chat entrevista'],
+    question: '¿Cómo activo las entrevistas por videollamada con IA?',
+    keywords: ['como activo', 'como activar', 'como lo activo', 'como la activo', 'activo las entrevistas', 'activar las entrevistas', 'activo la entrevista', 'activar la entrevista', 'como enciendo', 'encender', 'habilitar', 'aparece', 'dónde está entrevistas', 'dónde están las entrevistas', 'módulo', 'entrevistas ia', 'entrevista ia', 'entrevistas con ia'],
     answer:
-      'Es un módulo opcional y viene apagado. En Configuración → Módulos opcionales enciende "Entrevistas IA" y aparecerá en el menú de Reclutamiento: un agente conversacional entrevista al candidato con las preguntas de la vacante y lo evalúa.',
+      'Es un módulo opcional y viene apagado. En Configuración → Módulos opcionales enciende "Entrevistas IA": aparece en el menú de Reclutamiento, después de Respuestas a CVs, y se abre una ayuda guiada que te explica cómo funciona y qué te toca hacer. Esa ayuda también está en el botón Ayuda → Guía.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+  },
+  {
+    id: 'entrevista-ia-como',
+    question: '¿Cómo funciona la entrevista por videollamada con IA?',
+    keywords: ['videollamada', 'video llamada', 'meet', 'cómo funciona la entrevista', 'funciona la entrevista', 'funciona la videollamada', 'videollamada con ia', 'asistente de ia', 'asistente ia', 'agente', 'entrevistador', 'entra a la llamada', 'transcribe', 'transcripción'],
+    answer:
+      'Agendas la entrevista como siempre desde Respuestas a CVs, con modalidad Videollamada. A la hora acordada, el asistente de IA entra a la videollamada, se presenta como asistente de entrevistas y hace una por una las preguntas del banco de la vacante; todo queda transcrito. Al terminar, en Entrevistas IA ves la evaluación: puntaje global, puntaje por pregunta y diferencias con el CV. La decisión es de RR.HH. En esta demo la videollamada todavía no está conectada: se simula con un chat.',
+    route: '/entrevistas',
+    routeLabel: 'Ir a Entrevistas IA',
+  },
+  {
+    id: 'entrevista-ia-pasos',
+    question: '¿Qué tengo que hacer después de activar Entrevistas IA?',
+    keywords: ['después de activar', 'al activar', 'ya lo activé', 'ya la activé', 'qué tengo que hacer', 'qué debo hacer', 'qué me toca', 'qué hago ahora', 'que activé', 'ya activé', 'primeros pasos'],
+    answer:
+      'Cinco cosas: 1) revisa que cada vacante abierta tenga sus preguntas de entrevista (la tarjeta de la vacante dice cuántas tiene); 2) al agendar en Respuestas a CVs deja la modalidad en Videollamada y avisa en "Indicaciones" que lo entrevistará el asistente de IA y que se grabará; 3) haz una entrevista de prueba en Entrevistas IA; 4) lee cada evaluación antes de decidir y confirma con el candidato cualquier diferencia con su CV; 5) si deciden no usarla, apágala en Configuración.',
+    route: '/entrevistas',
+    routeLabel: 'Ir a Entrevistas IA',
+  },
+  {
+    id: 'entrevista-ia-preguntas',
+    question: '¿Qué preguntas hace el asistente de IA en la entrevista?',
+    keywords: ['qué preguntas hace', 'qué pregunta', 'banco de preguntas', 'preguntas de entrevista', 'preguntas de la entrevista', 'preguntas de la vacante', 'preguntas ia', 'improvisa'],
+    answer:
+      'Solo las del banco de la vacante, en orden; no improvisa. Se definen al crear la vacante, en el paso 4 del asistente ("Preguntas IA"), generadas con IA o escritas a mano. La tarjeta de cada vacante dice cuántas tiene. Si una vacante no tiene preguntas, el asistente usa 3 generales: por qué le interesa el puesto, un logro del que se sienta orgulloso y su disponibilidad para empezar.',
+    route: '/vacantes',
+    routeLabel: 'Ir a Vacantes',
+  },
+  {
+    id: 'entrevista-ia-aviso',
+    question: '¿El candidato sabe que lo entrevista una IA? ¿Se graba?',
+    keywords: ['sabe', 'sabe que', 'se presenta', 'avisar', 'aviso', 'consentimiento', 'graba', 'se graba', 'graba la entrevista', 'grabar', 'grabación', 'privacidad', 'robot', 'persona real'],
+    answer:
+      'Sí, siempre se le avisa. Al agendar en Respuestas a CVs, escribe en "Indicaciones" que lo entrevistará el asistente de IA de RR.HH. por videollamada y que la entrevista se grabará para evaluarla; al empezar, el asistente se presenta como asistente de entrevistas. Si el candidato prefiere hablar con una persona, agenda su entrevista con alguien del equipo.',
+    route: '/respuestas',
+    routeLabel: 'Ir a Respuestas a CVs',
+  },
+  {
+    id: 'entrevista-ia-demo',
+    question: '¿Cómo pruebo la entrevista IA en la demo?',
+    keywords: ['cómo pruebo', 'pruebo', 'probar', 'probar la entrevista', 'pruebo la entrevista', 'probarla', 'probarlo', 'entrevista de prueba', 'simular', 'simulada', 'iniciar entrevista', 'chat de entrevista', 'reiniciar'],
+    answer:
+      'Abre Entrevistas IA, elige un candidato y pulsa "Iniciar entrevista". En la demo la videollamada se simula con un chat: el asistente saluda y hace las preguntas de la vacante, y tú escribes las respuestas como lo haría el candidato. Al terminar aparece la evaluación a la derecha. "Reiniciar" empieza de nuevo.',
+    route: '/entrevistas',
+    routeLabel: 'Ir a Entrevistas IA',
+  },
+  {
+    id: 'entrevista-ia-evaluacion',
+    question: '¿Cómo leo la evaluación de la entrevista IA?',
+    keywords: ['evaluación', 'la evaluación', 'evaluación de la entrevista', 'evalúa', 'puntaje global', 'puntaje', 'discrepancia', 'diferencias', 'resultado de la entrevista', 'calificación'],
+    answer:
+      'Al terminar la entrevista aparecen tres cosas: el puntaje global de 0 a 100 (verde desde 80: recomendado para avanzar a oferta; ámbar desde 60: evaluar con el equipo; rojo abajo: revisar con cuidado), el puntaje de 1 a 10 de cada pregunta y las discrepancias entre el CV y lo que dijo el candidato (por ejemplo, años de experiencia distintos). Es una recomendación: la decisión la toma RR.HH.',
+    route: '/entrevistas',
+    routeLabel: 'Ir a Entrevistas IA',
+  },
+  {
+    id: 'entrevista-ia-decide',
+    question: '¿La IA decide si el candidato avanza o se descarta?',
+    keywords: ['decide', 'decisión', 'quién decide', 'contrata sola', 'descarta sola', 'la ia contrata', 'la ia descarta', 'reemplaza'],
+    answer:
+      'No. El asistente entrevista y recomienda; la decisión siempre es de RR.HH. Lee la transcripción y la evaluación, confirma con el candidato cualquier diferencia con su CV y decide si pasa a Oferta o se descarta. El tablero de Candidatos muestra la etapa de cada persona.',
+    route: '/candidatos',
+    routeLabel: 'Ir a Candidatos',
+  },
+  {
+    id: 'entrevista-ia-apagar',
+    question: '¿Cómo desactivo Entrevistas IA?',
+    keywords: ['desactivar', 'desactivo', 'desactivar entrevistas', 'desactivo entrevistas', 'apagar', 'apago', 'apagar entrevistas', 'apago entrevistas', 'apagar el módulo', 'desactivar el módulo', 'ocultar', 'quito', 'quito entrevistas', 'quitar entrevistas'],
+    answer:
+      'En Configuración → Módulos opcionales apaga el interruptor de Entrevistas IA. La sección se oculta del menú y no se pierde nada; puedes volver a encenderla cuando quieras y se abrirá otra vez la ayuda guiada.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
   },
@@ -160,8 +231,8 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'tour',
     question: '¿Cómo vuelvo a ver el tour o el video?',
-    keywords: ['tour', 'video', 'guia', 'guía', 'tutorial', 'ayuda', 'aprender', 'capacitacion', 'capacitación'],
+    keywords: ['tour', 'video', 'el video', 'los videos', 'guia', 'guía', 'tutorial', 'ayuda', 'aprender', 'capacitacion', 'capacitación'],
     answer:
-      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour paso a paso por las pantallas y la pestaña "Video" tiene el recorrido narrado de 3 minutos con capítulos.',
+      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour paso a paso por las pantallas (y la ayuda guiada de Entrevistas IA) y la pestaña "Video" tiene el recorrido narrado de 3 minutos y el video de Entrevistas IA por videollamada, con capítulos.',
   },
 ];

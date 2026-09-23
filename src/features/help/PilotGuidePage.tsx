@@ -108,10 +108,10 @@ export default function PilotGuidePage() {
           ))}
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button onClick={() => openPanel('video')} className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3.5 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50">
+          <button onClick={() => openPanel('video', { video: 'tour' })} className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3.5 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50">
             <PlayCircle className="h-4 w-4" /> Ver el video (3 min)
           </button>
-          <button onClick={startTour} className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700">
+          <button onClick={() => startTour()} className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700">
             <Compass className="h-4 w-4" /> Iniciar el tour
           </button>
         </div>

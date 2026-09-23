@@ -339,7 +339,7 @@ export default function CvReplyPage() {
 
         {/* Respuesta automática */}
         <div className="space-y-4">
-          <Card className="p-5">
+          <Card className="p-5" dataTour="reply:template">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-700">
               <CalendarCheck className="h-4 w-4 text-brand-600" /> Mensaje para agendar entrevista
             </h3>

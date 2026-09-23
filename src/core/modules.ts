@@ -23,8 +23,8 @@ export const MODULES: ModuleDef[] = [
     id: 'interviewsAi',
     name: 'Entrevistas IA',
     description:
-      'Un agente conversacional entrevista al candidato con el banco de preguntas de la vacante, transcribe y evalúa (puntaje por pregunta, global y discrepancias CV vs respuestas).',
-    unlocks: 'Sección "Entrevistas IA" en el menú de Reclutamiento.',
+      'Un asistente de IA entrevista al candidato por videollamada con el banco de preguntas de la vacante, transcribe y evalúa (puntaje por pregunta, global y discrepancias CV vs respuestas). La decisión sigue siendo de RR.HH.',
+    unlocks: 'Sección "Entrevistas IA" en el menú de Reclutamiento y una ayuda guiada que explica cómo funciona y qué hacer.',
     defaultEnabled: false,
     route: '/entrevistas',
   },
