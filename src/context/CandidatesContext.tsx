@@ -19,6 +19,8 @@ interface CandidatesCtxValue {
   addCandidate: (c: Candidate) => void;
   /** Al confirmar la entrevista, el candidato pasa a la etapa Entrevista (si aún no avanzó más). */
   markInterviewScheduled: (candidateId: string) => void;
+  /** RR.HH. mueve al candidato de etapa (ej. después de evaluar la entrevista: Oferta o Descartado). */
+  setStage: (candidateId: string, stage: CandidateStage) => void;
 }
 
 const STORAGE_KEY = 'talentia.candidates.v1';
@@ -70,6 +72,10 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const setStage = useCallback((candidateId: string, stage: CandidateStage) => {
+    setStore((s) => ({ ...s, stages: { ...s.stages, [candidateId]: stage } }));
+  }, []);
+
   const candidates = useMemo(
     () =>
       [...CANDIDATES, ...store.uploaded]
@@ -79,8 +85,8 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<CandidatesCtxValue>(
-    () => ({ candidates, addCandidate, markInterviewScheduled }),
-    [candidates, addCandidate, markInterviewScheduled],
+    () => ({ candidates, addCandidate, markInterviewScheduled, setStage }),
+    [candidates, addCandidate, markInterviewScheduled, setStage],
   );
 
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;

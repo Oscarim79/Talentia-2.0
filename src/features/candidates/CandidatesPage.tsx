@@ -1,6 +1,12 @@
+import { Link } from 'react-router-dom';
+import { NotebookPen } from 'lucide-react';
 import { useCandidates } from '../../context/CandidatesContext';
+import { useEvaluations } from '../../context/EvaluationsContext';
 import { Card, PageHeader, Badge, scoreVariant } from '../../components/ui/primitives';
-import type { CandidateStage } from '../../types';
+import { RECOMMENDATION_LABEL, fmt1, scoreEvaluation, type RecommendationLevel } from '../../core/interviewGuide';
+import type { Candidate, CandidateStage } from '../../types';
+
+const LEVEL_BADGE: Record<RecommendationLevel, 'green' | 'amber' | 'red'> = { recommended: 'green', reservations: 'amber', not: 'red' };
 
 const COLUMNS: { key: CandidateStage; label: string }[] = [
   { key: 'applied', label: 'Aplicados' },
@@ -13,10 +19,39 @@ const COLUMNS: { key: CandidateStage; label: string }[] = [
 
 export default function CandidatesPage() {
   const { candidates: cands } = useCandidates();
+  const { evaluations } = useEvaluations();
+
+  /** Resultado de la Entrevista por competencias en la tarjeta (o el acceso para hacerla). */
+  function interviewLine(c: Candidate) {
+    const ev = evaluations[c.id];
+    if (!ev && c.stage !== 'interview') return null;
+    const r = ev ? scoreEvaluation(ev) : null;
+    return (
+      <Link
+        to={`/competencias?c=${c.id}`}
+        className="mt-2 flex items-center gap-1.5 border-t border-stone-100 pt-2 text-[11px] font-semibold text-brand-700 hover:text-brand-900"
+      >
+        <NotebookPen className="h-3.5 w-3.5 shrink-0" />
+        {r?.index != null && r.level ? (
+          <Badge variant={LEVEL_BADGE[r.level]} className="px-2 text-[10.5px]">
+            {fmt1(r.index)} · {RECOMMENDATION_LABEL[r.level]}
+          </Badge>
+        ) : ev ? (
+          'Entrevista en curso'
+        ) : (
+          'Evaluar entrevista'
+        )}
+      </Link>
+    );
+  }
 
   return (
     <div>
-      <PageHeader eyebrow="Reclutamiento" title="Candidatos" subtitle="Pipeline post-screening: cada candidato en su etapa." />
+      <PageHeader
+        eyebrow="Reclutamiento"
+        title="Candidatos"
+        subtitle="Pipeline post-screening: cada candidato en su etapa, con el score del CV y el resultado de su entrevista por competencias."
+      />
 
       {cands.length === 0 ? (
         <Card className="p-12 text-center text-sm text-stone-400">
@@ -50,6 +85,7 @@ export default function CandidatesPage() {
                           <Badge variant={scoreVariant(c.screeningScore)}>{c.screeningScore}</Badge>
                         )}
                       </div>
+                      {interviewLine(c)}
                     </Card>
                   ))}
                   {items.length === 0 && (
