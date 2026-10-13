@@ -17,7 +17,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/',
     target: 'nav:/',
     title: 'Bienvenido a TALENTIA',
-    body: 'El menú de la izquierda sigue el orden real del trabajo: Reclutamiento (vacante → CVs → respuestas → candidatos), Talento (la gente ya contratada) y Gestión (métricas y configuración). Este tour te lleva por cada paso.',
+    body: 'El menú de la izquierda sigue el orden real del trabajo: Reclutamiento (vacante → CVs → respuestas → entrevista → candidatos), Talento (la gente ya contratada) y Gestión (métricas y configuración). Este tour te lleva por cada paso.',
   },
   {
     route: '/vacantes',
@@ -44,21 +44,27 @@ export const TOUR_STEPS: TourStep[] = [
     body: 'Con un clic se envía a cada seleccionado el mensaje estándar (WhatsApp o correo) para la entrevista virtual por Zoom, con su propia fecha y hora: se asignan seguidas desde la primera entrevista y puedes cambiar la de cualquiera en su fila. La Bandeja de envíos te dice quién confirmó y quién no contestó.',
   },
   {
+    route: '/competencias',
+    target: 'competencias:list',
+    title: '5. Entrevista con la guía de competencias',
+    body: 'En Entrevistas haces la entrevista por Zoom con la guía de RR.HH. (Vendedor o Jefe de Tienda). Elige al candidato en esta lista y sigue 3 pasos: 1) haces las preguntas en orden y anotas lo que dice, 2) al terminar puntúas cada respuesta de 1 a 5 y 3) la app calcula cada competencia, el Índice General y la recomendación. Desde el reporte lo pasas a Oferta o lo descartas.',
+  },
+  {
     route: '/candidatos',
     target: 'candidates:board',
-    title: '5. Sigue a cada candidato',
-    body: 'El tablero muestra a cada persona en su etapa: Aplicados, Screening, Entrevista, Oferta, Contratados y Descartados. Cada tarjeta lleva el score de la IA.',
+    title: '6. Sigue a cada candidato',
+    body: 'El tablero muestra a cada persona en su etapa: Aplicados, Screening, Entrevista, Oferta, Contratados y Descartados. Cada tarjeta lleva el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista (tócalo para abrir el reporte).',
   },
   {
     route: '/metricas',
     target: 'metrics:people',
-    title: '6. Mide cuánto tarda cada quien',
+    title: '7. Mide cuánto tarda cada quien',
     body: 'Métricas RR.HH. muestra, por persona, cuánto tarda en revisar un CV, responder, entrevistar y cerrar, contra la meta de cada etapa (verde, ámbar, rojo), más los pendientes fuera de meta con su responsable.',
   },
   {
     route: '/configuracion',
     target: 'settings:goals',
-    title: '7. Ajusta metas y equipo',
+    title: '8. Ajusta metas y equipo',
     body: 'En Configuración defines las metas en días, agregas personas al equipo de RR.HH. y enciendes módulos opcionales como Entrevistas IA por videollamada (al activarlo, se abre una ayuda guiada que explica cómo funciona). Nada más se configura: el proceso ya viene definido.',
   },
   {
@@ -84,7 +90,7 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
     route: '/configuracion',
     target: 'nav:/entrevistas',
     title: 'Nueva sección en el menú',
-    body: '"Entrevistas IA" aparece en Reclutamiento, después de Respuestas a CVs, porque ese es su lugar en el proceso: primero agendas la entrevista y luego el asistente de IA la hace.',
+    body: '"Entrevistas IA" aparece en Reclutamiento, después de Respuestas a CVs y Entrevistas, porque ese es su lugar en el proceso: primero agendas la entrevista y luego el asistente de IA la hace.',
   },
   {
     route: '/vacantes',
@@ -120,7 +126,7 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
     route: '/candidatos',
     target: 'candidates:board',
     title: '6. RR.HH. decide',
-    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Tú decides si el candidato pasa a Oferta o se descarta. En la demo el tablero solo muestra la etapa (quien confirma su entrevista pasa solo a Entrevista).',
+    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Tú decides si el candidato pasa a Oferta o se descarta: los botones están al final del reporte de su entrevista por competencias, en Entrevistas.',
   },
   {
     route: '/entrevistas',

@@ -3,10 +3,10 @@
 import { build } from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { CASES } from './help-chat-cases.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tmp = path.join(root, 'node_modules', '.cache', 'help-chat');
 fs.mkdirSync(tmp, { recursive: true });
 const entry = path.join(tmp, 'entry.ts');

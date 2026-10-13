@@ -92,6 +92,8 @@ export interface Job {
   createdAt: string;
   questions: InterviewQuestion[];
   filters: ScreeningFilter[];
+  /** Guía de entrevista por competencias que aplica (si falta, se deduce del título; ver core/interviewGuide.ts). */
+  interviewGuide?: 'vendedor' | 'jefe';
 }
 
 export type CandidateStage =

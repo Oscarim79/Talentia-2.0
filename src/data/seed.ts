@@ -40,7 +40,7 @@ export const JOBS: Job[] = [
   {
     id: 'job_motos', tenantId: 't_americana', title: 'Asesor de Ventas', brand: 'Americana',
     department: 'Ventas', location: 'Guatemala, GT', employmentType: 'Full-time', status: 'open',
-    salaryMin: 4000, salaryMax: 6500, openings: 8, applySlug: 'americana/asesor-ventas', createdAt: '2026-06-01',
+    salaryMin: 4000, salaryMax: 6500, openings: 8, applySlug: 'americana/asesor-ventas', createdAt: '2026-06-01', interviewGuide: 'vendedor',
     description: 'Asesor comercial para sala de ventas de tienda Americana (electrodomésticos, muebles, motos y tecnología). Atención al cliente, cierre de ventas y seguimiento de crédito.',
     questions: [
       { id: 'q1', text: '¿Qué experiencia tienes en ventas de productos de alto valor?', source: 'ai', weight: 30, idealAnswer: 'Experiencia en ventas con metas y manejo de crédito.' },
@@ -57,7 +57,7 @@ export const JOBS: Job[] = [
   {
     id: 'job_jefe', tenantId: 't_americana', title: 'Jefe de Tienda', brand: 'Americana',
     department: 'Operaciones de tienda', location: 'Mixco, GT', employmentType: 'Full-time', status: 'open',
-    salaryMin: 8000, salaryMax: 11000, openings: 2, applySlug: 'americana/jefe-de-tienda', createdAt: '2026-06-08',
+    salaryMin: 8000, salaryMax: 11000, openings: 2, applySlug: 'americana/jefe-de-tienda', createdAt: '2026-06-08', interviewGuide: 'jefe',
     description: 'Responsable de la operación completa de una tienda Americana: metas de venta, equipo de piso, inventario, caja y experiencia del cliente.',
     questions: [
       { id: 'q4', text: '¿Cuántas personas has tenido a tu cargo y cómo las evaluabas?', source: 'manual', weight: 30 },

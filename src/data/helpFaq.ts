@@ -23,7 +23,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Cómo funciona TALENTIA en general?',
     keywords: ['flujo', 'proceso', 'general', 'empezar', 'inicio', 'como funciona', 'que hace talentia', 'que hace la app', 'pasos'],
     answer:
-      'El proceso siempre es el mismo, en este orden: 1) creas la vacante en Vacantes, 2) subes los CVs en Screening IA y la IA los puntúa, 3) en Respuestas a CVs filtras los mejores y les mandas el mensaje para agendar la entrevista, 4) en Candidatos sigues a cada persona por etapa, y 5) en Métricas RR.HH. ves cuánto tarda cada quien. Puedes ver el tour guiado desde el botón de ayuda.',
+      'El proceso siempre es el mismo, en este orden: 1) creas la vacante en Vacantes, 2) subes los CVs en Screening IA y la IA los puntúa, 3) en Respuestas a CVs filtras los mejores y les mandas el mensaje para agendar la entrevista, 4) en Entrevistas haces la entrevista con la guía de competencias y la app calcula el reporte, 5) en Candidatos sigues a cada persona por etapa, y 6) en Métricas RR.HH. ves cuánto tarda cada quien. Puedes ver el tour guiado desde el botón de ayuda.',
     route: '/',
     routeLabel: 'Ir al Dashboard',
   },
@@ -111,12 +111,79 @@ export const HELP_FAQ: FaqEntry[] = [
     route: '/respuestas',
     routeLabel: 'Ir a Respuestas a CVs',
   },
+  // ---------- Entrevista por competencias (guía de RR.HH. para Vendedores y Jefes de Tienda) ----------
+  // Palabras clave específicas ("competencias", "índice general", "reporte de la entrevista") para no robarle
+  // preguntas a Entrevistas IA ("puntaje de la entrevista", "evaluación"). Correr `npm run check:help`.
+  {
+    id: 'competencias',
+    question: '¿Cómo hago la entrevista con la guía de competencias?',
+    keywords: [
+      'guia de competencias', 'guia de entrevista', 'guia de la entrevista', 'entrevista por competencias', 'entrevistas por competencias',
+      'competencias', 'hago la entrevista', 'hacer la entrevista', 'hacer una entrevista', 'hago una entrevista', 'durante la entrevista',
+      'entrevista por zoom', 'evaluar la entrevista', 'evaluo la entrevista', 'evaluar una entrevista', 'evaluo una entrevista',
+      'evaluar al candidato', 'evaluo al candidato', 'evaluar entrevista', 'tomar notas', 'tomo notas', 'anotar', 'anoto', 'notas',
+      'preguntas conductuales', 'pregunta conductual', 'conductuales', 'conductual', 'historia', 'opcion multiple',
+      'repreguntas', 'repregunta', 'busca', 'empezar la entrevista', 'entrevistar al candidato', 'entrevisto al candidato',
+      'guia para vendedores', 'guia para jefes', 'guia del vendedor', 'guia de jefe', 'seccion entrevistas', 'en entrevistas',
+      'evaluo a un candidato', 'evaluar a un candidato', 'evaluo a una candidata', 'despues de la entrevista',
+    ],
+    answer:
+      'En Entrevistas elige al candidato (aparecen los que están en la etapa Entrevista) y pulsa "Empezar la entrevista". La guía depende del puesto: Vendedor (10 preguntas conductuales, 45 min) o Jefe de Tienda (12, 60 min). Son 3 pasos: 1) Entrevista: haces las preguntas en orden —conductuales, la historia y al final las de opción múltiple— y anotas frases textuales del candidato; debajo de cada pregunta dice qué evidencia buscar y arriba tienes las repreguntas neutrales. 2) Puntuar: al terminar das de 1 a 5 a cada respuesta. 3) Reporte: la app calcula cada competencia, el Índice General y la recomendación. Todo se guarda solo. "Imprimir guía" saca la guía en blanco en papel.',
+    route: '/competencias',
+    routeLabel: 'Ir a Entrevistas',
+  },
+  {
+    id: 'competencias-puntaje',
+    question: '¿Cómo se calcula el puntaje de la entrevista por competencias?',
+    keywords: [
+      'como se calcula', 'se calcula', 'calcula el puntaje', 'calcula la nota', 'indice general', 'el indice', 'pesos', 'peso de cada',
+      'escala de 1 a 5', 'de 1 a 5', 'escala', 'recomendado con reservas', 'con reservas', 'no recomendado', 'recomendado',
+      'minimos obligatorios', 'minimo obligatorio', 'minimos', 'baja un nivel', 'plural', 'hicimos', 'maximo 3', 'puntaje maximo',
+      'puntaje de la competencia', 'puntaje por competencia', 'clave de puntuacion', 'cuanto vale', 'vale la opcion',
+      'vale cada', 'porcentaje', 'por que salio no recomendado', 'leido como vendedor', 'como vendedor', 'peso tiene',
+      'cada competencia', 'pesa cada',
+    ],
+    answer:
+      'Cada respuesta conductual y cada criterio de la historia se puntúa de 1 a 5 (1 Insuficiente, 2 Débil, 3 Adecuado, 4 Bueno, 5 Excelente). Por competencia: (promedio conductual × 0.8) + (opción múltiple × 0.2); la opción múltiple vale 5, 3 o 1 según la clave de la guía. El Índice General suma cada competencia por su peso según el puesto (Vendedor: Cliente 30 %, Comunicación 20 %, Equipo 15 %, Problemas 15 %, Resultados 20 %; Jefe de Tienda agrega Liderazgo 25 %). Recomendación: 4.0 a 5.0 Recomendado; 3.0 a 3.9 Recomendado con reservas; menos de 3.0 No recomendado. Mínimos: una competencia debajo de 3.0 baja la recomendación un nivel, y Orientación al Cliente (o Liderazgo, en jefe de tienda) debajo de 2.5 lo deja No recomendado. Si el candidato habló solo en plural sin decir qué hizo él, el máximo de esa respuesta es 3.',
+    route: '/competencias',
+    routeLabel: 'Ir a Entrevistas',
+  },
+  {
+    id: 'competencias-reporte',
+    question: '¿Cómo imprimo o comparto el reporte de la entrevista?',
+    keywords: [
+      'reporte de la entrevista', 'reporte de competencias', 'reporte del candidato', 'el reporte', 'imprimir', 'imprimo', 'impreso',
+      'en pdf', 'guardar en pdf', 'guardo en pdf', 'como pdf', 'comparto el reporte', 'compartir el reporte', 'mandar el reporte',
+      'enviar el reporte', 'copiar el reporte', 'descargar el reporte', 'guia impresa', 'guia en blanco', 'imprimir la guia',
+      'fortalezas', 'areas de mejora', 'observaciones', 'terminar evaluacion', 'terminar la evaluacion', 'reabrir', 'corregir la evaluacion',
+      'termine la evaluacion', 'ya termine', 'equivoque en un puntaje', 'me equivoque en', 'cambiar un puntaje', 'corregir un puntaje',
+    ],
+    answer:
+      'En el paso 3 (Reporte) de Entrevistas: "Imprimir o guardar PDF" abre el reporte listo para imprimir (en esa ventana eliges "Guardar como PDF" para mandarlo por correo); también puedes "Copiar texto" o "Descargar .txt". El reporte trae la tabla por competencia, el Índice General, la recomendación con su porqué, fortalezas, áreas de mejora y tus observaciones. "Terminar evaluación" la deja como registro; "Reabrir para corregir" permite cambiarla. Arriba, "Imprimir guía" saca la guía en blanco para tenerla en papel.',
+    route: '/competencias',
+    routeLabel: 'Ir a Entrevistas',
+  },
+  {
+    id: 'competencias-decidir',
+    question: '¿Cómo paso al candidato a Oferta o lo descarto después de la entrevista?',
+    keywords: [
+      'pasar a oferta', 'paso a oferta', 'pasarlo a oferta', 'pasarla a oferta', 'mover a oferta', 'muevo a oferta', 'mandar a oferta',
+      'lo descarto', 'la descarto', 'descartarlo', 'descartarla', 'descartar al candidato', 'descartar a un candidato', 'descartar',
+      'mover de etapa', 'muevo de etapa', 'cambiar de etapa', 'cambio de etapa', 'mover al candidato', 'muevo al candidato',
+      'regresar a entrevista', 'me equivoque de etapa', 'deshacer', 'candidata a oferta', 'candidato a oferta', 'descarto', 'muevo un candidato', 'mover un candidato',
+      'de etapa', 'lo pase a oferta', 'la pase a oferta', 'por error', 'lo regreso', 'la regreso',
+    ],
+    answer:
+      'Al completar el reporte en Entrevistas aparece "Decisión de RR.HH." con dos botones: "Pasar a Oferta" y "Descartar". La recomendación apoya la decisión, pero la decisión es tuya. Al elegir, la evaluación queda terminada y el candidato cambia de etapa en Candidatos. Si te equivocaste, "Regresar a Entrevista" lo devuelve.',
+    route: '/competencias',
+    routeLabel: 'Ir a Entrevistas',
+  },
   {
     id: 'etapas',
     question: '¿Qué significan las etapas de Candidatos?',
     keywords: ['etapa', 'etapas', 'candidatos', 'pipeline', 'tablero', 'aplicado', 'oferta', 'contratado', 'descartado', 'kanban'],
     answer:
-      'Aplicados: llegó el CV y nadie lo ha revisado. Screening: ya fue revisado y puntuado. Entrevista: tiene entrevista agendada o hecha (quien confirma en Respuestas a CVs pasa aquí solo). Oferta: se le envió oferta. Contratados y Descartados cierran el proceso. Cada tarjeta muestra el score de la IA. En la demo el tablero solo muestra la etapa; mover a alguien a mano llega con la base de datos.',
+      'Aplicados: llegó el CV y nadie lo ha revisado. Screening: ya fue revisado y puntuado. Entrevista: tiene entrevista agendada o hecha (quien confirma en Respuestas a CVs pasa aquí solo). Oferta: se le envió oferta. Contratados y Descartados cierran el proceso. Cada tarjeta muestra el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista por competencias. A Oferta o a Descartados se pasa desde el reporte de la entrevista, en Entrevistas.',
     route: '/candidatos',
     routeLabel: 'Ir a Candidatos',
   },
@@ -168,7 +235,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'activo el modulo', 'aparece la seccion', 'seccion de entrevistas',
     ],
     answer:
-      'Es un módulo opcional y viene apagado. En Configuración → Módulos opcionales enciende "Entrevistas IA": aparece en el menú de Reclutamiento, después de Respuestas a CVs, y se abre sola la ayuda guiada: una ventana que explica cómo funciona y qué te toca hacer, con un recorrido paso a paso por las pantallas. Esa ayuda también está en el botón Ayuda → Guía.',
+      'Es un módulo opcional y viene apagado. En Configuración → Módulos opcionales enciende "Entrevistas IA": aparece en el menú de Reclutamiento, después de Entrevistas, y se abre sola la ayuda guiada: una ventana que explica cómo funciona y qué te toca hacer, con un recorrido paso a paso por las pantallas. Esa ayuda también está en el botón Ayuda → Guía.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'interviewsAi',
@@ -280,7 +347,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'lo contrato', 'toma la decision',
     ],
     answer:
-      'No. El asistente de IA entrevista y recomienda; la decisión siempre es de RR.HH. Lee la transcripción y la evaluación, confirma con el candidato cualquier diferencia con su CV y decide si pasa a Oferta o se descarta. En la demo el tablero de Candidatos solo muestra la etapa de cada persona; registrar la decisión ahí llega con la base de datos.',
+      'No. El asistente de IA entrevista y recomienda; la decisión siempre es de RR.HH. Lee la transcripción y la evaluación, confirma con el candidato cualquier diferencia con su CV y decide si pasa a Oferta o se descarta. La decisión se registra en Entrevistas: al completar el reporte de la entrevista por competencias aparecen los botones Pasar a Oferta y Descartar.',
     route: '/candidatos',
     routeLabel: 'Ir a Candidatos',
     topic: 'interviewsAi',

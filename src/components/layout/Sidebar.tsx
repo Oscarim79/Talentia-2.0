@@ -11,6 +11,7 @@ import {
   Shield,
   Settings,
   MailCheck,
+  NotebookPen,
   X,
 } from 'lucide-react';
 import { APP, TEAM_PILOT } from '../../core/config';
@@ -41,6 +42,7 @@ const groups: { label: string | null; items: NavItem[] }[] = [
       { to: '/screening', label: 'Screening IA', icon: ScanSearch },
       { to: '/candidatos', label: 'Candidatos', icon: Users },
       { to: '/respuestas', label: 'Respuestas a CVs', icon: MailCheck },
+      { to: '/competencias', label: 'Entrevistas', icon: NotebookPen },
       { to: '/entrevistas', label: 'Entrevistas IA', icon: MessagesSquare, module: 'interviewsAi' },
     ],
   },
