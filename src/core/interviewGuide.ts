@@ -243,6 +243,13 @@ export const RECOMMENDATION_LABEL: Record<RecommendationLevel, string> = {
   not: 'No recomendado',
 };
 
+/**
+ * Competencia crítica de cada puesto: si queda debajo de 2.5, el candidato es No recomendado
+ * sin importar el Índice General. Decisión de Oscar (2026-10-13): en jefe de tienda cuenta solo
+ * Liderazgo y Gestión (no Orientación al Cliente); en vendedor, Orientación al Cliente.
+ */
+export const CRITICAL_COMPETENCY: Record<GuideRole, CompetencyKey> = { vendedor: 'cliente', jefe: 'liderazgo' };
+
 export const RECOMMENDATION_HINT: Record<RecommendationLevel, string> = {
   recommended: 'Puede avanzar a oferta.',
   reservations: 'Se sugiere una segunda entrevista o verificar referencias.',
@@ -406,8 +413,8 @@ export function scoreEvaluation(ev: InterviewEvaluation, role: GuideRole = ev.ro
       level = DOWN[level];
       reasons.push(`${listOf(low)} ${low.length > 1 ? 'tienen' : 'tiene'} menos de 3.0: la recomendación baja un nivel.`);
     }
-    // Mínimo obligatorio 2: Orientación al Cliente (y Liderazgo y Gestión, en jefe de tienda) debajo de 2.5 → No recomendado.
-    const critical = competencies.filter((c) => (c.key === 'cliente' || c.key === 'liderazgo') && (c.score ?? 0) < 2.5);
+    // Mínimo obligatorio 2: la competencia crítica del puesto debajo de 2.5 → No recomendado.
+    const critical = competencies.filter((c) => c.key === CRITICAL_COMPETENCY[role] && (c.score ?? 0) < 2.5);
     if (critical.length) {
       level = 'not';
       reasons.push(`${listOf(critical)} ${critical.length > 1 ? 'tienen' : 'tiene'} menos de 2.5: queda como No recomendado sin importar el Índice General.`);
