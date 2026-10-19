@@ -173,6 +173,10 @@ export type InterviewStatus = 'scheduled' | 'in_progress' | 'completed' | 'no_sh
 export interface InterviewTurn {
   role: 'agent' | 'candidate';
   content: string;
+  /** En turnos del agente: pregunta del guion que está haciendo (id de la guía: V1…, 'story', M1…). */
+  questionId?: string;
+  /** En turnos del agente: repregunta neutral sobre la misma pregunta. */
+  followUp?: boolean;
 }
 
 export interface Discrepancy {

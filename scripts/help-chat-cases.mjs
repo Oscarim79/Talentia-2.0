@@ -443,4 +443,10 @@ export const CASES = [
   ["¿de dónde salen las preguntas de la entrevista?","entrevista-ia-preguntas","/entrevistas"],
   ["como reinicio la entrevista","entrevista-ia-demo","/entrevistas"],
   ["que mide cultura 360","talento-cultura","/talento"],
+  // --- Entrevistas IA con la guía de competencias (2026-10-19) ---
+  ["la ia usa la guia de competencias?","entrevista-ia-preguntas","/entrevistas"],
+  ["que son las preguntas extra de la vacante","entrevista-ia-preguntas","/vacantes"],
+  ["donde queda la transcripcion de la entrevista ia","entrevista-ia-evaluacion","/entrevistas"],
+  ["que es la sugerencia preliminar","entrevista-ia-evaluacion","/entrevistas"],
+  ["como puntuo lo que entrevisto la ia","entrevista-ia-evaluacion","/entrevistas"],
 ];

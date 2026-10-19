@@ -1,8 +1,8 @@
 [
   {
     "id": "intro",
-    "text": "Entrevistas IA por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con las preguntas de la vacante, y te entrega una evaluación.",
-    "say": "Entrevistas i a por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con las preguntas de la vacante, y te entrega una evaluación."
+    "text": "Entrevistas IA por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con la misma guía de competencias de RR.HH. que usaría una persona, y te deja la transcripción lista para puntuar.",
+    "say": "Entrevistas i a por videollamada. Es un módulo opcional de TALENTIA: un asistente de inteligencia artificial entrevista por videollamada a los candidatos que ya agendaste, con la misma guía de competencias de Recursos Humanos que usaría una persona, y te deja la transcripción lista para puntuar."
   },
   {
     "id": "act",
@@ -11,11 +11,11 @@
   },
   {
     "id": "menu",
-    "text": "La nueva sección aparece en el menú de Reclutamiento, después de Respuestas a currículums."
+    "text": "La nueva sección aparece en el menú de Reclutamiento, después de Respuestas a currículums y de Entrevistas."
   },
   {
     "id": "preg",
-    "text": "Primero, revisa las preguntas de cada vacante. El asistente solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen en el paso cuatro del formulario de nueva vacante."
+    "text": "Primero, revisa la guía de cada vacante: Vendedor o Jefe de Tienda. Se deduce del título y la tarjeta la muestra. El asistente hace exactamente las preguntas de esa guía, en orden, con repreguntas si la respuesta es vaga, y no improvisa."
   },
   {
     "id": "agenda",
@@ -27,15 +27,21 @@
   },
   {
     "id": "demo",
-    "text": "La videollamada real llegará en la fase tres; en esta demostración se simula con un chat. Eliges un candidato, pulsas Iniciar entrevista y respondes como lo haría el candidato."
+    "text": "La videollamada real llegará en la fase tres; en esta demostración se simula con un chat. Eliges un candidato, pulsas Iniciar entrevista y respondes como lo haría el candidato: las preguntas conductuales, la historia y, al final, las de opción múltiple, contestando con la letra."
+  },
+  {
+    "id": "resp",
+    "text": "Aquí respondo las dieciséis preguntas de la guía de Vendedor: las conductuales, la historia y las cinco de opción múltiple."
   },
   {
     "id": "eval",
-    "text": "Al terminar ves el puntaje global de cero a cien, el puntaje de cada pregunta y las diferencias entre el currículum y lo que dijo el candidato. En la demostración, el puntaje es aproximado."
+    "text": "Al terminar, la transcripción queda guardada como borrador en Entrevistas: cada respuesta bajo su pregunta y las opciones múltiples ya marcadas. Aquí ves la sugerencia preliminar de la IA, de uno a cinco por pregunta, y las diferencias entre el currículum y lo que dijo.",
+    "say": "Al terminar, la transcripción queda guardada como borrador en Entrevistas: cada respuesta bajo su pregunta y las opciones múltiples ya marcadas. Aquí ves la sugerencia preliminar de la inteligencia artificial, de uno a cinco por pregunta, y las diferencias entre el currículum y lo que dijo."
   },
   {
     "id": "decide",
-    "text": "La evaluación es una recomendación: la decisión siempre es de Recursos Humanos. Tú decides si el candidato pasa a oferta o se descarta."
+    "text": "La sugerencia es orientativa: en Entrevistas, RR.HH. lee la transcripción, puntúa de uno a cinco y la app calcula el Índice General y la recomendación. La decisión siempre es de Recursos Humanos: tú decides si el candidato pasa a oferta o se descarta.",
+    "say": "La sugerencia es orientativa: en Entrevistas, Recursos Humanos lee la transcripción, puntúa de uno a cinco y la aplicación calcula el Índice General y la recomendación. La decisión siempre es de Recursos Humanos: tú decides si el candidato pasa a oferta o se descarta."
   },
   {
     "id": "help",
@@ -43,6 +49,6 @@
   },
   {
     "id": "end",
-    "text": "Entrevistas por videollamada con inteligencia artificial: las mismas preguntas para todos y el mismo criterio para evaluar."
+    "text": "Entrevistas por videollamada con inteligencia artificial: la misma guía para todos y el mismo criterio para evaluar."
   }
 ]

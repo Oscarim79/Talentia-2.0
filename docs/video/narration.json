@@ -5,7 +5,7 @@
   },
   {
     "id": "menu",
-    "text": "El menú de la izquierda sigue el orden real del trabajo: primero la vacante, luego los currículums, después las respuestas a los candidatos, el seguimiento y, al final, las métricas y la configuración."
+    "text": "El menú de la izquierda sigue el orden real del trabajo: primero la vacante, luego los currículums, después las respuestas a los candidatos, la entrevista con la guía de competencias, el seguimiento y, al final, las métricas y la configuración."
   },
   {
     "id": "vac",
@@ -25,7 +25,7 @@
   },
   {
     "id": "vac4",
-    "text": "En el cuarto se generan las preguntas de entrevista."
+    "text": "En el cuarto puedes agregar preguntas extra para el entrevistador; son opcionales, porque la entrevista usa la guía de competencias de Recursos Humanos."
   },
   {
     "id": "vac5",
@@ -56,12 +56,20 @@
     "text": "La bandeja de envíos muestra quién confirmó la entrevista y quién no contestó; quien confirma pasa a la etapa de entrevista. Y si activas la regla automática, TALENTIA responde sola a todo currículum que supere el puntaje que definas."
   },
   {
+    "id": "comp",
+    "text": "Paso cuatro: Entrevistas. La entrevista por Zoom se hace con la guía de competencias de Recursos Humanos: Vendedor o Jefe de Tienda, según la vacante. Eliges al candidato y la app te lleva por tres pasos."
+  },
+  {
+    "id": "comp2",
+    "text": "Primero haces las preguntas en el orden de la guía y anotas lo que dice el candidato; debajo de cada una se indica qué evidencia buscar. Después puntúas cada respuesta de uno a cinco. Y al final la app calcula cada competencia, el Índice General y la recomendación, y desde el reporte pasas al candidato a oferta o lo descartas."
+  },
+  {
     "id": "cand",
-    "text": "Paso cuatro: Candidatos. Cada persona aparece en su etapa, desde aplicados hasta contratados, con su puntaje."
+    "text": "Paso cinco: Candidatos. Cada persona aparece en su etapa, desde aplicados hasta contratados, con su puntaje y, si ya fue entrevistada, el resultado de su entrevista."
   },
   {
     "id": "met",
-    "text": "Paso cinco: Métricas de Recursos Humanos. Aquí ves cuánto tarda cada persona del equipo en revisar un currículum, responder, entrevistar y cerrar, comparado con la meta de cada etapa."
+    "text": "Paso seis: Métricas de Recursos Humanos. Aquí ves cuánto tarda cada persona del equipo en revisar un currículum, responder, entrevistar y cerrar, comparado con la meta de cada etapa."
   },
   {
     "id": "met2",
@@ -69,11 +77,11 @@
   },
   {
     "id": "conf",
-    "text": "Paso seis: Configuración. Aquí administras el equipo de Recursos Humanos, las metas en días y los módulos opcionales, como las entrevistas por videollamada con inteligencia artificial, que traen su propia ayuda guiada. Nada más se configura: el proceso ya viene definido."
+    "text": "Paso siete: Configuración. Aquí administras el equipo de Recursos Humanos, las metas en días y los módulos opcionales, como las entrevistas por videollamada con inteligencia artificial, que traen su propia ayuda guiada. Nada más se configura: el proceso ya viene definido."
   },
   {
     "id": "help",
-    "text": "¿Tienes dudas? El botón de ayuda siempre está ahí. Tiene un chat que te explica cómo hacer cada cosa y te lleva a la pantalla correcta, la guía del tour y los videos."
+    "text": "¿Tienes dudas? El botón de ayuda siempre está ahí. Tiene un chat que te explica cómo hacer cada cosa y te lleva a la pantalla correcta, la guía con los recorridos de cada sección y los videos."
   },
   {
     "id": "end",

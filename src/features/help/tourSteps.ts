@@ -23,7 +23,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/vacantes',
     target: 'jobs:new',
     title: '1. Crea la vacante',
-    body: 'Todo empieza aquí. "Nueva vacante" abre un formulario de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas de entrevista y revisión. Al final puedes descargar el XML para LinkedIn.',
+    body: 'Todo empieza aquí. "Nueva vacante" abre un formulario de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas extra opcionales para el entrevistador y revisión. La entrevista usa la guía de competencias (Vendedor o Jefe de Tienda, según el título). Al final puedes descargar el XML para LinkedIn.',
   },
   {
     route: '/screening',
@@ -228,9 +228,9 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
   },
   {
     route: '/vacantes',
-    target: 'jobs:questions',
-    title: '1. Revisa las preguntas de la vacante',
-    body: 'El asistente de IA solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen al crear la vacante (paso 4, "Preguntas IA") y hoy no se editan después; la tarjeta dice cuántas tiene. Si una vacante no tiene, usa 3 generales.',
+    target: 'jobs:guide',
+    title: '1. La guía de cada vacante',
+    body: 'El asistente de IA hace las preguntas de la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda), en orden y sin improvisar: las mismas que haría una persona. La guía se deduce del título de la vacante y la tarjeta la muestra; las "preguntas extra" del formulario son opcionales para el entrevistador.',
   },
   {
     route: '/respuestas',
@@ -253,14 +253,14 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
   {
     route: '/entrevistas',
     target: 'interviews:evaluation',
-    title: '5. Lee la evaluación',
-    body: 'Al terminar aparecen el puntaje global de 0 a 100 (verde desde 80, ámbar desde 60, rojo abajo), el de 1 a 10 de cada pregunta y las diferencias entre el CV y lo que dijo el candidato. En la demo el puntaje es aproximado.',
+    title: '5. La transcripción y la sugerencia',
+    body: 'Al terminar, cada respuesta queda anotada bajo su pregunta y las opciones múltiples ya marcadas, como borrador en Entrevistas. Aquí ves la sugerencia preliminar de la IA (1 a 5 por pregunta, con la escala de la guía) y las diferencias entre el CV y lo que dijo. En la demo la sugerencia es aproximada.',
   },
   {
-    route: '/candidatos',
-    target: 'candidates:board',
-    title: '6. RR.HH. decide',
-    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Tú decides si el candidato pasa a Oferta o se descarta: los botones están al final del reporte de su entrevista por competencias, en Entrevistas.',
+    route: '/competencias',
+    target: 'competencias:list',
+    title: '6. RR.HH. puntúa y decide',
+    body: 'En Entrevistas abres al candidato ("Puntuar en Entrevistas"), lees la transcripción, puntúas de 1 a 5 y la app calcula el Índice General y la recomendación. La IA no contrata ni descarta a nadie: tú decides si pasa a Oferta o se descarta, al final del reporte.',
   },
   {
     route: '/entrevistas',
@@ -310,26 +310,27 @@ const asset = (file: string) => `${import.meta.env.BASE_URL}ayuda/${file}`;
 /** Capítulos del video de recorrido (segundos aproximados). */
 export const VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es TALENTIA y el orden del trabajo' },
-  { t: 27, label: 'Crear la vacante con IA (5 pasos)' },
-  { t: 74, label: 'Subir CVs y ver el ranking' },
-  { t: 105, label: 'Responder: Zoom y un horario por candidato' },
-  { t: 148, label: 'Seguir candidatos por etapa' },
-  { t: 155, label: 'Métricas: cuánto tarda cada quien' },
-  { t: 177, label: 'Configuración: equipo, metas y módulos' },
-  { t: 195, label: 'El botón de ayuda' },
+  { t: 30, label: 'Crear la vacante con IA (5 pasos)' },
+  { t: 82, label: 'Subir CVs y ver el ranking' },
+  { t: 112, label: 'Responder: Zoom y un horario por candidato' },
+  { t: 155, label: 'Entrevista con la guía de competencias' },
+  { t: 190, label: 'Seguir candidatos por etapa' },
+  { t: 201, label: 'Métricas: cuánto tarda cada quien' },
+  { t: 223, label: 'Configuración: equipo, metas y módulos' },
+  { t: 240, label: 'El botón de ayuda' },
 ];
 
 /** Capítulos del video de Entrevistas IA por videollamada (segundos aproximados). */
 export const INTERVIEWS_AI_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es Entrevistas IA por videollamada' },
-  { t: 15, label: 'Activar el módulo en Configuración' },
-  { t: 36, label: 'Preguntas de la vacante' },
-  { t: 50, label: 'Agendar por Zoom con el aviso de IA' },
-  { t: 69, label: 'La entrevista por videollamada' },
-  { t: 77, label: 'Probarla en la demo' },
-  { t: 89, label: 'Leer la evaluación' },
-  { t: 103, label: 'RR.HH. decide' },
-  { t: 112, label: 'Dónde pedir ayuda' },
+  { t: 19, label: 'Activar el módulo en Configuración' },
+  { t: 41, label: 'La guía de cada vacante' },
+  { t: 57, label: 'Agendar por Zoom con el aviso de IA' },
+  { t: 75, label: 'La entrevista por videollamada' },
+  { t: 84, label: 'Probarla en la demo (las 16 preguntas)' },
+  { t: 116, label: 'Transcripción y sugerencia preliminar' },
+  { t: 136, label: 'RR.HH. puntúa y decide en Entrevistas' },
+  { t: 153, label: 'Dónde pedir ayuda' },
 ];
 
 /** Capítulos del video de Talento (segundos aproximados). */
@@ -366,7 +367,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'tour',
     tab: 'Recorrido',
     title: 'Recorrido completo de TALENTIA',
-    description: 'Recorrido completo de TALENTIA (3 min y medio), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    description: 'Recorrido completo de TALENTIA (4 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('tour-talentia.mp4'),
     webm: asset('tour-talentia.webm'),
     chapters: VIDEO_CHAPTERS,
@@ -393,7 +394,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'interviewsAi',
     tab: 'Entrevistas IA',
     title: 'Entrevistas IA por videollamada',
-    description: 'Cómo se activa, cómo funciona y qué te toca hacer (2 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    description: 'Cómo se activa, cómo funciona con la guía de competencias y qué te toca hacer (3 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('entrevistas-ia.mp4'),
     webm: asset('entrevistas-ia.webm'),
     chapters: INTERVIEWS_AI_VIDEO_CHAPTERS,

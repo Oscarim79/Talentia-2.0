@@ -224,6 +224,40 @@ export const STORY = {
   alternateResults: '¿Logró conservar al cliente o concretar una venta?',
 };
 
+// ---------- Guion para el asistente de IA (módulo Entrevistas IA) ----------
+
+export type InterviewScriptKind = 'behavioral' | 'story' | 'choice';
+
+export interface InterviewScriptItem {
+  /** V1…/J1…, 'story' o M1…: los mismos ids que usa la evaluación. */
+  id: string;
+  kind: InterviewScriptKind;
+  competency?: CompetencyKey;
+  text: string;
+  /** Solo opción múltiple (sin puntos: al candidato nunca se le muestran). */
+  options?: { letter: ChoiceLetter; text: string }[];
+  /** Evidencia a buscar (solo conductuales), para la sugerencia preliminar y para RR.HH. */
+  lookFor?: string;
+}
+
+/**
+ * El guion que sigue el asistente de IA: exactamente la guía, en su orden
+ * (conductuales → historia → opción múltiple). Mismas preguntas para todos los candidatos del puesto.
+ */
+export function interviewScript(role: GuideRole): InterviewScriptItem[] {
+  return [
+    ...BEHAVIORAL[role].map((q) => ({ id: q.id, kind: 'behavioral' as const, competency: q.competency, text: q.text, lookFor: q.lookFor })),
+    { id: 'story', kind: 'story' as const, text: STORY.main },
+    ...choiceQuestionsFor(role).map((q) => ({
+      id: q.id,
+      kind: 'choice' as const,
+      competency: q.competency,
+      text: q.prompt,
+      options: q.options.map((o) => ({ letter: o.letter, text: o.text })),
+    })),
+  ];
+}
+
 // ---------- Pesos del Índice General por puesto (sección 2.D) ----------
 
 export const WEIGHTS: Record<GuideRole, Partial<Record<CompetencyKey, number>>> = {
@@ -281,6 +315,8 @@ export interface InterviewEvaluation {
   choices: Record<string, ChoiceLetter>;
   /** Observaciones por competencia (van al reporte). */
   observations: Partial<Record<CompetencyKey, string>>;
+  /** 'ai' cuando la entrevista la hizo el asistente de IA y las notas son su transcripción. */
+  source?: 'ai' | 'human';
   updatedAt: string;
 }
 

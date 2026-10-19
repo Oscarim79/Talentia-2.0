@@ -19,6 +19,7 @@ import {
   ThumbsUp,
   XCircle,
   Undo2,
+  Sparkles,
 } from 'lucide-react';
 import { useCandidates } from '../../context/CandidatesContext';
 import { useJobs } from '../../context/JobsContext';
@@ -331,6 +332,11 @@ function Workspace({
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="font-display text-lg font-semibold text-ink">{fullName(cand)}</h2>
               <StatusChip ev={ev} />
+              {ev.source === 'ai' && (
+                <Badge variant="brand" title="Las notas son la transcripción del asistente de IA; los puntajes los das tú.">
+                  <Sparkles className="h-3 w-3" /> Entrevistó el asistente de IA
+                </Badge>
+              )}
             </div>
             <p className="text-sm text-stone-500">
               {job ? `${job.title} · ${job.brand}` : 'Vacante'} · etapa {STAGE_LABEL[cand.stage]}

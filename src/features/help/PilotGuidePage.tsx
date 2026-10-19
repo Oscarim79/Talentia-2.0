@@ -11,7 +11,7 @@ export const PILOT_DAYS: { day: string; title: string; goal: string; tasks: stri
     title: 'Conocer la herramienta',
     goal: 'Entender el orden del trabajo y dónde está cada cosa.',
     tasks: [
-      'Mira el video de 3 minutos y medio (botón Ayuda → Video).',
+      'Mira el video del recorrido completo, de 4 minutos (botón Ayuda → Video).',
       'Haz el tour guiado completo (botón Ayuda → Guía → Iniciar el tour).',
       'En Ayuda → Guía, haz también los recorridos de Talento y Gestión (cada uno tiene su "Cómo funciona" y su video de 2 minutos y medio en Ayuda → Video).',
       'Recorre el menú por tu cuenta y hazle al chat de ayuda al menos 3 preguntas sobre lo que no entendiste.',
@@ -110,7 +110,7 @@ export default function PilotGuidePage() {
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
           <button onClick={() => openPanel('video', { video: 'tour' })} className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3.5 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50">
-            <PlayCircle className="h-4 w-4" /> Ver el video (3½ min)
+            <PlayCircle className="h-4 w-4" /> Ver el video (4 min)
           </button>
           <button onClick={() => startTour()} className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700">
             <Compass className="h-4 w-4" /> Iniciar el tour

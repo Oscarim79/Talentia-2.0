@@ -39,7 +39,7 @@ export const MODULES: ModuleDef[] = [
     id: 'interviewsAi',
     name: 'Entrevistas IA',
     description:
-      'Un asistente de IA entrevista al candidato por videollamada (Zoom) con el banco de preguntas de la vacante, transcribe y evalúa (puntaje por pregunta, global y discrepancias CV vs respuestas). La decisión sigue siendo de RR.HH. En la demo la videollamada se simula con un chat.',
+      'Un asistente de IA entrevista al candidato por videollamada (Zoom) con la guía de entrevista por competencias de RR.HH. (Vendedor o Jefe de Tienda, según la vacante), transcribe cada respuesta bajo su pregunta y la deja como borrador en Entrevistas, con una sugerencia preliminar de puntaje y las discrepancias CV vs respuestas. RR.HH. puntúa y decide. En la demo la videollamada se simula con un chat.',
     unlocks: 'Sección "Entrevistas IA" en el menú de Reclutamiento y una ayuda guiada que explica cómo funciona y qué hacer.',
     defaultEnabled: false,
     route: '/entrevistas',

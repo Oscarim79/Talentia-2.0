@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Phone,
   MessageCircle,
@@ -10,13 +11,29 @@ import {
   RotateCcw,
   Sparkles,
   Compass,
+  NotebookPen,
+  ArrowRight,
+  Check,
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { useCandidates } from '../../context/CandidatesContext';
+import { useEvaluations } from '../../context/EvaluationsContext';
+import { useSettings } from '../../context/SettingsContext';
 import { providers } from '../../core/providers';
+import {
+  GUIDES,
+  SCALE,
+  competencyLabel,
+  emptyEvaluation,
+  guideRoleForJob,
+  interviewScript,
+  CHOICE_QUESTIONS,
+  type ChoiceLetter,
+  type InterviewScriptItem,
+} from '../../core/interviewGuide';
 import { useHelp } from '../help/HelpContext';
-import type { Candidate, Job, InterviewTurn, Discrepancy } from '../../types';
+import type { Candidate, InterviewTurn, Discrepancy } from '../../types';
 import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
 
 // Americana 2000 entrevista por videollamada (cadena en todo el país): es el canal principal.
@@ -26,18 +43,19 @@ const CHANNELS = [
   { icon: Phone, label: 'Teléfono', desc: 'Agente de voz (Vapi/Retell)', tag: 'Fase 3' },
 ];
 
-// Banco de respaldo cuando la vacante no tiene preguntas configuradas.
-const GENERIC_QUESTIONS = [
-  '¿Por qué te interesa este puesto?',
-  'Cuéntame de un logro del que te sientas orgulloso.',
-  '¿Cuál es tu disponibilidad para empezar?',
-];
+function todayIso(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 
 export default function InterviewsPage() {
   const { tenant } = useTenant();
   const { jobs } = useJobs();
   const { openModuleIntro } = useHelp();
-  const { candidates: tenantCands } = useCandidates();
+  const { candidates: tenantCands, setStage } = useCandidates();
+  const { evaluations, saveEvaluation } = useEvaluations();
+  const { hrTeam } = useSettings();
+  const navigate = useNavigate();
 
   // Candidatos entrevistables del tenant (ya puntuados en screening; incluye los CVs cargados
   // y a quienes confirmaron su entrevista en Respuestas a CVs).
@@ -55,15 +73,16 @@ export default function InterviewsPage() {
 
   const cand = candidates.find((c) => c.id === candId);
   const job = jobs.find((j) => j.id === cand?.jobId);
-  const questionTexts = useMemo(() => {
-    const fromJob = job?.questions.map((q) => q.text) ?? [];
-    return fromJob.length ? fromJob : GENERIC_QUESTIONS;
-  }, [job]);
+  // El asistente sigue la guía de competencias de RR.HH. que aplica a la vacante (Vendedor o Jefe de Tienda).
+  const role = guideRoleForJob(job);
+  const guide = GUIDES[role];
+  const script = useMemo(() => interviewScript(role), [role]);
 
   const [turns, setTurns] = useState<InterviewTurn[]>([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
   const [done, setDone] = useState(false);
+  const [saved, setSaved] = useState<'draft' | 'kept' | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   // Generación de la conversación: invalida respuestas pendientes del agente
   // cuando se cambia de candidato/empresa (evita mensajes "fantasma").
@@ -76,6 +95,7 @@ export default function InterviewsPage() {
     setInput('');
     setThinking(false);
     setDone(false);
+    setSaved(null);
   }, [candId, tenant.id]);
 
   // Auto-scroll al último mensaje.
@@ -94,18 +114,20 @@ export default function InterviewsPage() {
       history,
       jobTitle: job?.title ?? '',
       candidateName: `${cand.firstName} ${cand.lastName}`,
-      questions: questionTexts,
+      guideLabel: guide.label,
+      script,
     });
     // Si la conversación cambió mientras el agente "pensaba", descarta la respuesta.
     if (gen !== genRef.current) return;
     setThinking(false);
-    setTurns((prev) => [...prev, { role: 'agent', content: res.message }]);
+    setTurns((prev) => [...prev, { role: 'agent', content: res.message, questionId: res.questionId, followUp: res.followUp }]);
     if (res.done) setDone(true);
   }
 
   function startInterview() {
     setTurns([]);
     setDone(false);
+    setSaved(null);
     agentSpeak([]);
   }
 
@@ -118,14 +140,37 @@ export default function InterviewsPage() {
     await agentSpeak(next);
   }
 
-  const evaluation = done && cand ? evaluate(turns, questionTexts, job, cand) : null;
+  const transcript = useMemo(() => (done ? transcriptOf(turns, script) : null), [done, turns, script]);
+  const evaluation = done && cand && transcript ? evaluate(transcript, script, cand) : null;
+
+  // Al terminar, la transcripción queda como borrador en Entrevistas (competencias) para que RR.HH. puntúe.
+  // Si ese candidato ya tiene una evaluación terminada, no se toca.
+  useEffect(() => {
+    if (!done || !cand || !transcript) return;
+    const existing = evaluations[cand.id];
+    if (existing?.status === 'done') {
+      setSaved('kept');
+      return;
+    }
+    const interviewerId = hrTeam.find((u) => u.id === cand.ownerId)?.id ?? hrTeam[0]?.id ?? '';
+    saveEvaluation({
+      ...emptyEvaluation({ candidateId: cand.id, tenantId: cand.tenantId, jobId: cand.jobId, role, interviewerId, date: todayIso() }),
+      notes: transcript.notes,
+      choices: transcript.choices,
+      source: 'ai',
+    });
+    if (cand.stage === 'screening') setStage(cand.id, 'interview');
+    setSaved('draft');
+    // Solo al terminar la entrevista.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
 
   return (
     <div>
       <PageHeader
         eyebrow="Reclutamiento"
         title="Entrevistas IA"
-        subtitle="El asistente de IA entrevista por videollamada (Zoom) con el banco de preguntas de la vacante, transcribe y evalúa. RR.HH. decide."
+        subtitle="El asistente de IA entrevista por videollamada (Zoom) con la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda), transcribe y deja las respuestas listas para puntuar. RR.HH. decide."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="brand">
@@ -172,7 +217,14 @@ export default function InterviewsPage() {
               ))}
             </select>
           </div>
-          {job && <Badge variant="stone">{job.title}</Badge>}
+          <div className="flex flex-wrap items-center gap-2">
+            {job && <Badge variant="stone">{job.title}</Badge>}
+            {cand && (
+              <Badge variant="blue" title="Guía de entrevista por competencias de RR.HH. que aplica a la vacante">
+                <NotebookPen className="h-3 w-3" /> Guía: {guide.label} · {script.length} preguntas
+              </Badge>
+            )}
+          </div>
         </div>
       </Card>
 
@@ -199,8 +251,8 @@ export default function InterviewsPage() {
               {!started && !thinking && (
                 <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                   <Bot className="h-10 w-10 text-brand-300" />
-                  <p className="max-w-xs text-sm text-stone-500">
-                    El asistente de IA hará {questionTexts.length} preguntas del banco de la vacante. En la demo la videollamada se simula con este chat: responde como lo haría el candidato.
+                  <p className="max-w-sm text-sm text-stone-500">
+                    El asistente de IA hará las {script.length} preguntas de la guía de {guide.label} ({guide.minutes} min): conductuales, la historia y opción múltiple, en el orden de la guía. En la demo la videollamada se simula con este chat: responde como lo haría el candidato.
                   </p>
                   <Button onClick={startInterview} disabled={thinking} dataTour="interviews:start">
                     <Sparkles className="h-4 w-4" /> Iniciar entrevista
@@ -241,33 +293,58 @@ export default function InterviewsPage() {
 
           {/* Panel de evaluación (aparece al finalizar) */}
           <div className="space-y-4" data-tour="interviews:evaluation">
-            {!evaluation ? (
+            {!evaluation || !cand ? (
               <Card className="p-5">
-                <h3 className="mb-2 text-sm font-bold text-stone-700">Evaluación</h3>
+                <h3 className="mb-2 text-sm font-bold text-stone-700">Al terminar</h3>
                 <p className="text-sm text-stone-500">
-                  El puntaje por pregunta, el global y las discrepancias CV vs respuestas aparecen al finalizar la entrevista.
+                  La transcripción queda guardada como borrador en Entrevistas (cada respuesta bajo su pregunta y las opciones múltiples marcadas), con una sugerencia preliminar de puntaje y las discrepancias CV vs respuestas. El puntaje lo das tú en Entrevistas.
                 </p>
               </Card>
             ) : (
               <>
-                <Card className="p-5">
-                  <h3 className="mb-2 text-sm font-bold text-stone-700">Puntaje global IA</h3>
-                  <p className={`text-4xl font-black ${scoreColor(evaluation.global)}`}>
-                    {evaluation.global}
-                    <span className="text-lg text-stone-400">/100</span>
-                  </p>
-                  <p className="mt-1 text-xs text-stone-500">{recommendation(evaluation.global)}</p>
+                <Card className="p-5" dataTour="interviews:saved">
+                  <h3 className="mb-2 flex items-center gap-2 text-sm font-bold text-stone-700">
+                    <NotebookPen className="h-4 w-4 text-brand-600" /> Transcripción en Entrevistas
+                  </h3>
+                  {saved === 'kept' ? (
+                    <p className="text-sm text-stone-500">
+                      {cand.firstName} ya tiene una evaluación terminada en Entrevistas; esta entrevista de prueba no la cambia.
+                    </p>
+                  ) : (
+                    <p className="text-sm text-stone-500">
+                      Guardada como borrador: {evaluation.notesCount} de {evaluation.notesTotal} respuestas anotadas y {evaluation.choicesCount} de {evaluation.choicesTotal} opciones múltiples marcadas. Ahí puntúas de 1 a 5 cada respuesta y la app calcula el Índice General y la recomendación.
+                    </p>
+                  )}
+                  <Button className="mt-3" onClick={() => navigate(`/competencias?c=${cand.id}`)}>
+                    Puntuar en Entrevistas <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </Card>
 
                 <Card className="p-5">
-                  <h3 className="mb-3 text-sm font-bold text-stone-700">Por pregunta</h3>
+                  <h3 className="mb-1 text-sm font-bold text-stone-700">Sugerencia preliminar de la IA</h3>
+                  <p className="mb-3 text-xs text-stone-400">
+                    Orientativa, de 1 a 5 según la escala de la guía: sube con ejemplos concretos, acciones propias y resultados medibles; baja si solo habla en plural. La puntuación válida la da RR.HH.
+                  </p>
                   <div className="space-y-2.5">
-                    {evaluation.perQuestion.map((q, i) => (
-                      <div key={i} className="flex items-start justify-between gap-3 text-xs">
-                        <span className="text-stone-600">{q.question}</span>
-                        <Badge variant={q.score >= 8 ? 'green' : q.score >= 5 ? 'amber' : 'red'}>
-                          {q.score}/10
-                        </Badge>
+                    {evaluation.perQuestion.map((q) => (
+                      <div key={q.id} className="flex items-start justify-between gap-3 text-xs">
+                        <span className="text-stone-600">
+                          <b className="text-stone-700">{q.id}</b> · {q.competency}
+                          {q.pluralOnly && <span className="ml-1 text-amber-700">· solo en plural</span>}
+                        </span>
+                        <Badge variant={q.score >= 4 ? 'green' : q.score >= 3 ? 'amber' : 'red'}>{q.score}/5</Badge>
+                      </div>
+                    ))}
+                    {evaluation.choices.map((c) => (
+                      <div key={c.id} className="flex items-start justify-between gap-3 text-xs">
+                        <span className="text-stone-600">
+                          <b className="text-stone-700">{c.id}</b> · {c.competency} · opción {c.letter ?? '—'}
+                        </span>
+                        {c.points == null ? (
+                          <Badge variant="stone">sin elegir</Badge>
+                        ) : (
+                          <Badge variant={c.points === 5 ? 'green' : c.points === 3 ? 'amber' : 'red'}>{c.points}/5</Badge>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -291,6 +368,11 @@ export default function InterviewsPage() {
                     </div>
                   )}
                 </Card>
+                {saved === 'draft' && (
+                  <p className="flex items-center gap-1.5 text-[11px] text-stone-400">
+                    <Check className="h-3 w-3 text-green-600" /> El candidato está en la etapa Entrevista y aparece en Entrevistas y en Candidatos.
+                  </p>
+                )}
               </>
             )}
           </div>
@@ -350,49 +432,102 @@ function renderRich(text: string): ReactNode {
   );
 }
 
-// ---------- Evaluación heurística (demo) ----------
+// ---------- Transcripción por pregunta ----------
 
-interface Evaluation {
-  global: number;
-  perQuestion: { question: string; score: number }[];
-  discrepancies: Discrepancy[];
+interface Transcript {
+  /** Respuestas textuales por pregunta conductual y de la historia (mismos ids que la evaluación). */
+  notes: Record<string, string>;
+  /** Letra elegida en cada pregunta de opción múltiple. */
+  choices: Record<string, ChoiceLetter>;
   answersCount: number;
 }
 
-/** Puntaje 1–10 por respuesta: longitud + cobertura de los must-have de la vacante. */
-function scoreAnswer(text: string, job?: Job): number {
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  let s = 4;
-  if (words >= 6) s += 2;
-  if (words >= 18) s += 1;
-  const positives = (job?.filters.filter((f) => f.polarity === 'positive') ?? []).map((f) =>
-    f.criterion.toLowerCase(),
-  );
-  const lower = text.toLowerCase();
-  const hits = positives.filter((p) => lower.includes(p.split(' ')[0])).length;
-  s += Math.min(hits * 2, 3);
-  return Math.max(1, Math.min(10, s));
+/** Interpreta la respuesta a una opción múltiple: la letra ("B", "b)", "la B") o el texto de la opción. */
+function parseChoice(text: string, item: InterviewScriptItem): ChoiceLetter | null {
+  const t = text.trim();
+  const m = t.match(/^\(?\s*(?:la\s+|opci[oó]n\s+)?([abc])\s*[).:-]?(?:\s|$)/i) ?? t.match(/\b(?:la|opci[oó]n)\s+([abc])\b/i);
+  if (m) return m[1].toUpperCase() as ChoiceLetter;
+  const lower = t.toLowerCase();
+  const hit = item.options?.find((o) => lower.includes(o.text.toLowerCase().slice(0, 25)));
+  return hit?.letter ?? null;
 }
 
-function evaluate(
-  turns: InterviewTurn[],
-  questions: string[],
-  job: Job | undefined,
-  cand: Candidate,
-): Evaluation {
-  const answers = turns.filter((t) => t.role === 'candidate').map((t) => t.content);
-  const perQuestion = answers.map((a, i) => ({
-    question: questions[i] ?? `Pregunta ${i + 1}`,
-    score: scoreAnswer(a, job),
-  }));
-  const global = perQuestion.length
-    ? Math.round((perQuestion.reduce((acc, q) => acc + q.score, 0) / perQuestion.length) * 10)
-    : 0;
+/** Reparte los turnos del candidato bajo la pregunta del guion que el agente estaba haciendo (las repreguntas no cambian de pregunta). */
+function transcriptOf(turns: InterviewTurn[], script: InterviewScriptItem[]): Transcript {
+  const notes: Record<string, string> = {};
+  const choices: Record<string, ChoiceLetter> = {};
+  let current: InterviewScriptItem | undefined;
+  let answersCount = 0;
+  for (const t of turns) {
+    if (t.role === 'agent') {
+      if (t.questionId && !t.followUp) current = script.find((i) => i.id === t.questionId);
+      continue;
+    }
+    answersCount++;
+    if (!current) continue;
+    if (current.kind === 'choice') {
+      const letter = parseChoice(t.content, current);
+      if (letter) choices[current.id] = letter;
+    } else {
+      notes[current.id] = notes[current.id] ? `${notes[current.id]} ${t.content}` : t.content;
+    }
+  }
+  return { notes, choices, answersCount };
+}
+
+// ---------- Sugerencia preliminar (demo) ----------
+
+interface Evaluation {
+  perQuestion: { id: string; competency: string; score: number; pluralOnly: boolean }[];
+  choices: { id: string; competency: string; letter: ChoiceLetter | null; points: number | null }[];
+  discrepancies: Discrepancy[];
+  answersCount: number;
+  notesCount: number;
+  notesTotal: number;
+  choicesCount: number;
+  choicesTotal: number;
+}
+
+const PLURAL = /\b(hicimos|logramos|trabajamos|pudimos|decidimos|resolvimos|atendimos|nosotros|nos organizamos|entre todos)\b/i;
+const FIRST_PERSON = /\b(yo|hice|logr[eé]|decid[ií]|propuse|me encargu[eé]|llam[eé]|atend[ií]|resolv[ií]|organic[eé]|habl[eé]|ofrec[ií]|revis[eé]|aprend[ií]|busqu[eé]|ped[ií]|escuch[eé]|expliqu[eé]|vend[ií]|sub[ií]|aument[eé])\b/i;
+const MEASURABLE = /(\d+\s*(%|por ciento|clientes|ventas|unidades|motos|quetzales|q\b|d[ií]as|semanas|meses))|\b(result[oó]|aument[oó]|subi[oó]|mejor[oó]|logr[eé]|super[eé]|cumpl[ií])\b/i;
+
+/**
+ * Sugerencia 1–5 con la escala de la guía (orientativa; RR.HH. puntúa): un ejemplo
+ * concreto con acciones propias y resultado sube; vago o en plural baja (tope de 3).
+ */
+function suggestScore(text: string): { score: number; pluralOnly: boolean } {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  let score = words < 10 ? 2 : words < 25 ? 3 : 4;
+  if (words >= 25 && MEASURABLE.test(text)) score = 5;
+  else if (MEASURABLE.test(text)) score = Math.min(5, score + 1);
+  const pluralOnly = PLURAL.test(text) && !FIRST_PERSON.test(text);
+  if (pluralOnly) score = Math.min(score, SCALE[2].score);
+  return { score: Math.max(1, Math.min(5, score)), pluralOnly };
+}
+
+function evaluate(transcript: Transcript, script: InterviewScriptItem[], cand: Candidate): Evaluation {
+  const perQuestion = script
+    .filter((i) => i.kind !== 'choice')
+    .map((i) => {
+      const text = transcript.notes[i.id] ?? '';
+      const s = text ? suggestScore(text) : { score: 1, pluralOnly: false };
+      return { id: i.id === 'story' ? 'Historia' : i.id, competency: i.competency ? competencyLabel(i.competency) : 'Historia (4 competencias)', ...s };
+    });
+  const choices = script
+    .filter((i) => i.kind === 'choice')
+    .map((i) => {
+      const letter = transcript.choices[i.id] ?? null;
+      const q = CHOICE_QUESTIONS.find((c) => c.id === i.id);
+      const points = letter && q ? (q.options.find((o) => o.letter === letter)?.points ?? null) : null;
+      return { id: i.id, competency: i.competency ? competencyLabel(i.competency) : '', letter, points };
+    });
 
   // Discrepancia CV vs respuestas: años de experiencia mencionados vs los del CV.
   const discrepancies: Discrepancy[] = [];
   const cvYears = cand.parsed?.totalYears;
-  const mention = answers.join(' ').match(/(\d+)\s*añ/i);
+  const all = Object.values(transcript.notes).join(' ');
+  const mention = all.match(/(\d+)\s*añ/i);
   if (cvYears && mention) {
     const n = parseInt(mention[1], 10);
     if (Math.abs(n - cvYears) >= 2) {
@@ -404,17 +539,15 @@ function evaluate(
     }
   }
 
-  return { global, perQuestion, discrepancies, answersCount: answers.length };
-}
-
-function scoreColor(g: number): string {
-  if (g >= 80) return 'text-green-600';
-  if (g >= 60) return 'text-amber-600';
-  return 'text-red-600';
-}
-
-function recommendation(g: number): string {
-  if (g >= 80) return 'Recomendado para avanzar a oferta.';
-  if (g >= 60) return 'Perfil aceptable, evaluar con el equipo.';
-  return 'Por debajo del umbral; revisar con cuidado.';
+  const notesTotal = script.filter((i) => i.kind !== 'choice').length;
+  return {
+    perQuestion,
+    choices,
+    discrepancies,
+    answersCount: transcript.answersCount,
+    notesCount: Object.values(transcript.notes).filter((n) => n.trim()).length,
+    notesTotal,
+    choicesCount: Object.keys(transcript.choices).length,
+    choicesTotal: script.length - notesTotal,
+  };
 }

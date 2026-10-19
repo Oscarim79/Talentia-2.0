@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Plus, MapPin, Users2, Link2, Sparkles, Download } from 'lucide-react';
+import { Plus, MapPin, Users2, Link2, Sparkles, Download, NotebookPen } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
+import { GUIDES, guideRoleForJob } from '../../core/interviewGuide';
 import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
 import { fmtMoney, downloadTextFile, slugify } from '../../lib/utils';
 import { jobToLinkedInXml } from '../../lib/linkedin';
@@ -80,12 +81,17 @@ function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
         <Badge variant="brand">
           <Users2 className="h-3 w-3" /> {j.openings} plazas
         </Badge>
-        {/* La ayuda guiada de Entrevistas IA resalta las preguntas de la primera vacante. */}
-        <span data-tour={tourTarget ? 'jobs:questions' : undefined} className="inline-flex">
+        {/* La guía de competencias que usará la entrevista (humana o con el asistente de IA); la ayuda de Entrevistas IA la resalta. */}
+        <span data-tour={tourTarget ? 'jobs:guide' : undefined} className="inline-flex" title="Guía de entrevista por competencias de RR.HH. que aplica a esta vacante (se deduce del título)">
           <Badge variant="blue">
-            <Sparkles className="h-3 w-3" /> {j.questions.length} preguntas IA
+            <NotebookPen className="h-3 w-3" /> Guía: {GUIDES[guideRoleForJob(j)].label}
           </Badge>
         </span>
+        {j.questions.length > 0 && (
+          <Badge variant="stone" title="Preguntas extra para el entrevistador (opcionales)">
+            <Sparkles className="h-3 w-3" /> {j.questions.length} extra
+          </Badge>
+        )}
       </div>
 
       <div className="mt-4 flex items-center gap-2">

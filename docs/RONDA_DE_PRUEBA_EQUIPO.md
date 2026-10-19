@@ -13,7 +13,7 @@
 
 ## Día 1 — Conocer la herramienta
 Objetivo: entender el orden del trabajo y dónde está cada cosa.
-1. Mira el video de 3 minutos y medio (botón Ayuda → Video).
+1. Mira el video del recorrido completo, de 4 minutos (botón Ayuda → Video).
 2. Haz el tour guiado completo (botón Ayuda → Guía → Iniciar el tour).
 3. En Ayuda → Guía, haz también los recorridos de Talento y Gestión (cada uno tiene su "Cómo funciona" y su video de 2 minutos y medio en Ayuda → Video).
 4. Recorre el menú por tu cuenta y hazle al chat de ayuda al menos 3 preguntas sobre lo que no entendiste.
