@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Video, Compass, PlayCircle, MessageCircleQuestion, X, CheckCircle2, ArrowRight, Info, Settings, Check } from 'lucide-react';
 import { useHelp } from './HelpContext';
 import { useSettings } from '../../context/SettingsContext';
-import { MODULE_GUIDES } from './moduleGuides';
+import { GUIDES, isModuleGuide } from './moduleGuides';
 import { TOURS } from './tourSteps';
 import { Badge, Button } from '../../components/ui/primitives';
 
 /**
- * Ayuda guiada de un módulo opcional: se abre sola al activarlo en Configuración
- * (y a pedido con "Cómo funciona" desde Ayuda → Guía, Configuración o la pantalla del módulo).
+ * Ayuda guiada de un módulo opcional o de una sección fija (Talento, Gestión): la de un módulo
+ * se abre sola al activarlo en Configuración (y a pedido con "Cómo funciona" desde Ayuda → Guía,
+ * Configuración o la pantalla del módulo); la de una sección, desde Ayuda → Guía.
  * Explica cómo funciona, qué le toca hacer a RR.HH. y ofrece el recorrido guiado paso a paso.
  */
 export function ModuleIntroModal() {
@@ -36,8 +37,10 @@ export function ModuleIntroModal() {
   if (!moduleIntro) return null;
 
   const { module, justActivated } = moduleIntro;
-  const guide = MODULE_GUIDES[module];
-  const on = isModuleEnabled(module);
+  const guide = GUIDES[module];
+  // Una sección fija siempre está disponible; un módulo opcional solo si está encendido.
+  const isModule = isModuleGuide(module);
+  const on = isModule ? isModuleEnabled(module) : true;
   const go = (route: string) => {
     closeModuleIntro();
     navigate(route);
@@ -49,8 +52,8 @@ export function ModuleIntroModal() {
       document.querySelector(`[data-tour="settings:module:${module}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
     }, 150);
   };
-  const activatedNow = justActivated && on;
-  const eyebrow = activatedNow ? 'Módulo activado' : on ? 'Módulo opcional · activo' : 'Módulo opcional · desactivado';
+  const activatedNow = isModule && justActivated && on;
+  const eyebrow = !isModule ? 'Sección de la app' : activatedNow ? 'Módulo activado' : on ? 'Módulo opcional · activo' : 'Módulo opcional · desactivado';
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-950/60 p-4 backdrop-blur-sm" onClick={closeModuleIntro}>
@@ -127,8 +130,8 @@ export function ModuleIntroModal() {
         <div className="shrink-0 border-t border-stone-100 bg-stone-50/60 px-5 py-4 sm:px-6">
           <div className="flex flex-wrap items-center gap-2">
             {on ? (
-              <Button onClick={() => startTour(module)}>
-                <Compass className="h-4 w-4" /> {isTourDone(module) ? 'Repetir el recorrido guiado' : 'Iniciar el recorrido guiado'} ({TOURS[module].length} pasos)
+              <Button onClick={() => startTour(guide.tour)}>
+                <Compass className="h-4 w-4" /> {isTourDone(guide.tour) ? 'Repetir el recorrido guiado' : 'Iniciar el recorrido guiado'} ({TOURS[guide.tour].length} pasos)
               </Button>
             ) : (
               <Button onClick={goToSwitch}>
@@ -158,7 +161,7 @@ export function ModuleIntroModal() {
             </Button>
           </div>
           <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-400">
-            {isTourDone(module) && (
+            {isTourDone(guide.tour) && (
               <Badge variant="green" className="shrink-0 whitespace-nowrap">
                 <Check className="h-3 w-3" /> Recorrido visto
               </Badge>

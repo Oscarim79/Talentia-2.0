@@ -1,0 +1,59 @@
+[
+  {
+    "id": "intro",
+    "text": "Gestión es la sección de TALENTIA para medir y ajustar. Tiene dos pantallas: Métricas RR.HH. y Configuración. Es para el propio departamento de RR.HH., no para la gerencia.",
+    "say": "Gestión es la sección de TALENTIA para medir y ajustar. Tiene dos pantallas: Métricas de Recursos Humanos y Configuración. Es para el propio departamento de Recursos Humanos, no para la gerencia."
+  },
+  {
+    "id": "kpis",
+    "text": "Arriba, los filtros de vacante y persona: toda la pantalla responde a ellos. Luego, los cuatro números del equipo: cuánto se tarda en revisar un CV, en responder al candidato y en contratar, y cuántos pendientes están fuera de meta. Verde dentro de la meta, ámbar hasta 1.5 veces, rojo después.",
+    "say": "Arriba, los filtros de vacante y persona: toda la pantalla responde a ellos. Luego, los cuatro números del equipo: cuánto se tarda en revisar un currículum, en responder al candidato y en contratar, y cuántos pendientes están fuera de meta. Verde dentro de la meta, ámbar hasta una vez y media, rojo después."
+  },
+  {
+    "id": "cadaquien",
+    "text": "Cada quien: una fila por persona, con sus candidatos asignados y activos, sus días promedio para revisar, responder y entrevistar con el porcentaje a tiempo, sus entrevistas, ofertas y contrataciones, y sus pendientes. La gráfica compara al equipo."
+  },
+  {
+    "id": "etapas",
+    "text": "Tiempo por etapa muestra las 5 etapas contra su meta, la marca vertical, y señala el cuello de botella. El embudo dice cuántos candidatos avanzan de recibidos a contratados. Y la tabla por vacante, los días abierta y las plazas cubiertas.",
+    "say": "Tiempo por etapa muestra las cinco etapas contra su meta, la marca vertical, y señala el cuello de botella. El embudo dice cuántos candidatos avanzan de recibidos a contratados. Y la tabla por vacante, los días abierta y las plazas cubiertas."
+  },
+  {
+    "id": "pendientes",
+    "text": "Pendientes por persona es la lista de trabajo del día: qué falta, con quién, el responsable y cuántos días lleva esperando contra la meta. \"Fuera de meta\" es lo primero.",
+    "say": "Pendientes por persona es la lista de trabajo del día: qué falta, con quién, el responsable y cuántos días lleva esperando contra la meta. Fuera de meta es lo primero."
+  },
+  {
+    "id": "equipo",
+    "text": "En Configuración, el Equipo de RR.HH.: las personas que aparecen en \"Cada quien\". Se agregan con su nombre y su cargo.",
+    "say": "En Configuración, el Equipo de Recursos Humanos: las personas que aparecen en Cada quien. Se agregan con su nombre y su cargo."
+  },
+  {
+    "id": "metas",
+    "text": "Las metas de servicio son los días máximos de cada etapa. Se aplican al instante en Métricas y en el Dashboard, y \"Restablecer\" vuelve a las de fábrica.",
+    "say": "Las metas de servicio son los días máximos de cada etapa. Se aplican al instante en Métricas y en el Dashboard, y Restablecer vuelve a las de fábrica."
+  },
+  {
+    "id": "modulos",
+    "text": "Módulos opcionales: el catálogo es fijo, solo se enciende o se apaga. Hoy, Entrevistas IA por videollamada; al activarlo se abre su ayuda guiada.",
+    "say": "Módulos opcionales: el catálogo es fijo, solo se enciende o se apaga. Hoy, Entrevistas i a por videollamada; al activarlo se abre su ayuda guiada."
+  },
+  {
+    "id": "preguntas",
+    "text": "Preguntas al chat de ayuda guarda todo lo que preguntas, marca lo que quedó sin respuesta y, con \"Enviar a Oscar\", lo mandas por correo.",
+    "say": "Preguntas al chat de ayuda guarda todo lo que preguntas, marca lo que quedó sin respuesta y, con Enviar a Oscar, lo mandas por correo."
+  },
+  {
+    "id": "reset",
+    "text": "Si quieres empezar de cero, \"Restablecer la demo\" borra lo guardado en este navegador. TALENTIA es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos.",
+    "say": "Si quieres empezar de cero, Restablecer la demo borra lo guardado en este navegador. TALENTIA es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos."
+  },
+  {
+    "id": "help",
+    "text": "¿Dudas? En el botón de ayuda, el chat responde preguntas sobre Métricas y Configuración, la pestaña Guía repite este recorrido y la pestaña Video tiene este video."
+  },
+  {
+    "id": "end",
+    "text": "Gestión: medir cuánto tarda cada quien y ajustar las metas del equipo."
+  }
+]

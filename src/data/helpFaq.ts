@@ -3,7 +3,7 @@
 //  Demo: el chat de ayuda responde con esto (búsqueda por palabras clave).
 //  Producción: se entrega como contexto al LLM (Claude) para respuestas libres.
 // ============================================================
-import type { ModuleId } from '../core/modules';
+import type { GuideId } from '../core/modules';
 
 export interface FaqEntry {
   id: string;
@@ -13,8 +13,8 @@ export interface FaqEntry {
   /** Ruta a la que conviene ir para hacerlo. */
   route?: string;
   routeLabel?: string;
-  /** Módulo opcional al que pertenece: tiene prioridad cuando el chat se abre desde la ayuda de ese módulo. */
-  topic?: ModuleId;
+  /** Módulo opcional o sección (Talento, Gestión) a la que pertenece: tiene prioridad cuando el chat se abre desde su ayuda. */
+  topic?: GuideId;
 }
 
 export const HELP_FAQ: FaqEntry[] = [
@@ -23,7 +23,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Cómo funciona TALENTIA en general?',
     keywords: ['flujo', 'proceso', 'general', 'empezar', 'inicio', 'como funciona', 'que hace talentia', 'que hace la app', 'pasos'],
     answer:
-      'El proceso siempre es el mismo, en este orden: 1) creas la vacante en Vacantes, 2) subes los CVs en Screening IA y la IA los puntúa, 3) en Respuestas a CVs filtras los mejores y les mandas el mensaje para agendar la entrevista, 4) en Entrevistas haces la entrevista con la guía de competencias y la app calcula el reporte, 5) en Candidatos sigues a cada persona por etapa, y 6) en Métricas RR.HH. ves cuánto tarda cada quien. Puedes ver el tour guiado desde el botón de ayuda.',
+      'El proceso siempre es el mismo, en este orden: 1) creas la vacante en Vacantes, 2) subes los CVs en Screening IA y la IA los puntúa, 3) en Respuestas a CVs filtras los mejores y les mandas el mensaje para agendar la entrevista, 4) en Entrevistas haces la entrevista con la guía de competencias y la app calcula el reporte, 5) en Candidatos sigues a cada persona por etapa, y 6) en Métricas RR.HH. ves cuánto tarda cada quien. Quien es contratado pasa a Talento (Matriz 9-Box y Acciones RR.HH.), y en Configuración se ajustan equipo, metas y módulos. Puedes ver el tour guiado desde el botón de ayuda; Talento y Gestión tienen su propio recorrido en Ayuda → Guía.',
     route: '/',
     routeLabel: 'Ir al Dashboard',
   },
@@ -152,7 +152,8 @@ export const HELP_FAQ: FaqEntry[] = [
     id: 'competencias-reporte',
     question: '¿Cómo imprimo o comparto el reporte de la entrevista?',
     keywords: [
-      'reporte de la entrevista', 'reporte de competencias', 'reporte del candidato', 'el reporte', 'imprimir', 'imprimo', 'impreso',
+      'reporte de la entrevista', 'reporte de competencias', 'reporte del candidato', 'el reporte', 'gerente de tienda', 'al gerente de tienda',
+      'le mando el reporte', 'imprimir', 'imprimo', 'impreso',
       'en pdf', 'guardar en pdf', 'guardo en pdf', 'como pdf', 'comparto el reporte', 'compartir el reporte', 'mandar el reporte',
       'enviar el reporte', 'copiar el reporte', 'descargar el reporte', 'guia impresa', 'guia en blanco', 'imprimir la guia',
       'fortalezas', 'areas de mejora', 'observaciones', 'terminar evaluacion', 'terminar la evaluacion', 'reabrir', 'corregir la evaluacion',
@@ -191,18 +192,127 @@ export const HELP_FAQ: FaqEntry[] = [
     id: 'metricas',
     question: '¿Qué mide Métricas RR.HH.?',
     keywords: [
-      'metrica', 'métrica', 'metricas', 'métricas', 'tiempo', 'tarda', 'cada quien', 'productividad', 'time to hire',
-      'time-to-fill', 'semaforo', 'semáforo',
+      'metrica', 'tiempo', 'tarda', 'cada quien', 'productividad', 'time to hire',
+      'time-to-hire', 'que mide', 'cuatro numeros', 'cuanto se tarda', 'cuanto tarda', 'tiempos del equipo', 'medir',
+      'mide el trabajo', 'rendimiento', 'desempeño del equipo', 'para que sirve metricas', 'que es metricas', 'gestion',
+      'como funciona gestion', 'que es gestion', 'seccion de gestion', 'seccion gestion', 'explicacion de gestion', 'esta seccion',
     ],
     answer:
-      'Cuánto tarda cada persona del equipo en hacer lo suyo: revisar un CV, responder al candidato, entrevistar, decidir y cerrar la oferta, comparado con la meta de cada etapa (verde dentro de la meta, ámbar hasta 1.5 veces, rojo después). También muestra el embudo, la cobertura de plazas por vacante y la lista de pendientes fuera de meta con su responsable.',
+      'Cuánto tarda cada persona del equipo de RR.HH. en hacer lo suyo: revisar un CV (desde que llega), responder al candidato, llegar a la entrevista, decidir y cerrar la oferta, comparado con la meta de cada etapa (verde dentro de la meta, ámbar hasta 1.5 veces, rojo después). Arriba están los cuatro números del equipo; luego la tabla "Cada quien" por persona, el tiempo por etapa con el cuello de botella, el embudo, la tabla por vacante y la lista de pendientes fuera de meta con su responsable. Es para el propio departamento, no para la gerencia.',
     route: '/metricas',
     routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-cada-quien',
+    question: '¿Qué significa cada columna de "Cada quien"?',
+    keywords: [
+      'columna', 'columnas', 'cada columna', 'columna de', 'columnas de', 'significa cada columna', 'cada quien', 'asignados', 'activos', 'a tiempo', 'porcentaje a tiempo', '% a tiempo', 'tabla por persona',
+      'tiempos por persona', 'carga por persona', 'carga de trabajo', 'grafica', 'gráfica', 'dias promedio', 'promedio por persona',
+      'que significa asignados', 'que son activos', 'por reclutador', 'cada reclutador', 'cuanto tarda cada', 'tarda cada quien',
+      'tarda jessica', 'tarda reynaldo', 'jessica', 'reynaldo', 'fila de cada', 'cuantos candidatos tiene',
+    ],
+    answer:
+      'Una fila por persona del equipo. Asignados: candidatos que le tocan; Activos: los que siguen en proceso. Revisar CV, Responder y Entrevistar: días promedio desde que llega el CV, desde que se revisó y desde que se respondió, con el color de su meta y el % que hizo a tiempo. Entrev., Ofertas y Contrat.: cuántas lleva. Time-to-hire: días desde que el candidato aplicó hasta que se contrató. Pendientes: cuántos CVs le faltan por revisar o responder. La gráfica compara los días promedio de cada persona.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-semaforo',
+    question: '¿Qué significan los colores verde, ámbar y rojo en Métricas?',
+    keywords: [
+      'verde', 'ambar', 'ámbar', 'amarillo en metricas', 'rojo', 'color', 'colores', 'semaforo', 'semáforo', '1.5', 'una y media',
+      'por que sale rojo', 'por que esta en rojo', 'sale en rojo', 'en rojo', 'en verde', 'que significa el color',
+      'significan los colores', 'significa rojo', 'significa verde', 'significa ambar',
+    ],
+    answer:
+      'Es el semáforo de la meta de cada etapa: verde cuando el promedio está dentro de la meta en días, ámbar cuando se pasa hasta 1.5 veces la meta (por ejemplo, meta 2 días y promedio 3) y rojo cuando se pasa más. Las metas se definen en Configuración → Metas de servicio; al cambiarlas, los colores se recalculan al instante.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-etapas',
+    question: '¿Qué son el tiempo por etapa, el cuello de botella y el embudo?',
+    keywords: [
+      'tiempo por etapa', 'por etapa', 'cuello de botella', 'embudo', 'conversion', 'conversión', 'recibidos', 'revisados',
+      'respondidos', 'entrevistados', 'con oferta', 'marca vertical', 'la marca', 'linea de la meta', 'etapa mas lenta',
+      'donde se atora', 'se atora', 'atorado', 'se atasca', 'cuantos llegan', 'cuantos pasan', 'cuantos candidatos', 'pasan a', 'llegan a entrevista',
+      'pasan a entrevista', 'funnel', 'barra de cada etapa',
+    ],
+    answer:
+      'Tiempo por etapa muestra el promedio en días de las 5 etapas (revisar, responder, entrevistar, decidir y cerrar) contra su meta, que es la marca vertical de cada barra, con el % de casos a tiempo; la etapa que más se pasa de su meta se señala como cuello de botella. El embudo dice, de los CVs recibidos, cuántos se revisaron, respondieron, entrevistaron, recibieron oferta y se contrataron, con su porcentaje.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-vacante',
+    question: '¿Qué muestra la tabla por vacante en Métricas?',
+    keywords: [
+      'por vacante', 'tabla por vacante', 'dias abierta', 'días abierta', 'plazas cubiertas', 'cobertura', 'cubiertas', 'time-to-fill',
+      'time to fill', 'cuanto lleva abierta', 'vacante abierta', 'cuanto tarda en llenar', 'llenar la vacante', 'cubrir la vacante',
+      'cubrir la plaza', 'plazas', 'metricas de la vacante', 'metricas por vacante',
+    ],
+    answer:
+      'Cada vacante con sus días abierta, candidatos recibidos y cuántos siguen activos, cuánto se tarda en revisar sus CVs (con el color de la meta), plazas cubiertas (contratados sobre plazas, con el porcentaje) y time-to-fill: días desde que se abrió la vacante hasta la contratación. El filtro "Vacante" de arriba deja solo una.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-pendientes',
+    question: '¿Qué son los pendientes fuera de meta?',
+    keywords: [
+      'pendiente', 'pendientes', 'fuera de meta', 'pendientes por persona', 'esperando', 'lista de trabajo', 'que me falta',
+      'que falta hacer', 'urgente', 'urgentes', 'atrasado', 'atrasados', 'retrasado', 'retrasados', 'que tengo pendiente',
+      'que le falta', 'quien tiene pendientes', 'cuantos pendientes', 'en tiempo',
+    ],
+    answer:
+      'Es la lista de trabajo del día: cada cosa que falta hacer (revisar un CV, responder al candidato, decidir tras la entrevista, cerrar la oferta o pedir un CV legible), con el candidato, el responsable y cuántos días lleva esperando contra la meta de esa etapa. "Fuera de meta" ya se pasó de los días permitidos: es lo primero que hay que atender. El Dashboard muestra el total.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-filtros',
+    question: '¿Cómo filtro Métricas por vacante o por persona?',
+    keywords: [
+      'filtrar metricas', 'filtro de metricas', 'filtros de metricas', 'filtro las metricas', 'filtro metricas', 'filtrar las metricas',
+      'filtro en metricas', 'filtro metricas por', 'o por persona', 'por vacante o', 'solo lo mio', 'solo mis candidatos', 'ver solo lo', 'todo el equipo', 'todas las vacantes',
+      'filtrar por persona', 'filtrar por vacante', 'filtro de persona', 'filtro de vacante', 'solo una vacante', 'solo una persona',
+      'metricas de una persona', 'metricas de una vacante', 'mis metricas', 'mis numeros', 'por persona', 'de una sola', 'una sola vacante',
+      'una sola persona', 'de una vacante', 'de una persona', 'solo mis', 'solo los mios', 'solo las mias',
+    ],
+    answer:
+      'Arriba de Métricas hay dos filtros: Vacante (todas o una) y Persona (todo el equipo o alguien). Toda la pantalla responde a ellos: los cuatro números, "Cada quien", el tiempo por etapa, el embudo, la tabla por vacante y los pendientes. Así cada quien puede ver solo lo suyo o una plaza en particular.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
+  },
+  {
+    id: 'metricas-corte',
+    question: '¿Por qué Métricas dice "corte al 20 de junio" y mis CVs no aparecen?',
+    keywords: [
+      'corte', 'corte al', 'dice corte', 'fecha de corte', '20 de junio', 'no cambia', 'no aparecen', 'mis cvs no', 'cvs no aparecen', 'no aparece en metricas', 'no se actualiza', 'no actualiza', 'no aparecen en metricas',
+      'no salen en metricas', 'no se ven en metricas', 'desactualizado', 'desactualizada', 'cvs que cargue no', 'no cuenta mis',
+      'no suma', 'no suman', 'no se mueven los numeros', 'mismos numeros', 'por que no cambia',
+    ],
+    answer:
+      'En la demo, Métricas se calcula sobre el set de ejemplo (23 candidatos de dos vacantes de Americana) con corte al 20 de junio de 2026: las fechas no avanzan con el reloj real y los CVs que cargues o los mensajes que envíes todavía no entran, porque esas fechas se guardarán con la base de datos de la Fase 2. Lo que sí cambia al instante son las metas que edites en Configuración.',
+    route: '/metricas',
+    routeLabel: 'Ir a Métricas RR.HH.',
+    topic: 'management',
   },
   {
     id: 'metas',
     question: '¿Cómo cambio las metas de servicio?',
-    keywords: ['meta', 'metas', 'sla', 'dias', 'días', 'objetivo', 'cambiar meta', 'editar meta'],
+    keywords: [
+      'meta', 'metas', 'sla', 'dias', 'días', 'objetivo', 'cambiar meta', 'editar meta', 'restablecer metas', 'metas de fabrica',
+      'de fabrica', 'metas de servicio', 'meta en dias', 'cuantos dias', 'personalizadas', 'metas realistas', 'quien decide las metas',
+      'dias para responder', 'dias para revisar', 'dias para entrevistar', 'dias para decidir', 'dias para cerrar',
+    ],
     answer:
       'En Configuración → Metas de servicio. Son cinco números en días (revisar, responder, entrevistar, decidir, cerrar). Se aplican al instante en Métricas y en el Dashboard, y "Restablecer" vuelve a los valores de fábrica (2, 1, 5, 3 y 5 días).',
     route: '/configuracion',
@@ -211,7 +321,11 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'equipo',
     question: '¿Cómo agrego a alguien del equipo de RR.HH.?',
-    keywords: ['equipo', 'agregar persona', 'usuario', 'reclutador', 'asistente de rr.hh', 'asistente de recursos humanos', 'jefe', 'quitar', 'miembro'],
+    keywords: [
+      'equipo', 'agregar persona', 'usuario', 'usuarios', 'reclutador', 'reclutadora', 'asistente de rr.hh', 'asistente de recursos humanos',
+      'jefe', 'quitar', 'quito', 'quito a', 'quitar a', 'del equipo de', 'persona del equipo', 'miembro', 'agregar a alguien', 'nueva persona', 'otra persona', 'quien esta en el equipo', 'equipo de rr.hh',
+      'contraseña', 'contraseñas', 'iniciar sesion', 'login', 'base', 'cargo',
+    ],
     answer:
       'En Configuración → Equipo de RR.HH. escribe el nombre y el cargo y pulsa Agregar. La persona aparece de inmediato en "Cada quien" de Métricas. Las personas base (Reynaldo y Jessica) no se pueden quitar desde ahí.',
     route: '/configuracion',
@@ -371,12 +485,159 @@ export const HELP_FAQ: FaqEntry[] = [
   },
   {
     id: 'talento',
-    question: '¿Para qué sirve la Matriz 9-Box?',
-    keywords: ['9-box', '9 box', 'nine', 'talento', 'matriz', 'cultura', 'desempeño', 'colaborador', 'acciones'],
+    question: '¿Para qué sirve la sección Talento (Matriz 9-Box)?',
+    keywords: [
+      '9-box', '9 box', 'nine', 'nine box', 'talento', 'matriz', 'colaborador', 'colaboradores', 'contratados', 'la gente contratada',
+      'gente contratada', 'seccion talento', 'que es talento', 'para que sirve talento', 'modulo de talento', 'personal',
+      'empleados', 'empleado', 'despues de contratar', 'ya contratado', 'ya contratada', 'desempeño', 'cultura', 'como funciona talento',
+      'funciona talento', 'como funciona la matriz', 'funciona la matriz', 'explicacion de talento', 'esta seccion', 'que me toca hacer en talento',
+    ],
     answer:
-      'Es el módulo de Talento para la gente ya contratada: cruza desempeño y cultura/potencial en 9 cuadrantes, guarda el historial por trimestre y propone acciones de RR.HH. (reconocimiento, capacitación, seguimiento). Acciones RR.HH. agrupa esas decisiones para todo el equipo.',
+      'Talento es para la gente ya contratada: cuando Reclutamiento termina, la persona pasa aquí. La Matriz 9-Box cruza su desempeño (ventas, KPIs) con su cultura y potencial (evaluación 360°), ambos de 1 a 5, en 9 cuadrantes; filtra por departamento y toca a cualquiera para ver su perfil (historial por trimestre, 10 dimensiones 360° y recomendación de crecimiento). Acciones RR.HH. sugiere qué hacer con cada quien y arma el reporte para cada gerente. Los datos entran por las plantillas estándar de Colaboradores, KPIs de Desempeño y Cultura 360°.',
     route: '/talento',
     routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-cuadrantes',
+    question: '¿Qué significa cada cuadrante de la 9-Box?',
+    keywords: [
+      'cuadrante', 'cuadrantes', 'superestrella', 'super estrella', 'estrella', 'futuro lider', 'futuro líder', 'diamante en bruto',
+      'diamante', 'colaborador clave', 'profesional', 'critico', 'crítico', 'critico o inadecuado', 'inadecuado', 'inconsistente',
+      'colaborador inconsistente', 'buen colaborador', 'calcula el cuadrante', 'se calcula el cuadrante', 'de la matriz', 'los colores de la matriz',
+      'colores de las celdas', 'color de la celda', 'colores de los cuadrantes', 'significa cada cuadrante', 'cada cuadrante',
+      'ejes', 'eje', 'que significa superestrella', 'arriba a la derecha', 'abajo a la izquierda', 'punto', 'puntos', 'los puntos',
+      'colores de la matriz', 'celda', 'celdas', 'casilla', 'donde cae', 'en que cuadrante', 'por que esta en', 'como se calcula el cuadrante',
+      'cambiar de cuadrante', 'cambiar el cuadrante', 'mover a una persona', 'lo mejor', 'los mejores', 'en riesgo',
+    ],
+    answer:
+      'El eje horizontal es Desempeño y el vertical Cultura / Potencial, de 1 a 5, cada uno en tres franjas (bajo hasta 2.3, medio hasta 3.7, alto). Arriba a la derecha está lo mejor: Superestrella (alto en ambos), Estrella (alto desempeño, cultura media) y Futuro Líder (alta cultura, desempeño medio). En el centro, Colaborador Clave; Profesional rinde pero su cultura es baja; Diamante en Bruto tiene gran cultura pero rinde poco. Abajo a la izquierda está el riesgo: Crítico o Inadecuado (bajo en ambos), Buen Colaborador y Colaborador Inconsistente. El cuadrante se calcula solo con los puntajes: no se cambia a mano, cambia cuando cambia la evaluación.',
+    route: '/talento',
+    routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-perfil',
+    question: '¿Qué muestra el perfil de una persona en Talento?',
+    keywords: [
+      'perfil', 'el perfil', 'perfil de una', 'perfil de una persona', 'muestra el perfil', 'perfil de la persona', 'abrir perfil', 'abrir el perfil', 'ver perfil', 'ver el perfil', 'abro el perfil', 'enps', 'historial', 'trimestre', 'trimestres',
+      'semaforo por trimestre', 'evaluacion de la persona', 'datos de la persona', 'ficha', 'ficha de', 'barras de colores',
+      'barras del historial', 'ultimos trimestres', 'como va', 'como le ha ido', 'tendencia', 'mejoro', 'empeoro', 'historia de',
+      'que es el enps', 'que significa enps', 'toco a una persona', 'clic en una persona', 'clic en el nombre', 'ver a una persona',
+    ],
+    answer:
+      'Toca a la persona en la matriz o en la lista. El perfil muestra su cargo, departamento y jefe; Desempeño y Cultura de 1 a 5, eNPS (qué tanto recomendaría la empresa, de 0 a 100) y su cuadrante; el historial de los últimos 6 trimestres como barras con semáforo (promedio de desempeño y cultura: verde desde 3.6, amarillo en medio, rojo abajo de 2.5); la decisión sugerida de RR.HH. con su base; sus 10 dimensiones de Cultura 360°; y la recomendación de crecimiento con los 7 Hábitos, que se envía por WhatsApp a la persona y a su jefe.',
+    route: '/talento',
+    routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-cultura',
+    question: '¿Qué es la Cultura 360° y sus 10 dimensiones?',
+    keywords: [
+      'cultura 360', '360', 'dimensiones', 'dimension', 'dimensión', 'liderazgo', 'comunicacion y soporte', 'inteligencia emocional',
+      'claridad', 'alineacion', 'inspiracion', 'empoderamiento', 'integridad', 'coherencia', 'feedback', 'transparencia', 'mentoring',
+      'coaching', 'resolucion de conflictos', 'conflictos', 'cultura del equipo', 'potencial', 'que es cultura', 'que mide cultura',
+      'quien evalua la cultura', 'quien califica', 'quien llena la evaluacion', 'trabajo en equipo', 'soporte', 'que es claridad',
+      'que es la claridad', 'que es inspiracion', 'que es empoderamiento', 'que significa empoderamiento', 'que es integridad',
+      'que es feedback', 'que es transparencia', 'que es mentoring', 'que es coaching', 'que es soporte', 'que es resolucion',
+      'que mide inteligencia', 'la dimension', 'dimension de', 'dimensiones de', 'las 10', 'las diez', 'diez dimensiones', '10 dimensiones',
+      'en la cultura', 'de la cultura', 'evaluacion de cultura',
+    ],
+    answer:
+      'Es la evaluación 360° (jefe, pares y equipo) de 10 dimensiones de 1 a 5, en 3 grupos: Liderazgo (claridad y alineación, inspiración al logro, empoderamiento, integridad y coherencia), Comunicación y Soporte (calidad del feedback, soporte y trabajo en equipo, transparencia, mentoring/coaching) e Inteligencia Emocional (inteligencia emocional, resolución de conflictos). Su promedio es el puntaje de Cultura de la 9-Box. En la Matriz 9-Box se ve el promedio del equipo (o del departamento filtrado); en el perfil, el de cada persona. Verde desde 4.0, ámbar desde 3.0, rojo abajo. Los datos entran por la plantilla de Cultura 360°.',
+    route: '/talento',
+    routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-decision',
+    question: '¿Cómo se decide la acción sugerida (aumento, advertencia, capacitación)?',
+    keywords: [
+      'decision sugerida', 'accion sugerida', 'aumento', 'ascenso', 'bono', 'premio', 'reconocimiento', 'advertencia', 'carta de advertencia',
+      'suspension', 'suspensión', 'desvinculacion', 'desvinculación', 'despedir', 'despido', 'capacitacion obligatoria', 'plan de mejora',
+      'racha', 'trimestres seguidos', 'consecutivos', 'reglas', 'regla de las acciones', 'como se decide', 'quien decide el aumento',
+      'cuando se da un aumento', 'cuando se da el bono', 'por que le sugiere', 'por que sugiere', 'de donde sale la accion', 'de donde sale la decision',
+      'es la ia la que decide', 'decide la app', 'la app decide', 'base:', 'que significa base', 'seguimiento cercano', 'dia de permiso',
+      'en observacion', 'en riesgo', 'positivo', 'cuantos trimestres', 'criterio', 'criterios de la accion', 'politica', 'política',
+      'cuando toca', 'le toca capacitacion', 'toca capacitacion', 'mandar a capacitacion', 'cuando se despide', 'cuando se suspende',
+      'seguidos en verde', 'seguidos en rojo', 'seguidos en amarillo',
+    ],
+    answer:
+      'Son reglas fijas y auditables, sin IA. Cada trimestre tiene un semáforo (promedio de desempeño y cultura: verde desde 3.6, rojo abajo de 2.5, amarillo en medio) y la acción depende de cuántos trimestres seguidos lleva la persona en ese color. Verde: 1 trimestre = reconocimiento formal; 2 = bono + día de permiso; 3 = premio y candidato a ascenso; 4 o más = aumento de sueldo o ascenso. Amarillo: 1 = plan de seguimiento; 2 = seguimiento cercano con meta; 3 o más = capacitación obligatoria + plan de mejora. Rojo: 1 = carta de advertencia; 2 = suspensión + plan de mejora final; 3 o más = recomendación de desvinculación. La línea "Base" de cada tarjeta dice qué racha la disparó. La app sugiere; la decisión es de RR.HH.',
+    route: '/acciones',
+    routeLabel: 'Ir a Acciones RR.HH.',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-crecimiento',
+    question: '¿Qué es la recomendación de crecimiento (7 Hábitos) y cómo la envío?',
+    keywords: [
+      '7 habitos', '7 hábitos', 'siete habitos', 'habitos', 'hábitos', 'habito', 'hábito', 'covey', 'recomendacion de crecimiento',
+      'plan de crecimiento', 'crecimiento', 'generar recomendacion', 'generar la recomendacion', 'cursos', 'cursos recomendados',
+      'acciones esta semana', 'enviar por whatsapp', 'whatsapp a la persona', 'al jefe', 'mandar al jefe', 'mensaje al colaborador',
+      'mensaje a la persona', 'proactivo', 'ganar-ganar', 'desarrollo', 'plan de desarrollo', 'capacitar a', 'que curso',
+      'mandarle el plan', 'enviarle el plan', 'le llega a la persona', 'le llega al jefe',
+    ],
+    answer:
+      'En el perfil de la persona, "Generar recomendación (IA)" elige el hábito de Covey en que conviene enfocarse (por ejemplo "Ser proactivo" si desempeño y cultura están bajos, o "Buscar primero entender" si rinde pero su cultura es baja), explica por qué a partir de su dimensión 360° más débil, y propone 3 acciones para esta semana y cursos. Con los dos botones de WhatsApp envías un mensaje listo a la persona (su enfoque y primer paso) y otro a su jefe (resultado, enfoque y acciones). En la demo la recomendación es simulada con reglas; en producción la hará la IA real.',
+    route: '/talento',
+    routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
+  },
+  {
+    id: 'acciones',
+    question: '¿Cómo uso Acciones RR.HH.?',
+    keywords: [
+      'acciones rr.hh', 'acciones rrhh', 'acciones pendientes', 'acciones', 'accion', 'tablero de acciones', 'marcar hecha', 'marcar como hecha',
+      'marco hecha', 'hecha', 'completadas', 'completada', 'atencion / riesgo', 'atencion riesgo', 'atencion o riesgo', 'reconocer / premiar',
+      'reconocer', 'premiar', 'seguimiento', 'que hago con cada quien', 'prioridad', 'prioridades', 'lista de acciones', 'que tengo que hacer con',
+      'que debo hacer con', 'con cada colaborador', 'con cada persona', 'pendientes de talento', 'acciones de talento', 'tablero de talento',
+      'se guarda lo marcado', 'marque hecha', 'ya la hice', 'ya lo hice', 'desmarcar', 'reabrir una accion',
+    ],
+    answer:
+      'Acciones RR.HH. junta la decisión sugerida de cada colaborador y la agrupa por prioridad: Atención / riesgo (advertencia, suspensión, desvinculación), Reconocer / premiar (reconocimiento, bono, aumento) y Seguimiento (acompañamiento, capacitación); arriba está el conteo de cada grupo y puedes filtrar por departamento. En cada tarjeta ves la acción, el detalle y su "Base"; "Ver perfil" abre a la persona y "Marcar hecha" la pasa a Completadas ("Reabrir" la devuelve). En la demo, lo marcado se olvida al recargar. Empieza siempre por Atención / riesgo.',
+    route: '/acciones',
+    routeLabel: 'Ir a Acciones RR.HH.',
+    topic: 'talent',
+  },
+  {
+    id: 'acciones-reporte',
+    question: '¿Cómo envío a un gerente el reporte de su equipo?',
+    keywords: [
+      'reporte a gerentes', 'reportes a gerentes', 'reporte a gerente', 'reporte al gerente', 'reporte para el gerente', 'reporte de equipo',
+      'reporte del equipo', 'reporte de su equipo', 'el reporte del', 'descargar el reporte del', 'gerentes', 'gerente', 'a un gerente', 'al gerente',
+      'reporte a un', 'reporte a un gerente', 'el reporte al', 'envio a un gerente', 'gerente de area', 'gerente del area', 'enviar reporte', 'ver / enviar reporte',
+      'ver o enviar reporte', 'estado de su equipo', 'estado del equipo', 'whatsapp al gerente', 'reporte por whatsapp', 'descargar reporte',
+      'copiar reporte', 'informe', 'informe del equipo', 'informe al gerente', 'resumen del equipo', 'resumen para el gerente',
+      'que le mando al gerente', 'avisar al gerente', 'le aviso al gerente', 'reporte de su departamento', 'reporte del departamento',
+      'reporte mensual', 'reporte semanal', 'reporte trimestral',
+    ],
+    answer:
+      'En Acciones RR.HH., el bloque "Reportes a gerentes" tiene una tarjeta por departamento con su gerente y cuántas personas tiene a reconocer, en seguimiento y en riesgo. "Ver / enviar reporte" arma el resumen (colaboradores, conteos y cada caso con su acción y su base) y lo puedes mandar al gerente por WhatsApp (se abre el chat con el texto listo), copiarlo o descargarlo como .txt. En la demo, los teléfonos de los gerentes son de ejemplo.',
+    route: '/acciones',
+    routeLabel: 'Ir a Acciones RR.HH.',
+    topic: 'talent',
+  },
+  {
+    id: 'talento-datos',
+    question: '¿De dónde salen los datos de Talento y cómo cargo a mis colaboradores?',
+    keywords: [
+      'de donde salen los datos', 'de donde sale la informacion', 'de donde salen los colaboradores', 'de donde salen las personas',
+      'de donde salen los puntajes', 'de donde sale el puntaje', 'de donde salen los numeros', 'salen los datos', 'datos de talento',
+      'mis colaboradores', 'cargo a mis', 'como cargo', 'cargar a mi', 'subir a mi', 'subir mi', 'subo la', 'subo los', 'subo las', 'donde subo',
+      'plantilla de colaboradores', 'plantilla de kpis', 'plantilla de cultura', 'plantilla de', 'las plantillas', 'que plantillas', 'plantilla', 'plantillas', 'importar', 'importo', 'subir colaboradores',
+      'cargar colaboradores', 'cargo colaboradores', 'agregar colaboradores', 'agrego un colaborador', 'agregar un colaborador', 'kpis', 'kpi',
+      'evaluacion 360', 'evaluación 360', 'quien evalua', 'quien llena', 'excel', 'como cargo los colaboradores', 'fase 2', 'mi gente',
+      'mi equipo de tienda', 'mis vendedores', 'los de mi tienda', 'solo hay 9', 'nueve personas', 'son de ejemplo', 'cambiar los colaboradores',
+      'editar un colaborador', 'actualizar los datos', 'subir la evaluacion', 'subir las notas', 'subir los resultados', 'contratado pasa a talento',
+      'pasa a talento', 'llega a talento', 'aparece en talento',
+    ],
+    answer:
+      'Por plantillas estándar que la empresa solo llena y sube: Colaboradores (RR.HH.: datos, cargo, departamento, jefe), KPIs de Desempeño (ventas y metas del área) y Cultura 360° (las 10 dimensiones evaluadas por jefe, pares y equipo). No hay configuración: la plantilla es la misma para todos. En la demo son 9 colaboradores de ejemplo (uno por cuadrante) con 6 trimestres inventados y todavía no se pueden cargar los tuyos; la importación real llega con la base de datos de la Fase 2. Quien se contrata en Reclutamiento entrará a Talento con esa importación.',
+    route: '/talento',
+    routeLabel: 'Ir a Matriz 9-Box',
+    topic: 'talent',
   },
   {
     id: 'demo',
@@ -398,14 +659,79 @@ export const HELP_FAQ: FaqEntry[] = [
     routeLabel: 'Ver la ronda de prueba',
   },
   {
+    id: 'modulos',
+    question: '¿Qué son los módulos opcionales?',
+    keywords: [
+      'modulos opcionales', 'módulos opcionales', 'que modulos', 'que módulos', 'cuales modulos', 'cuáles módulos', 'que son los modulos',
+      'que son los módulos', 'hay mas modulos', 'hay más módulos', 'otros modulos', 'otros módulos', 'catalogo de modulos', 'catálogo',
+      'catalogo', 'opcionales', 'que es un modulo', 'qué es un módulo', 'que es un modulo opcional', 'cuantos modulos', 'cuántos módulos',
+      'modulos hay', 'módulos hay', 'lista de modulos', 'puedo agregar un modulo', 'agregar modulos', 'nuevos modulos', 'mas modulos',
+    ],
+    answer:
+      'Son funciones que la empresa enciende o apaga en Configuración → Módulos opcionales; el catálogo es fijo y no se configura nada más. Hoy el único módulo es Entrevistas IA por videollamada (apagado de inicio): al encenderlo aparece en el menú de Reclutamiento y se abre su ayuda guiada; al apagarlo solo se oculta y no se pierde nada. El flujo base (Vacantes → Screening → Respuestas a CVs → Entrevistas → Candidatos) y las secciones Talento y Gestión siempre están.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+    topic: 'management',
+  },
+  {
+    id: 'preguntas-chat',
+    question: '¿Dónde quedan las preguntas que le hago al chat de ayuda?',
+    keywords: [
+      'preguntas al chat', 'mis preguntas', 'preguntas que hice', 'preguntas que hago', 'preguntas que le hago', 'le hago al chat', 'hago al chat',
+      'al chat de ayuda', 'donde quedan', 'quedan las preguntas', 'las preguntas que hago', 'pregunte al chat', 'pregunto al chat', 'quedan guardadas', 'se guardan las preguntas',
+      'guardan mis preguntas', 'registro de preguntas', 'sin respuesta', 'borrar preguntas', 'borrar las preguntas', 'copiar preguntas',
+      'copiar las preguntas', 'descargar preguntas', 'descargar las preguntas', 'historial de preguntas', 'que pregunte', 'lo que pregunte',
+      'lo que pregunto', 'quien ve mis preguntas', 'quien lee', 'se registra', 'quedo registrada', 'quedó registrada', 'registrada',
+    ],
+    answer:
+      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Solo se guardan en este navegador; nadie las ve hasta que las envías.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+    topic: 'management',
+  },
+  {
+    id: 'restablecer',
+    question: '¿Cómo restablezco la demo o empiezo de cero?',
+    keywords: [
+      'restablecer', 'restablezco', 'restablecer la demo', 'reiniciar la demo', 'reinicio la demo', 'empezar de cero', 'de cero', 'borrar todo',
+      'borro todo', 'limpiar', 'limpiar todo', 'resetear', 'reset', 'se rompio', 'se rompió', 'volver al inicio', 'datos originales',
+      'como estaba', 'como estaba al principio', 'deshacer todo', 'quitar lo que hice', 'borrar lo que hice', 'dejar como estaba',
+      'volver a empezar', 'se me descompuso', 'algo se descompuso', 'se trabo', 'se trabó', 'no carga', 'pantalla en blanco',
+    ],
+    answer:
+      'En Configuración, al pie, "Restablecer la demo en este navegador" borra todo lo que guardaste aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, preguntas al chat y el estado del tour, y vuelve a cargar la app con los datos de ejemplo. Solo afecta a este navegador. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+    topic: 'management',
+  },
+  {
+    id: 'opinado',
+    question: '¿Por qué no hay más configuración? ¿Puedo agregar etapas o campos?',
+    keywords: [
+      'software opinado', 'opinado', 'personalizar', 'personalizacion', 'personalización', 'configuracion flexible', 'mas opciones', 'más opciones',
+      'mas configuracion', 'más configuración', 'cambiar el proceso', 'agregar etapa', 'agregar una etapa', 'otra etapa', 'etapa nueva',
+      'nueva etapa', 'quitar una etapa', 'agregar campos', 'agregar un campo', 'campo nuevo', 'nuevo campo', 'modificar el proceso',
+      'no se puede configurar', 'por que no puedo configurar', 'adaptar la app', 'adaptar el software', 'a la medida', 'a nuestra medida',
+      'por que no hay mas', 'donde configuro', 'que se puede configurar', 'que puedo configurar', 'cambiar las columnas', 'cambiar la plantilla',
+      'cambiar el mensaje', 'otro mensaje', 'cambiar el orden', 'cambio el orden', 'el orden de', 'orden de las etapas', 'un campo', 'campo a la vacante',
+      'agregar un campo a', 'campos a la vacante', 'campos al candidato',
+    ],
+    answer:
+      'TALENTIA es software opinado: el proceso de reclutamiento ya viene definido y la empresa se adapta a él, no al revés. Por eso no hay pantallas de configuración flexible ni etapas o campos a la medida: así nunca se vuelve un revoltijo de configuraciones y todos trabajan igual. Lo único que se decide en Configuración es quién está en el equipo, las metas en días y qué módulos opcionales están encendidos. Si falta un dato o una etapa que de verdad necesitan, anótalo en tus comentarios: se evalúa para el estándar de todos.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+    topic: 'management',
+  },
+  {
     id: 'tour',
     question: '¿Cómo vuelvo a ver el tour o el video?',
     keywords: [
       'tour', 'video', 'el video', 'los videos', 'guia', 'guía', 'tutorial', 'ayuda', 'aprender', 'capacitacion', 'capacitación',
       'un video', 'ver video', 'video de entrevistas', 'video de las entrevistas', 'ayuda guiada', 'el tutorial',
-      'ver la ayuda guiada', 'volver a ver',
+      'ver la ayuda guiada', 'volver a ver', 'video de talento', 'video de gestion', 'video de metricas', 'recorrido de talento',
+      'recorrido de gestion', 'tour de talento', 'tour de gestion', 'tour de metricas', 'recorrido guiado', 'los recorridos',
     ],
     answer:
-      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour paso a paso por las pantallas (y la ayuda guiada de Entrevistas IA) y la pestaña "Video" tiene el recorrido narrado de 3 minutos y medio y el video de Entrevistas IA por videollamada, con capítulos.',
+      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour de Reclutamiento paso a paso, los recorridos de las secciones Talento y Gestión (cada una con su "Cómo funciona") y la ayuda guiada de Entrevistas IA; la pestaña "Video" tiene cuatro videos narrados con capítulos: el recorrido completo (3½ min), Talento (2½ min), Gestión (2½ min) y Entrevistas IA por videollamada (2 min).',
   },
 ];

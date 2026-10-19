@@ -6,6 +6,22 @@
 
 export type ModuleId = 'interviewsAi';
 
+/**
+ * Secciones fijas de la app que tienen su propia ayuda guiada (recorrido, "cómo funciona",
+ * video y preguntas del chat), aparte del flujo base de Reclutamiento. No se encienden ni
+ * se apagan: siempre están en el menú.
+ */
+export type SectionId = 'talent' | 'management';
+
+/** Todo lo que tiene ayuda guiada propia: módulos opcionales y secciones fijas. */
+export type GuideId = ModuleId | SectionId;
+
+export const SECTION_IDS: readonly SectionId[] = ['talent', 'management'];
+
+export function isSectionId(x: unknown): x is SectionId {
+  return typeof x === 'string' && (SECTION_IDS as readonly string[]).includes(x);
+}
+
 export interface ModuleDef {
   id: ModuleId;
   name: string;

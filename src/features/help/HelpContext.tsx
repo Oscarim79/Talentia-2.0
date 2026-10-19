@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { ModuleId } from '../../core/modules';
+import type { GuideId } from '../../core/modules';
 import { isTourId, type HelpVideoId, type TourId } from './tourSteps';
 
 export type HelpTab = 'chat' | 'guide' | 'video';
@@ -17,14 +17,14 @@ interface HelpState {
   welcomeSeen: boolean;
   /** Tour general terminado. */
   tourDone: boolean;
-  /** Ayudas guiadas de módulos opcionales terminadas. */
-  moduleToursDone: ModuleId[];
+  /** Recorridos terminados de módulos opcionales y secciones (Talento, Gestión). */
+  moduleToursDone: Exclude<TourId, 'main'>[];
   questions: HelpQuestion[];
 }
 
-/** Ventana "cómo funciona" de un módulo opcional. */
+/** Ventana "cómo funciona" de un módulo opcional o de una sección (Talento, Gestión). */
 export interface ModuleIntro {
-  module: ModuleId;
+  module: GuideId;
   /** true cuando se abre porque el módulo se acaba de encender en Configuración. */
   justActivated: boolean;
 }
@@ -32,15 +32,15 @@ export interface ModuleIntro {
 interface PanelOptions {
   /** Video a mostrar en la pestaña Video. */
   video?: HelpVideoId;
-  /** Tema del chat: sugiere las preguntas de ese módulo. */
-  topic?: ModuleId | null;
+  /** Tema del chat: sugiere las preguntas de ese módulo o sección. */
+  topic?: GuideId | null;
 }
 
 interface HelpCtxValue {
   panelOpen: boolean;
   tab: HelpTab;
   video: HelpVideoId;
-  chatTopic: ModuleId | null;
+  chatTopic: GuideId | null;
   openPanel: (tab?: HelpTab, opts?: PanelOptions) => void;
   closePanel: () => void;
   /** Tour en curso (general o de un módulo) y su paso, o null si no está corriendo. */
@@ -55,7 +55,7 @@ interface HelpCtxValue {
   dismissWelcome: () => void;
   tourDone: boolean;
   moduleIntro: ModuleIntro | null;
-  openModuleIntro: (module: ModuleId, justActivated?: boolean) => void;
+  openModuleIntro: (module: GuideId, justActivated?: boolean) => void;
   closeModuleIntro: () => void;
   questions: HelpQuestion[];
   logQuestion: (q: Omit<HelpQuestion, 'id' | 'at'>) => void;
@@ -84,7 +84,7 @@ export function HelpProvider({ children }: { children: ReactNode }) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [tab, setTab] = useState<HelpTab>('chat');
   const [video, setVideo] = useState<HelpVideoId>('tour');
-  const [chatTopic, setChatTopic] = useState<ModuleId | null>(null);
+  const [chatTopic, setChatTopic] = useState<GuideId | null>(null);
   const [tour, setTour] = useState<TourId>('main');
   const [tourStep, setTourStepState] = useState<number | null>(null);
   const [moduleIntro, setModuleIntro] = useState<ModuleIntro | null>(null);
@@ -130,7 +130,7 @@ export function HelpProvider({ children }: { children: ReactNode }) {
     );
   }, [tour]);
 
-  const openModuleIntro = useCallback((module: ModuleId, justActivated = false) => {
+  const openModuleIntro = useCallback((module: GuideId, justActivated = false) => {
     setPanelOpen(false);
     setChatTopic(null);
     setModuleIntro({ module, justActivated });

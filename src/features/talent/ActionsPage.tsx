@@ -118,14 +118,14 @@ export default function ActionsPage() {
       />
 
       {/* Resumen */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3" data-tour="actions:summary">
         <StatCard label="Atención / riesgo" value={String(countFor(['critical', 'negative']))} delta="advertencia · suspensión · desvinculación" deltaTone="risk" icon={<AlertTriangle className="h-5 w-5" />} />
         <StatCard label="Reconocer / premiar" value={String(countFor(['positive']))} delta="reconocimiento · bono · aumento" deltaTone="up" icon={<Award className="h-5 w-5" />} />
         <StatCard label="Seguimiento" value={String(countFor(['neutral']))} delta="acompañamiento · capacitación" deltaTone="warn" icon={<Eye className="h-5 w-5" />} />
       </div>
 
       {/* Reportes a gerentes */}
-      <Card className="mb-6 p-5">
+      <Card className="mb-6 p-5" dataTour="actions:reports">
         <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1">
           <FileText className="h-4 w-4 text-brand-600" />
           <h2 className="text-sm font-bold text-stone-700">Reportes a gerentes</h2>
@@ -150,7 +150,7 @@ export default function ActionsPage() {
       </Card>
 
       {/* Buckets de acciones */}
-      <div className="space-y-6">
+      <div className="space-y-6" data-tour="actions:list">
         {BUCKETS.map((bucket) => {
           const list = pending.filter((i) => bucket.tones.includes(i.decision.tone));
           if (list.length === 0) return null;

@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check, ClipboardList, Video, Info } from 'lucide-react';
+import { CircleHelp, X, Send, Bot, User, Compass, PlayCircle, MessageCircle, ArrowRight, Check, ClipboardList, Video, Info, Grid3x3, TrendingUp } from 'lucide-react';
 import { TEAM_PILOT } from '../../core/config';
 import { useHelp } from './HelpContext';
-import { TOUR_STEPS, HELP_VIDEOS, helpVideo } from './tourSteps';
-import { MODULE_GUIDES } from './moduleGuides';
+import { TOUR_STEPS, TOURS, HELP_VIDEOS, helpVideo } from './tourSteps';
+import { GUIDES, SECTION_GUIDES } from './moduleGuides';
 import { HELP_FAQ } from '../../data/helpFaq';
 import { providers } from '../../core/providers';
 import { useSettings } from '../../context/SettingsContext';
-import { MODULES, type ModuleId } from '../../core/modules';
+import { MODULES, SECTION_IDS, type GuideId } from '../../core/modules';
 import { Button, Badge } from '../../components/ui/primitives';
 import { cn } from '../../lib/utils';
 
@@ -77,14 +77,14 @@ function TabBtn({ active, onClick, icon: Icon, label }: { active: boolean; onCli
 
 // ---------- Chat ----------
 
-function ChatTab({ route, topic }: { route: string; topic: ModuleId | null }) {
+function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
   const navigate = useNavigate();
   const { closePanel, logQuestion } = useHelp();
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
       text: topic
-        ? `Hola, soy la ayuda de TALENTIA. Pregúntame lo que quieras sobre ${MODULE_GUIDES[topic].title}: cómo funciona, qué hacer después de activarla o cómo leer la evaluación.`
+        ? `Hola, soy la ayuda de TALENTIA. Pregúntame lo que quieras sobre ${GUIDES[topic].title}: cómo funciona, qué te toca hacer o cómo leer lo que muestra.`
         : 'Hola, soy la ayuda de TALENTIA. Pregúntame cómo hacer algo (por ejemplo "¿cómo subo CVs?") y te explico y te llevo a la pantalla.',
     },
   ]);
@@ -97,9 +97,9 @@ function ChatTab({ route, topic }: { route: string; topic: ModuleId | null }) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [msgs, thinking]);
 
-  // Sugerencias: las del módulo si se abrió desde su ayuda guiada; si no, las de la pantalla actual.
+  // Sugerencias: las del módulo o sección si se abrió desde su ayuda guiada; si no, las de la pantalla actual.
   const suggestions = topic
-    ? MODULE_GUIDES[topic].chatSuggestions.flatMap((id) => HELP_FAQ.filter((f) => f.id === id).map((f) => f.question))
+    ? GUIDES[topic].chatSuggestions.flatMap((id) => HELP_FAQ.filter((f) => f.id === id).map((f) => f.question))
     : HELP_FAQ.filter((f) => f.route === route).slice(0, 3).map((f) => f.question);
   const chips = suggestions.length ? suggestions : HELP_FAQ.slice(0, 3).map((f) => f.question);
 
@@ -200,14 +200,14 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
     <div className="flex-1 overflow-y-auto p-4">
       <div className="mb-4 rounded-xl bg-brand-50 p-4">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-bold text-brand-900">Tour guiado</p>
+          <p className="text-sm font-bold text-brand-900">Tour guiado: Reclutamiento</p>
           {done && (
             <Badge variant="green">
               <Check className="h-3 w-3" /> Ya lo viste
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-xs text-brand-800">Te lleva por las pantallas en el orden real del trabajo, resaltando dónde hacer clic. Puedes salir con Escape.</p>
+        <p className="mt-1 text-xs text-brand-800">Te lleva por las pantallas en el orden real del trabajo (vacante → CVs → respuestas → entrevista → candidatos), resaltando dónde hacer clic. Puedes salir con Escape.</p>
         <Button className="mt-3" onClick={onStart}>
           <Compass className="h-4 w-4" /> {done ? 'Repetir el tour' : 'Iniciar el tour'}
         </Button>
@@ -227,10 +227,46 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           </span>
         </button>
       )}
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Secciones de la app</p>
+      <div className="mb-4 space-y-2">
+        {SECTION_IDS.map((id) => {
+          const guide = SECTION_GUIDES[id];
+          const Icon = id === 'talent' ? Grid3x3 : TrendingUp;
+          const steps = TOURS[guide.tour].length;
+          return (
+            <div key={id} className="rounded-xl border border-stone-200 p-3.5" data-tour={`help:section:${id}`}>
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-gold-100 p-2 text-gold-700">
+                  <Icon className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <p className="text-sm font-bold text-stone-800">{guide.title}</p>
+                    {isTourDone(guide.tour) && (
+                      <Badge variant="green" className="whitespace-nowrap">
+                        <Check className="h-3 w-3" /> Recorrido visto
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-stone-500">{guide.summary}</p>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    <Button onClick={() => startTour(guide.tour)}>
+                      <Compass className="h-4 w-4" /> {isTourDone(guide.tour) ? 'Repetir el recorrido' : 'Iniciar el recorrido'} ({steps} pasos)
+                    </Button>
+                    <Button variant="secondary" onClick={() => openModuleIntro(id)}>
+                      <Info className="h-4 w-4" /> Cómo funciona
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Módulos opcionales</p>
       <div className="mb-4 space-y-2">
         {MODULES.map((m) => {
-          const guide = MODULE_GUIDES[m.id];
+          const guide = GUIDES[m.id];
           const on = isModuleEnabled(m.id);
           return (
             <div key={m.id} className="rounded-xl border border-stone-200 p-3.5">
@@ -266,7 +302,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           );
         })}
       </div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos del tour</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos del tour de Reclutamiento</p>
       <ol className="space-y-1">
         {TOUR_STEPS.map((s, i) => (
           <li key={i}>
@@ -304,7 +340,7 @@ function VideoTab() {
   }
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <div className="mb-3 flex gap-1 rounded-lg bg-stone-100 p-1" role="tablist" aria-label="Videos de ayuda">
+      <div className="mb-3 flex flex-wrap gap-1 rounded-lg bg-stone-100 p-1" role="tablist" aria-label="Videos de ayuda">
         {HELP_VIDEOS.map((v) => (
           <button
             key={v.id}
@@ -312,7 +348,7 @@ function VideoTab() {
             aria-selected={v.id === video.id}
             onClick={() => openPanel('video', { video: v.id })}
             className={cn(
-              'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-colors',
+              'min-w-[calc(50%-2px)] flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-colors',
               v.id === video.id ? 'bg-white text-brand-800 shadow-sm' : 'text-stone-500 hover:text-stone-800',
             )}
           >

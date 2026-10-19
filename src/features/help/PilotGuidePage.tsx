@@ -13,6 +13,7 @@ export const PILOT_DAYS: { day: string; title: string; goal: string; tasks: stri
     tasks: [
       'Mira el video de 3 minutos y medio (botón Ayuda → Video).',
       'Haz el tour guiado completo (botón Ayuda → Guía → Iniciar el tour).',
+      'En Ayuda → Guía, haz también los recorridos de Talento y Gestión (cada uno tiene su "Cómo funciona" y su video de 2 minutos y medio en Ayuda → Video).',
       'Recorre el menú por tu cuenta y hazle al chat de ayuda al menos 3 preguntas sobre lo que no entendiste.',
     ],
   },
