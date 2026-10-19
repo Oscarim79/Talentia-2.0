@@ -310,26 +310,27 @@ const asset = (file: string) => `${import.meta.env.BASE_URL}ayuda/${file}`;
 /** Capítulos del video de recorrido (segundos aproximados). */
 export const VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es TALENTIA y el orden del trabajo' },
-  { t: 27, label: 'Crear la vacante con IA (5 pasos)' },
-  { t: 74, label: 'Subir CVs y ver el ranking' },
-  { t: 105, label: 'Responder: Zoom y un horario por candidato' },
-  { t: 148, label: 'Seguir candidatos por etapa' },
-  { t: 155, label: 'Métricas: cuánto tarda cada quien' },
-  { t: 177, label: 'Configuración: equipo, metas y módulos' },
-  { t: 195, label: 'El botón de ayuda' },
+  { t: 30, label: 'Crear la vacante con IA (5 pasos)' },
+  { t: 82, label: 'Subir CVs y ver el ranking' },
+  { t: 112, label: 'Responder: Zoom y un horario por candidato' },
+  { t: 155, label: 'Entrevista con la guía de competencias' },
+  { t: 190, label: 'Seguir candidatos por etapa' },
+  { t: 201, label: 'Métricas: cuánto tarda cada quien' },
+  { t: 223, label: 'Configuración: equipo, metas y módulos' },
+  { t: 240, label: 'El botón de ayuda' },
 ];
 
 /** Capítulos del video de Entrevistas IA por videollamada (segundos aproximados). */
 export const INTERVIEWS_AI_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es Entrevistas IA por videollamada' },
-  { t: 15, label: 'Activar el módulo en Configuración' },
-  { t: 36, label: 'Preguntas de la vacante' },
-  { t: 50, label: 'Agendar por Zoom con el aviso de IA' },
-  { t: 69, label: 'La entrevista por videollamada' },
-  { t: 77, label: 'Probarla en la demo' },
-  { t: 89, label: 'Leer la evaluación' },
-  { t: 103, label: 'RR.HH. decide' },
-  { t: 112, label: 'Dónde pedir ayuda' },
+  { t: 19, label: 'Activar el módulo en Configuración' },
+  { t: 41, label: 'La guía de cada vacante' },
+  { t: 57, label: 'Agendar por Zoom con el aviso de IA' },
+  { t: 75, label: 'La entrevista por videollamada' },
+  { t: 84, label: 'Probarla en la demo (las 16 preguntas)' },
+  { t: 116, label: 'Transcripción y sugerencia preliminar' },
+  { t: 136, label: 'RR.HH. puntúa y decide en Entrevistas' },
+  { t: 153, label: 'Dónde pedir ayuda' },
 ];
 
 /** Capítulos del video de Talento (segundos aproximados). */
@@ -366,7 +367,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'tour',
     tab: 'Recorrido',
     title: 'Recorrido completo de TALENTIA',
-    description: 'Recorrido completo de TALENTIA (3 min y medio), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    description: 'Recorrido completo de TALENTIA (4 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('tour-talentia.mp4'),
     webm: asset('tour-talentia.webm'),
     chapters: VIDEO_CHAPTERS,
@@ -393,7 +394,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'interviewsAi',
     tab: 'Entrevistas IA',
     title: 'Entrevistas IA por videollamada',
-    description: 'Cómo se activa, cómo funciona y qué te toca hacer (2 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    description: 'Cómo se activa, cómo funciona con la guía de competencias y qué te toca hacer (3 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('entrevistas-ia.mp4'),
     webm: asset('entrevistas-ia.webm'),
     chapters: INTERVIEWS_AI_VIDEO_CHAPTERS,
