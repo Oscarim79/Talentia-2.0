@@ -335,25 +335,30 @@ export const INTERVIEWS_AI_VIDEO_CHAPTERS: { t: number; label: string }[] = [
 /** Capítulos del video de Talento (segundos aproximados). */
 export const TALENT_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es Talento' },
-  { t: 14, label: 'La Matriz 9-Box y sus cuadrantes' },
-  { t: 40, label: 'Filtrar por departamento' },
-  { t: 48, label: 'El perfil: historial, decisión y 360°' },
-  { t: 74, label: 'Recomendación de crecimiento (7 Hábitos)' },
-  { t: 90, label: 'Acciones RR.HH.: las reglas' },
-  { t: 112, label: 'Marcar hecha y reportes a gerentes' },
-  { t: 130, label: 'Dónde pedir ayuda' },
+  { t: 13, label: 'La Matriz 9-Box y sus cuadrantes' },
+  { t: 32, label: 'Filtrar por departamento' },
+  { t: 40, label: 'El perfil: historial y decisión sugerida' },
+  { t: 54, label: 'Cultura 360°: las 10 dimensiones' },
+  { t: 66, label: 'Recomendación de crecimiento (7 Hábitos)' },
+  { t: 80, label: 'Acciones RR.HH.: las reglas' },
+  { t: 106, label: 'Marcar hecha' },
+  { t: 117, label: 'Reportes a gerentes' },
+  { t: 128, label: 'Dónde pedir ayuda' },
 ];
 
 /** Capítulos del video de Gestión (segundos aproximados). */
 export const MANAGEMENT_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 0, label: 'Qué es Gestión' },
-  { t: 14, label: 'Los cuatro números y los filtros' },
-  { t: 34, label: 'Cada quien' },
-  { t: 52, label: 'Tiempo por etapa, embudo y por vacante' },
-  { t: 74, label: 'Pendientes por persona' },
-  { t: 86, label: 'Configuración: equipo y metas' },
-  { t: 110, label: 'Módulos y preguntas al chat' },
-  { t: 128, label: 'Restablecer la demo y ayuda' },
+  { t: 14, label: 'Filtros y los cuatro números' },
+  { t: 33, label: 'Cada quien' },
+  { t: 49, label: 'Tiempo por etapa, embudo y por vacante' },
+  { t: 65, label: 'Pendientes por persona' },
+  { t: 76, label: 'Configuración: equipo de RR.HH.' },
+  { t: 85, label: 'Metas de servicio' },
+  { t: 95, label: 'Módulos opcionales' },
+  { t: 105, label: 'Preguntas al chat de ayuda' },
+  { t: 113, label: 'Restablecer la demo' },
+  { t: 129, label: 'Dónde pedir ayuda' },
 ];
 
 export const HELP_VIDEOS: HelpVideo[] = [
@@ -370,7 +375,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'talent',
     tab: 'Talento',
     title: 'Talento: Matriz 9-Box y Acciones RR.HH.',
-    description: 'La gente ya contratada: la Matriz 9-Box, el perfil de cada persona, las acciones sugeridas y los reportes a gerentes (2 min), narrado y con subtítulos.',
+    description: 'La gente ya contratada: la Matriz 9-Box, el perfil de cada persona, las acciones sugeridas y los reportes a gerentes (2 min y medio), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('talento.mp4'),
     webm: asset('talento.webm'),
     chapters: TALENT_VIDEO_CHAPTERS,
@@ -379,7 +384,7 @@ export const HELP_VIDEOS: HelpVideo[] = [
     id: 'management',
     tab: 'Gestión',
     title: 'Gestión: Métricas RR.HH. y Configuración',
-    description: 'Cuánto tarda cada quien, los pendientes fuera de meta y cómo se ajustan equipo, metas y módulos (2 min), narrado y con subtítulos.',
+    description: 'Cuánto tarda cada quien, los pendientes fuera de meta y cómo se ajustan equipo, metas y módulos (2 min y medio), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('gestion.mp4'),
     webm: asset('gestion.webm'),
     chapters: MANAGEMENT_VIDEO_CHAPTERS,

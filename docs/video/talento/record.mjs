@@ -64,8 +64,7 @@ await p.hover('nav a:has-text("Acciones RR.HH.")'); await spot('[data-tour="nav:
 
 // 2. La matriz
 await seg('matriz'); await spot('[data-tour="talent:matrix"]', 9000);
-await wait(5000); await p.hover('[data-tour="talent:matrix"] [title*="María"], [data-tour="talent:matrix"] button >> nth=0').catch(() => {});
-await endSeg();
+await wait(6000); await p.hover('[data-tour="talent:list"] button:has-text("María González")'); await endSeg();
 
 // 3. Filtro por departamento
 await seg('filtro'); await spot('[data-tour="talent:filter"]', 4000);

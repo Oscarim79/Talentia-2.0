@@ -5,8 +5,8 @@ Hay cuatro videos en Ayuda → Video, todos narrados con voz en español y con s
 | Video | Archivos | Guion | Grabación |
 |---|---|---|---|
 | Recorrido completo (3½ min) | `public/ayuda/tour-talentia.mp4` / `.webm` | `narration.json` | `record2.mjs` |
-| Talento: Matriz 9-Box y Acciones RR.HH. (2 min) | `public/ayuda/talento.mp4` / `.webm` | `talento/narration.json` | `talento/record.mjs` |
-| Gestión: Métricas RR.HH. y Configuración (2 min) | `public/ayuda/gestion.mp4` / `.webm` | `gestion/narration.json` | `gestion/record.mjs` |
+| Talento: Matriz 9-Box y Acciones RR.HH. (2½ min) | `public/ayuda/talento.mp4` / `.webm` | `talento/narration.json` | `talento/record.mjs` |
+| Gestión: Métricas RR.HH. y Configuración (2½ min) | `public/ayuda/gestion.mp4` / `.webm` | `gestion/narration.json` | `gestion/record.mjs` |
 | Entrevistas IA por videollamada (2 min) | `public/ayuda/entrevistas-ia.mp4` / `.webm` | `entrevistas-ia/narration.json` | `entrevistas-ia/record.mjs` |
 
 No requieren claves ni servicios externos.

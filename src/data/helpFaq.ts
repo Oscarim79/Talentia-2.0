@@ -732,6 +732,6 @@ export const HELP_FAQ: FaqEntry[] = [
       'recorrido de gestion', 'tour de talento', 'tour de gestion', 'tour de metricas', 'recorrido guiado', 'los recorridos',
     ],
     answer:
-      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour de Reclutamiento paso a paso, los recorridos de las secciones Talento y Gestión (cada una con su "Cómo funciona") y la ayuda guiada de Entrevistas IA; la pestaña "Video" tiene cuatro videos narrados con capítulos: el recorrido completo (3½ min), Talento, Gestión y Entrevistas IA por videollamada (2 min cada uno).',
+      'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour de Reclutamiento paso a paso, los recorridos de las secciones Talento y Gestión (cada una con su "Cómo funciona") y la ayuda guiada de Entrevistas IA; la pestaña "Video" tiene cuatro videos narrados con capítulos: el recorrido completo (3½ min), Talento (2½ min), Gestión (2½ min) y Entrevistas IA por videollamada (2 min).',
   },
 ];
