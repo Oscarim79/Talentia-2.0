@@ -73,6 +73,14 @@ await p.locator('button[aria-label="Vista previa del mensaje"]').first().click()
 await p.locator('button', { hasText: 'Responder a' }).click(); await endSeg();
 await seg('rep3'); await wait(3500); await scrollMain(900); await endSeg();
 
+await seg('comp'); await p.click('nav a[href$="/competencias"]'); await p.waitForSelector('h1:has-text("Entrevista por competencias")'); await wait(2500);
+await p.locator('[data-tour="competencias:list"] button', { hasText: 'María González' }).first().click(); await wait(1500);
+await p.click('button:has-text("Empezar la entrevista")'); await p.waitForSelector('[data-tour="competencias:steps"]'); await endSeg();
+await seg('comp2'); await scrollMain(380); await wait(1200);
+await p.locator('textarea').first().fill('Atendió a una clienta molesta por una refrigeradora golpeada: la escuchó, gestionó el cambio con el encargado y la clienta compró también una estufa.'); await wait(3500);
+await p.click('[data-tour="competencias:steps"] [role=tab]:has-text("Puntuar")'); await wait(2500); await scrollMain(300); await wait(4000);
+await p.click('[data-tour="competencias:steps"] [role=tab]:has-text("Reporte")'); await wait(1500); await scrollMain(260); await endSeg();
+
 await seg('cand'); await p.click('nav a:has-text("Candidatos")'); await p.waitForSelector('h1'); await endSeg();
 
 await seg('met'); await p.click('nav a:has-text("Métricas")'); await p.waitForSelector('h1'); await wait(4000); await scrollMain(300); await endSeg();

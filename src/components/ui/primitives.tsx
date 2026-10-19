@@ -59,13 +59,17 @@ export function Badge({
   variant = 'stone',
   className,
   children,
+  title,
 }: {
   variant?: BadgeVariant;
   className?: string;
   children: ReactNode;
+  /** Texto al pasar el cursor. */
+  title?: string;
 }) {
   return (
     <span
+      title={title}
       className={cn(
         'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold',
         badgeStyles[variant],

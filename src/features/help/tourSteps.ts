@@ -23,7 +23,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/vacantes',
     target: 'jobs:new',
     title: '1. Crea la vacante',
-    body: 'Todo empieza aquí. "Nueva vacante" abre un formulario de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas de entrevista y revisión. Al final puedes descargar el XML para LinkedIn.',
+    body: 'Todo empieza aquí. "Nueva vacante" abre un formulario de 5 pasos: datos básicos y marca (Americana, Abiq o Friotec), descripción con IA, los filtros con los que la IA puntuará los CVs, preguntas extra opcionales para el entrevistador y revisión. La entrevista usa la guía de competencias (Vendedor o Jefe de Tienda, según el título). Al final puedes descargar el XML para LinkedIn.',
   },
   {
     route: '/screening',
@@ -228,9 +228,9 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
   },
   {
     route: '/vacantes',
-    target: 'jobs:questions',
-    title: '1. Revisa las preguntas de la vacante',
-    body: 'El asistente de IA solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen al crear la vacante (paso 4, "Preguntas IA") y hoy no se editan después; la tarjeta dice cuántas tiene. Si una vacante no tiene, usa 3 generales.',
+    target: 'jobs:guide',
+    title: '1. La guía de cada vacante',
+    body: 'El asistente de IA hace las preguntas de la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda), en orden y sin improvisar: las mismas que haría una persona. La guía se deduce del título de la vacante y la tarjeta la muestra; las "preguntas extra" del formulario son opcionales para el entrevistador.',
   },
   {
     route: '/respuestas',
@@ -253,14 +253,14 @@ export const INTERVIEWS_AI_TOUR_STEPS: TourStep[] = [
   {
     route: '/entrevistas',
     target: 'interviews:evaluation',
-    title: '5. Lee la evaluación',
-    body: 'Al terminar aparecen el puntaje global de 0 a 100 (verde desde 80, ámbar desde 60, rojo abajo), el de 1 a 10 de cada pregunta y las diferencias entre el CV y lo que dijo el candidato. En la demo el puntaje es aproximado.',
+    title: '5. La transcripción y la sugerencia',
+    body: 'Al terminar, cada respuesta queda anotada bajo su pregunta y las opciones múltiples ya marcadas, como borrador en Entrevistas. Aquí ves la sugerencia preliminar de la IA (1 a 5 por pregunta, con la escala de la guía) y las diferencias entre el CV y lo que dijo. En la demo la sugerencia es aproximada.',
   },
   {
-    route: '/candidatos',
-    target: 'candidates:board',
-    title: '6. RR.HH. decide',
-    body: 'La evaluación es una recomendación: la IA no contrata ni descarta a nadie. Tú decides si el candidato pasa a Oferta o se descarta: los botones están al final del reporte de su entrevista por competencias, en Entrevistas.',
+    route: '/competencias',
+    target: 'competencias:list',
+    title: '6. RR.HH. puntúa y decide',
+    body: 'En Entrevistas abres al candidato ("Puntuar en Entrevistas"), lees la transcripción, puntúas de 1 a 5 y la app calcula el Índice General y la recomendación. La IA no contrata ni descarta a nadie: tú decides si pasa a Oferta o se descarta, al final del reporte.',
   },
   {
     route: '/entrevistas',

@@ -53,11 +53,27 @@ async function spot(sel, ms = 2500, inset = false) {
     setTimeout(() => { el.style.boxShadow = prev; }, ms);
   }, { sel, ms, inset });
 }
-async function answer(text) {
+async function answer(text, typed = true) {
   const box = p.locator('input[placeholder="Escribe la respuesta del candidato…"]');
-  await box.click(); await box.pressSequentially(text, { delay: 22 }); await p.keyboard.press('Enter');
-  await wait(1300);
+  await box.click();
+  if (typed) await box.pressSequentially(text, { delay: 18 });
+  else await box.fill(text);
+  await p.keyboard.press('Enter');
+  await wait(typed ? 1300 : 950);
 }
+const LONG = [
+  'Yo atendí a una clienta molesta por una refrigeradora con un golpe: la escuché sin interrumpir, revisé su caso y gestioné el cambio con el encargado; al final compró también una estufa y la venta del día subió 30 %.',
+  'Una vez un cliente se quejó de una entrega atrasada; yo asumí la queja, llamé a bodega, le di una fecha concreta y le di seguimiento hasta que recibió su moto; volvió a comprar al mes siguiente.',
+  'Le expliqué a un señor mayor el crédito con un ejemplo con sus propias cuotas, confirmé que me entendiera y cerré la venta de un televisor sin presionarlo.',
+  'A un cliente indeciso le pregunté para qué quería la lavadora, le mostré dos opciones y le recomendé la que le convenía; compró ese mismo día y regresó por una secadora.',
+  'En el inventario de fin de año organicé con mis compañeros el conteo de línea blanca; yo armé el plan por pasillos y terminamos en un día, sin diferencias.',
+  'Apoyé a un compañero nuevo enseñándole el sistema de crédito en mis tiempos libres; en dos semanas ya cumplía su meta y yo seguí revisando sus cierres.',
+  'Un día falló el sistema de cobro; yo anoté las ventas a mano, avisé al encargado y al reabrir el sistema ingresé todo; no perdimos ninguna venta.',
+  'En hora pico atendí primero a los clientes, pedí apoyo para el teléfono y acomodé la mercadería al bajar la afluencia; cumplí la meta del día.',
+  'Para la meta de diciembre llamé a mis clientes de crédito al día, ofrecí combos de motos con casco y superé mi meta en 15 %.',
+  'Aprendí por mi cuenta las características de las motos eléctricas y en un mes vendí 8 unidades, cuando antes no vendía ninguna.',
+  'Una señora buscaba un regalo para su hijo; yo le pregunté qué le gustaba, le mostré una laptop dentro de su presupuesto, le expliqué el crédito y cerré la venta; ella me recomendó con dos vecinas que también compraron.',
+];
 
 // 1. Intro: Configuración → Módulos opcionales
 await p.goto(base + '/configuracion'); await p.waitForSelector('[role=dialog][aria-label="Bienvenida"]');
@@ -76,9 +92,9 @@ await endSeg();
 await seg('menu'); await p.click('[role=dialog][aria-label^="Ayuda guiada"] button:has-text("Lo veo después")'); await wait(500);
 await p.hover('nav a:has-text("Entrevistas IA")'); await spot('[data-tour="nav:/entrevistas"]', 4000); await endSeg();
 
-// 4. Preguntas de la vacante
+// 4. La guía de cada vacante
 await seg('preg'); await p.click('nav a:has-text("Vacantes")'); await p.waitForSelector('h1:has-text("Vacantes")'); await wait(1800);
-await spot('[data-tour="jobs:questions"]', 6000); await p.hover('[data-tour="jobs:questions"]'); await endSeg();
+await spot('[data-tour="jobs:guide"]', 7000); await p.hover('[data-tour="jobs:guide"]'); await endSeg();
 
 // 5. Agendar por Zoom con horario por candidato y la casilla del aviso de IA
 await seg('agenda'); await p.click('nav a:has-text("Respuestas a CVs")'); await p.waitForSelector('h1'); await wait(1200);
@@ -93,30 +109,38 @@ await endSeg();
 await seg('llamada'); await p.click('nav a:has-text("Entrevistas IA")'); await p.waitForSelector('h1:has-text("Entrevistas IA")'); await wait(1200);
 await spot('[data-tour="interviews:channels"] > div:first-child', 6000); await endSeg();
 
-// 7. Probar en la demo: chat simulado
+// 7. Probar en la demo: chat simulado (guía de Vendedor: 10 conductuales + historia + 5 opción múltiple)
 await seg('demo'); await scrollTo('[data-tour="interviews:chat"]'); await wait(2000);
-await p.click('button:has-text("Iniciar entrevista")'); await wait(1800);
-await answer('Tengo 3 años vendiendo motos y electrodomésticos al crédito, con metas cada mes.');
-await answer('Lo escucho, le explico las opciones de crédito y le doy seguimiento por WhatsApp.');
+await p.click('button:has-text("Iniciar entrevista")'); await wait(2200);
+await answer(LONG[0]);
 await endSeg(0.2);
 
-// 8. Evaluación (se queda en pantalla mientras se narra)
-await seg('eval');
-await answer('Sí, tengo disponibilidad de horario rotativo y fines de semana.');
-await p.waitForSelector('text=Puntaje global IA', { timeout: 10000 }); await wait(300);
-await scrollTo('[data-tour="interviews:evaluation"]'); await spot('[data-tour="interviews:evaluation"]', 7000);
-await endSeg(2.5);
+// 8. Las demás respuestas, rápido
+await seg('resp');
+for (const t of LONG.slice(1)) await answer(t, false);
+for (const l of ['B', 'C', 'B', 'A', 'C']) await answer(l, false);
+await endSeg(0.2);
 
-// 9. RR.HH. decide
-await seg('decide'); await p.click('nav a:has-text("Candidatos")'); await p.waitForSelector('h1:has-text("Candidatos")'); await wait(1500);
-await spot('[data-tour="candidates:board"]', 5000, true); await endSeg();
+// 9. Transcripción y sugerencia (se queda en pantalla mientras se narra)
+await seg('eval');
+await p.waitForSelector('text=Transcripción en Entrevistas', { timeout: 10000 }); await wait(300);
+await scrollTo('[data-tour="interviews:saved"]'); await spot('[data-tour="interviews:saved"]', 4000); await wait(4500);
+await p.evaluate(() => document.querySelector('main')?.scrollBy({ top: 330, behavior: 'smooth' })); await spot('[data-tour="interviews:evaluation"]', 6000, true);
+await endSeg(1.5);
+
+// 10. RR.HH. puntúa y decide (Entrevistas por competencias)
+await seg('decide'); await scrollTo('[data-tour="interviews:saved"]'); await wait(600);
+await p.click('button:has-text("Puntuar en Entrevistas")'); await p.waitForSelector('h1:has-text("Entrevista por competencias")'); await wait(2500);
+await spot('[data-tour="competencias:steps"]', 5000); await wait(4000);
+await p.click('[data-tour="competencias:steps"] [role=tab]:has-text("Puntuar")'); await wait(2500);
+await p.evaluate(() => document.querySelector('main')?.scrollBy({ top: 420, behavior: 'smooth' })); await endSeg();
 
 // 10. Ayuda: Guía, chat y video
 await seg('help'); await p.click('button[aria-label="Abrir ayuda"]'); await wait(600);
 await p.click('[role=dialog][aria-label="Centro de ayuda"] button:has-text("Guía")'); await wait(700);
 await p.evaluate(() => document.querySelector('[role=dialog][aria-label="Centro de ayuda"] .overflow-y-auto')?.scrollTo({ top: 260, behavior: 'smooth' })); await wait(2600);
 await p.click('[role=dialog][aria-label="Centro de ayuda"] button:has-text("Chat")'); await wait(400);
-await p.fill('input[aria-label="Pregunta de ayuda"]', '¿se graba la entrevista?'); await p.keyboard.press('Enter');
+await p.fill('input[aria-label="Pregunta de ayuda"]', '¿la IA usa la guía de competencias?'); await p.keyboard.press('Enter');
 await endSeg();
 await seg('end'); await endSeg(1.5);
 const total = now();

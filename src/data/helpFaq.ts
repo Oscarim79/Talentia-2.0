@@ -32,7 +32,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Cómo creo una vacante?',
     keywords: ['vacante', 'plaza', 'puesto', 'crear vacante', 'nueva vacante', 'publicar', 'linkedin', 'marca'],
     answer:
-      'Ve a Vacantes y pulsa "Nueva vacante". El formulario tiene 5 pasos: básicos (título, marca Americana/Abiq/Friotec, plazas, salario), descripción generada con IA, filtros de screening (los criterios con los que la IA puntuará los CVs), preguntas de entrevista y revisión. Al final puedes descargar el XML para publicar en LinkedIn.',
+      'Ve a Vacantes y pulsa "Nueva vacante". El formulario tiene 5 pasos: básicos (título, marca Americana/Abiq/Friotec, plazas, salario), descripción generada con IA, filtros de screening (los criterios con los que la IA puntuará los CVs), preguntas extra opcionales para el entrevistador y revisión; la entrevista usa la guía de competencias que corresponde al título (Vendedor o Jefe de Tienda) y la tarjeta de la vacante la muestra. Al final puedes descargar el XML para publicar en LinkedIn.',
     route: '/vacantes',
     routeLabel: 'Ir a Vacantes',
   },
@@ -128,7 +128,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'evaluo a un candidato', 'evaluar a un candidato', 'evaluo a una candidata', 'despues de la entrevista',
     ],
     answer:
-      'En Entrevistas elige al candidato (aparecen los que están en la etapa Entrevista) y pulsa "Empezar la entrevista". La guía depende del puesto: Vendedor (10 preguntas conductuales, 45 min) o Jefe de Tienda (12, 60 min). Son 3 pasos: 1) Entrevista: haces las preguntas en orden —conductuales, la historia y al final las de opción múltiple— y anotas frases textuales del candidato; debajo de cada pregunta dice qué evidencia buscar y arriba tienes las repreguntas neutrales. 2) Puntuar: al terminar das de 1 a 5 a cada respuesta. 3) Reporte: la app calcula cada competencia, el Índice General y la recomendación. Todo se guarda solo. "Imprimir guía" saca la guía en blanco en papel.',
+      'En Entrevistas elige al candidato (aparecen los que están en la etapa Entrevista) y pulsa "Empezar la entrevista". La guía depende del puesto: Vendedor (10 preguntas conductuales, 45 min) o Jefe de Tienda (12, 60 min). Son 3 pasos: 1) Entrevista: haces las preguntas en orden —conductuales, la historia y al final las de opción múltiple— y anotas frases textuales del candidato; debajo de cada pregunta dice qué evidencia buscar y arriba tienes las repreguntas neutrales. 2) Puntuar: al terminar das de 1 a 5 a cada respuesta. 3) Reporte: la app calcula cada competencia, el Índice General y la recomendación. Todo se guarda solo. "Imprimir guía" saca la guía en blanco en papel. Si el módulo Entrevistas IA está activo, el asistente puede hacer la entrevista con esta misma guía y dejarte la transcripción como borrador para puntuar.',
     route: '/competencias',
     routeLabel: 'Ir a Entrevistas',
   },
@@ -369,7 +369,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'hace el modulo', 'que es la entrevista con',
     ],
     answer:
-      'Agendas la entrevista como siempre en Respuestas a CVs (Virtual por Zoom), con la casilla "La entrevista la hará el asistente de IA" marcada. A la hora acordada, el asistente de IA entra a la videollamada de Zoom, se presenta como asistente virtual con inteligencia artificial y hace una por una las preguntas del banco de la vacante; todo queda transcrito. Al terminar, en Entrevistas IA ves la evaluación: puntaje global, puntaje por pregunta y diferencias con el CV. La decisión es de RR.HH. La videollamada real está planeada para la Fase 3: en la demo se simula con un chat.',
+      'Agendas la entrevista como siempre en Respuestas a CVs (Virtual por Zoom), con la casilla "La entrevista la hará el asistente de IA" marcada. A la hora acordada, el asistente de IA entra a la videollamada de Zoom, se presenta como asistente virtual con inteligencia artificial y hace una por una las preguntas de la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda, según la vacante), con repreguntas si la respuesta es vaga; todo queda transcrito. Al terminar, la transcripción queda como borrador en Entrevistas con una sugerencia preliminar de puntaje y las diferencias con el CV; tú puntúas de 1 a 5 y la app calcula el reporte. La decisión es de RR.HH. La videollamada real está planeada para la Fase 3: en la demo se simula con un chat.',
     route: '/entrevistas',
     routeLabel: 'Ir a Entrevistas IA',
     topic: 'interviewsAi',
@@ -386,7 +386,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'que hago primero',
     ],
     answer:
-      'Cinco cosas: 1) revisa que cada vacante abierta tenga sus preguntas de entrevista (la tarjeta de la vacante dice cuántas tiene); 2) al agendar en Respuestas a CVs deja marcada la casilla "La entrevista la hará el asistente de IA", que agrega al mensaje el aviso de IA y grabación; 3) haz una entrevista de prueba en Entrevistas IA; 4) lee cada evaluación antes de decidir y confirma con el candidato cualquier diferencia con su CV; 5) si decides no usarlo, apaga el módulo en Configuración.',
+      'Cinco cosas: 1) revisa que cada vacante tenga la guía correcta, Vendedor o Jefe de Tienda (se deduce del título y la tarjeta de la vacante la muestra); 2) al agendar en Respuestas a CVs deja marcada la casilla "La entrevista la hará el asistente de IA", que agrega al mensaje el aviso de IA y grabación; 3) haz una entrevista de prueba en Entrevistas IA; 4) al terminar, abre "Puntuar en Entrevistas", lee la transcripción, puntúa de 1 a 5 y confirma con el candidato cualquier diferencia con su CV; 5) si decides no usarlo, apaga el módulo en Configuración.',
     route: '/entrevistas',
     routeLabel: 'Ir a Entrevistas IA',
     topic: 'interviewsAi',
@@ -400,10 +400,11 @@ export const HELP_FAQ: FaqEntry[] = [
       'preguntas ia', 'improvisa', 'cambio las preguntas', 'cambiar las preguntas', 'editar preguntas', 'edito las preguntas',
       'editar las preguntas', 'no tiene preguntas', 'sin preguntas', 'qué pregunta', 'le pregunta', 'preguntas hace',
       'preguntas que hace', 'pregunta lo mismo', 'cuantas preguntas', 'preguntas para la entrevista', 'tiene preguntas',
-      'saca las preguntas', 'pongo las preguntas', 'inventa', 'mismas preguntas', 'hace las mismas',
+      'saca las preguntas', 'pongo las preguntas', 'inventa', 'mismas preguntas', 'hace las mismas', 'preguntas de la guia',
+      'usa la guia', 'con la guia', 'preguntas extra', 'preguntas adicionales', 'la ia usa la guia', 'guia de competencias la ia',
     ],
     answer:
-      'Solo las del banco de la vacante, en orden; no improvisa. Se definen al crear la vacante, en el paso 4 del formulario de "Nueva vacante" ("Preguntas IA"), generadas con IA o escritas a mano, y hoy no se pueden editar después: si necesitas otras, crea la vacante de nuevo. La tarjeta de cada vacante dice cuántas tiene. Si una vacante no tiene preguntas, el asistente de IA usa 3 generales: por qué le interesa el puesto, un logro del que se sienta orgulloso y su disponibilidad para empezar.',
+      'Las de la guía de entrevista por competencias de RR.HH., las mismas que haría una persona: para Vendedor, 10 preguntas conductuales, la historia y 5 de opción múltiple (45 min); para Jefe de Tienda, 12, la historia y 6 (60 min). Van en el orden de la guía, con repreguntas neutrales si la respuesta es vaga ("¿Qué hiciste tú específicamente? ¿Cuál fue el resultado?"), y el asistente no improvisa. La guía se deduce del título de la vacante y se ve en su tarjeta. Las "preguntas extra" del formulario de la vacante son opcionales y quedan para el entrevistador; la IA no las usa.',
     route: '/vacantes',
     routeLabel: 'Ir a Vacantes',
     topic: 'interviewsAi',
@@ -432,7 +433,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'inicio una entrevista', 'pruebo la video', 'probar la video', 'la pruebo', 'simular una', 'simular la videollamada',
     ],
     answer:
-      'Abre Entrevistas IA, elige un candidato y pulsa "Iniciar entrevista". En la demo la videollamada se simula con un chat: el asistente de IA saluda y hace las preguntas de la vacante, y tú escribes las respuestas como lo haría el candidato. Al terminar aparece la evaluación a la derecha. En la demo el puntaje es aproximado (premia respuestas completas que mencionan los requisitos) y la conversación no se guarda al salir. "Reiniciar" empieza de nuevo. En la lista aparecen los candidatos ya puntuados, incluidos los que confirmaron su entrevista en Respuestas a CVs.',
+      'Abre Entrevistas IA, elige un candidato y pulsa "Iniciar entrevista". En la demo la videollamada se simula con un chat: el asistente de IA saluda y hace las preguntas de la guía de competencias (16 para Vendedor, 19 para Jefe de Tienda; en opción múltiple contestas con la letra), y tú escribes las respuestas como lo haría el candidato; si una respuesta es muy corta, repregunta. Al terminar, la transcripción queda como borrador en Entrevistas y a la derecha ves la sugerencia preliminar y las discrepancias. El chat no se guarda al salir; "Reiniciar" empieza de nuevo. En la lista aparecen los candidatos ya puntuados, incluidos los que confirmaron su entrevista en Respuestas a CVs.',
     route: '/entrevistas',
     routeLabel: 'Ir a Entrevistas IA',
     topic: 'interviewsAi',
@@ -445,9 +446,10 @@ export const HELP_FAQ: FaqEntry[] = [
       'discrepancia', 'diferencias con el cv', 'resultado de la entrevista', 'calificación', 'califica', 'interpreto',
       'nota necesita', 'para pasar a oferta', 'amarillo', 'sale amarillo', 'resultados de la', 'leo los resultados', 'si miente',
       'miente sobre',
+      'sugerencia', 'sugerencia preliminar', 'borrador', 'puntuar en entrevistas', 'como puntuo', 'puntuo lo que', 'puntuar lo que', 'entrevisto la ia', 'lo que entrevisto', 'la ia entrevisto', 'transcripcion queda', 'donde queda la transcripcion', 'queda la entrevista',
     ],
     answer:
-      'Al terminar la entrevista aparecen tres cosas: el puntaje global de 0 a 100 (verde desde 80: recomendado para avanzar a oferta; ámbar desde 60: evaluar con el equipo; rojo abajo: revisar con cuidado), el puntaje de 1 a 10 de cada pregunta y las discrepancias entre el CV y lo que dijo el candidato (por ejemplo, años de experiencia distintos). Es una recomendación: la decisión la toma RR.HH.',
+      'Al terminar, la transcripción queda guardada como borrador en Entrevistas: cada respuesta bajo su pregunta y las opciones múltiples ya marcadas. En Entrevistas IA ves la sugerencia preliminar de la IA de 1 a 5 por pregunta con la escala de la guía (sube con un ejemplo concreto, acciones propias y un resultado medible; baja si solo habla en plural, con tope de 3), los puntos de cada opción múltiple (5, 3 o 1) y las discrepancias entre el CV y lo que dijo (por ejemplo, años de experiencia distintos). El puntaje válido lo das tú en Entrevistas ("Puntuar en Entrevistas"); la app calcula el Índice General y la recomendación.',
     route: '/entrevistas',
     routeLabel: 'Ir a Entrevistas IA',
     topic: 'interviewsAi',
@@ -461,7 +463,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'lo contrato', 'toma la decision',
     ],
     answer:
-      'No. El asistente de IA entrevista y recomienda; la decisión siempre es de RR.HH. Lee la transcripción y la evaluación, confirma con el candidato cualquier diferencia con su CV y decide si pasa a Oferta o se descarta. La decisión se registra en Entrevistas: al completar el reporte de la entrevista por competencias aparecen los botones Pasar a Oferta y Descartar.',
+      'No. El asistente de IA entrevista y sugiere; la decisión siempre es de RR.HH. En Entrevistas lees la transcripción, puntúas tú de 1 a 5 cada respuesta (la sugerencia de la IA es orientativa), confirmas con el candidato cualquier diferencia con su CV y, al completar el reporte, decides con los botones Pasar a Oferta y Descartar.',
     route: '/candidatos',
     routeLabel: 'Ir a Candidatos',
     topic: 'interviewsAi',

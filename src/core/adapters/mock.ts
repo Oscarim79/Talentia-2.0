@@ -4,6 +4,7 @@
 //  que la demo funcione sin claves ni costos. Reemplazar por adaptadores
 //  reales (Claude, LlamaParse, Twilio, Vapi, Stripe) en producción.
 // ============================================================
+import { FOLLOW_UPS } from '../interviewGuide';
 import type {
   CvParserPort,
   CvParseResult,
@@ -18,6 +19,7 @@ import type {
   HelpReplyResult,
   VoicePort,
   BillingPort,
+  InterviewScriptItem,
 } from '../ports';
 import type { ParsedCv } from '../../types';
 import { HELP_FAQ } from '../../data/helpFaq';
@@ -241,28 +243,46 @@ export const mockLlm: LlmPort = {
     return delay({ score, matchPercent, justification, evidence, flags }, 600);
   },
 
-  async interviewReply({ history, jobTitle, candidateName, questions }): Promise<InterviewReplyResult> {
-    // Cuántas preguntas ha hecho ya el agente (la apertura incluye la primera).
-    const asked = history.filter((t) => t.role === 'agent').length;
+  async interviewReply({ history, jobTitle, candidateName, guideLabel, script }): Promise<InterviewReplyResult> {
     const firstName = candidateName.split(' ')[0] || 'candidato';
+    // Preguntas del guion ya hechas (las repreguntas no cuentan).
+    const asked = history.filter((t) => t.role === 'agent' && t.questionId && !t.followUp).length;
+    const say = (item: InterviewScriptItem): string => {
+      if (item.kind === 'choice' && item.options)
+        return `${item.text}\n\n${item.options.map((o) => `**${o.letter})** ${o.text}`).join('\n')}\n\nResponde con la letra de la opción que elijas.`;
+      if (item.kind === 'story') return `Ahora cuéntame una historia completa, con calma. ${item.text}`;
+      return item.text;
+    };
 
-    // Apertura: saludo + primera pregunta del banco aprobado.
+    // Apertura: saludo + primera pregunta de la guía.
     if (asked === 0) {
-      const opener = questions.length
-        ? `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. La entrevista se graba para que RR.HH. la evalúe. Te haré ${questions.length} preguntas cortas; responde con naturalidad.\n\n${questions[0]}`
-        : `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. La entrevista se graba para que RR.HH. la evalúe. Cuéntame, ¿por qué te interesa este puesto?`;
-      return delay({ message: opener, done: false }, 700);
+      const first = script[0];
+      const opener =
+        `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. ` +
+        `La entrevista se graba para que RR.HH. la evalúe. Seguiré la guía de entrevista de ${guideLabel}: ${script.length} preguntas; responde con ejemplos concretos de lo que tú hiciste.` +
+        (first ? `\n\n${say(first)}` : '');
+      return delay({ message: opener, done: false, questionId: first?.id }, 700);
     }
 
-    // El agente SOLO pregunta del banco aprobado (tool-constrained, no improvisa).
-    if (asked < questions.length) {
-      return delay({ message: questions[asked], done: false }, 650);
+    // Repregunta neutral (una sola vez por pregunta) si la respuesta a una conductual o a la historia fue muy corta.
+    const lastAgent = [...history].reverse().find((t) => t.role === 'agent');
+    const last = history[history.length - 1];
+    const lastItem = script.find((i) => i.id === lastAgent?.questionId);
+    if (lastAgent && !lastAgent.followUp && lastItem && lastItem.kind !== 'choice' && last?.role === 'candidate') {
+      const words = last.content.trim().split(/\s+/).filter(Boolean).length;
+      if (words < 12) return delay({ message: `${FOLLOW_UPS[0]} ${FOLLOW_UPS[1]}`, done: false, questionId: lastItem.id, followUp: true }, 650);
     }
 
-    // Banco agotado → cierre de la entrevista.
+    // El agente SOLO pregunta del guion, en orden (tool-constrained, no improvisa).
+    if (asked < script.length) {
+      const item = script[asked];
+      return delay({ message: say(item), done: false, questionId: item.id }, 650);
+    }
+
+    // Guion agotado → cierre de la entrevista.
     return delay(
       {
-        message: `Gracias por tus respuestas, ${firstName}. Con esto concluyo la entrevista — un reclutador las revisará y te contactará pronto. ¡Mucho éxito! 👋`,
+        message: `Gracias por tus respuestas, ${firstName}. Con esto concluyo la entrevista — una persona de RR.HH. las revisará y te contactará pronto. ¡Mucho éxito! 👋`,
         done: true,
       },
       650,

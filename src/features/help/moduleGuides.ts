@@ -32,11 +32,11 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
     tour: 'interviewsAi',
     title: 'Entrevistas IA por videollamada',
     summary:
-      'Un asistente con inteligencia artificial entrevista por videollamada (Zoom) a los candidatos que agendaste, con las preguntas de la vacante, y te entrega la transcripción y una evaluación. La decisión sigue siendo de RR.HH.',
+      'Un asistente con inteligencia artificial entrevista por videollamada (Zoom) a los candidatos que agendaste, con la misma guía de competencias de RR.HH. que usaría una persona, y te deja la transcripción lista para puntuar en Entrevistas. La decisión sigue siendo de RR.HH.',
     howItWorks: [
       {
-        title: 'Preguntas de la vacante',
-        body: 'El asistente de IA solo hace las preguntas del banco de la vacante, en orden, y no improvisa. Se definen al crear la vacante (paso 4 del formulario, "Preguntas IA").',
+        title: 'Las preguntas de la guía',
+        body: 'El asistente hace exactamente las preguntas de la guía de competencias que corresponde a la vacante (Vendedor: 10 conductuales, la historia y 5 de opción múltiple; Jefe de Tienda: 12, la historia y 6), en el orden de la guía, con repreguntas neutrales si la respuesta es vaga. No improvisa.',
       },
       {
         title: 'Agendas como siempre',
@@ -47,17 +47,17 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
         body: 'A la hora acordada entra a la videollamada de Zoom, se presenta como asistente virtual con IA y hace las preguntas una por una. Todo queda transcrito.',
       },
       {
-        title: 'Recibes la evaluación',
-        body: 'En Entrevistas IA: puntaje global de 0 a 100, puntaje de 1 a 10 por pregunta y diferencias entre el CV y lo que dijo el candidato.',
+        title: 'Deja la transcripción lista para puntuar',
+        body: 'Cada respuesta queda anotada bajo su pregunta, como borrador en Entrevistas, con las opciones múltiples ya marcadas, una sugerencia preliminar de puntaje de 1 a 5 y las diferencias entre el CV y lo que dijo.',
       },
       {
-        title: 'RR.HH. decide',
-        body: 'La evaluación es una recomendación: tú lees la transcripción y decides si el candidato pasa a Oferta o se descarta.',
+        title: 'RR.HH. puntúa y decide',
+        body: 'En Entrevistas lees la transcripción, puntúas de 1 a 5 cada respuesta y la app calcula el Índice General y la recomendación. La decisión (Oferta o Descartar) es tuya.',
       },
     ],
     todo: [
       {
-        text: 'Revisa que cada vacante abierta tenga sus preguntas (la tarjeta dice cuántas). Hoy no se editan después de crear la vacante; si una no tiene, el asistente usa 3 preguntas generales.',
+        text: 'Revisa que cada vacante tenga la guía correcta: Vendedor o Jefe de Tienda. Se deduce del título y la tarjeta de la vacante la muestra; las "preguntas extra" del formulario son opcionales para el entrevistador.',
         route: '/vacantes',
         routeLabel: 'Ir a Vacantes',
       },
@@ -72,14 +72,16 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
         routeLabel: 'Probar ahora',
       },
       {
-        text: 'Lee cada evaluación antes de decidir; si ves una diferencia con el CV, confírmala con el candidato.',
+        text: 'Al terminar, abre "Puntuar en Entrevistas": lee cada respuesta, puntúa de 1 a 5 (la sugerencia de la IA es solo orientativa) y, si ves una diferencia con el CV, confírmala con el candidato.',
+        route: '/competencias',
+        routeLabel: 'Ir a Entrevistas',
       },
       {
         text: 'Si decides no usarlo, apaga el módulo en Configuración: solo se oculta del menú y no se pierde nada.',
       },
     ],
     demoNote:
-      'La videollamada real (Zoom, con voz) está planeada para la Fase 3; hoy la entrevista se simula con un chat y tú escribes las respuestas del candidato. El puntaje es aproximado (premia respuestas completas que mencionan los requisitos) y la conversación no se guarda al salir de la pantalla. Quien confirma su entrevista en Respuestas a CVs pasa a la etapa Entrevista y aparece en la lista.',
+      'La videollamada real (Zoom, con voz) está planeada para la Fase 3; hoy la entrevista se simula con un chat y tú escribes las respuestas del candidato (son todas las preguntas de la guía: 16 para Vendedor, 19 para Jefe de Tienda). La sugerencia de puntaje es una regla simple (ejemplo concreto, acciones propias, resultado medible) y el chat no se guarda al salir, pero la transcripción sí queda como borrador en Entrevistas. Quien confirma su entrevista en Respuestas a CVs pasa a la etapa Entrevista y aparece en la lista.',
     video: 'interviewsAi',
     chatSuggestions: ['entrevista-ia-como', 'entrevista-ia-pasos', 'entrevista-ia-evaluacion', 'entrevista-ia-aviso'],
   },

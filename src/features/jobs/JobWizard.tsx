@@ -10,7 +10,7 @@ import { useEscape } from '../../lib/useEscape';
 import { jobToLinkedInXml } from '../../lib/linkedin';
 import type { Job, ScreeningFilter, InterviewQuestion } from '../../types';
 
-const STEPS = ['Básicos', 'Descripción IA', 'Filtros de screening', 'Preguntas IA', 'Revisar'] as const;
+const STEPS = ['Básicos', 'Descripción IA', 'Filtros de screening', 'Preguntas extra', 'Revisar'] as const;
 
 // IDs únicos aunque se generen varios en el mismo milisegundo.
 let uidCounter = 0;
@@ -272,7 +272,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
           {step === 3 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-stone-600">Preguntas para la entrevista (manuales o generadas por IA).</p>
+                <p className="text-sm text-stone-600">Opcionales: preguntas extra para el entrevistador. La entrevista (con una persona o con el asistente de IA) siempre usa la guía de competencias de RR.HH.</p>
                 <Button variant="secondary" onClick={generateQuestions} disabled={genQ}>
                   {genQ ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   {genQ ? 'Generando…' : questions.length ? 'Regenerar' : 'Generar con IA'}

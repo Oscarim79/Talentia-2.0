@@ -34,12 +34,23 @@ export interface ScoreResult {
 }
 
 // ---- Entrevista IA (agente conversacional) ----
+/** Una pregunta del guion que el agente debe hacer, en orden (viene de la guía de competencias de RR.HH.). */
+export interface InterviewScriptItem {
+  id: string;
+  kind: 'behavioral' | 'story' | 'choice';
+  text: string;
+  /** Solo en opción múltiple: el candidato elige una letra. Los puntos nunca se le muestran. */
+  options?: { letter: string; text: string }[];
+}
+
 export interface InterviewReplyInput {
   history: InterviewTurn[];
   jobTitle: string;
   candidateName: string;
-  /** Banco de preguntas aprobado. El agente SOLO pregunta de aquí (tool-constrained). */
-  questions: string[];
+  /** Nombre de la guía que aplica (ej. "Vendedor"). */
+  guideLabel: string;
+  /** Guion aprobado. El agente SOLO pregunta de aquí, en orden (tool-constrained); puede repreguntar de forma neutral. */
+  script: InterviewScriptItem[];
 }
 
 export interface InterviewReplyResult {
@@ -47,6 +58,10 @@ export interface InterviewReplyResult {
   message: string;
   /** true cuando el agente cerró la entrevista. */
   done: boolean;
+  /** Pregunta del guion a la que corresponde el mensaje (para armar la transcripción por pregunta). */
+  questionId?: string;
+  /** true si es una repregunta neutral sobre la misma pregunta (no avanza el guion). */
+  followUp?: boolean;
 }
 
 // ---- Plan de crecimiento (7 Hábitos / Franklin Covey) ----
