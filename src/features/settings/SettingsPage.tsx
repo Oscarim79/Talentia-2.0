@@ -67,7 +67,7 @@ export default function SettingsPage() {
       />
 
       {/* Equipo de RR.HH. */}
-      <Card className="mb-6 overflow-hidden">
+      <Card className="mb-6 overflow-hidden" dataTour="settings:team">
         <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
           <Users className="h-4 w-4 text-brand-600" />
           <h2 className="text-sm font-bold text-stone-700">Equipo de RR.HH.</h2>
@@ -148,7 +148,7 @@ export default function SettingsPage() {
         </p>
       </Card>
 
-      <Card className="mb-6 overflow-hidden">
+      <Card className="mb-6 overflow-hidden" dataTour="settings:modules">
         <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
           <Puzzle className="h-4 w-4 text-brand-600" />
           <h2 className="text-sm font-bold text-stone-700">Módulos opcionales</h2>
@@ -198,7 +198,7 @@ export default function SettingsPage() {
       </Card>
 
       {/* Preguntas al chat de ayuda */}
-      <Card className="mb-6 overflow-hidden">
+      <Card className="mb-6 overflow-hidden" dataTour="settings:questions">
         <div className="flex flex-wrap items-center gap-2 border-b border-stone-100 px-6 py-4">
           <MessageCircleQuestion className="h-4 w-4 text-brand-600" />
           <h2 className="text-sm font-bold text-stone-700">Preguntas al chat de ayuda</h2>
@@ -244,7 +244,7 @@ export default function SettingsPage() {
         )}
       </Card>
 
-      <Card className="p-5">
+      <Card className="p-5" dataTour="settings:reset">
         <div className="flex items-start gap-3">
           <div className="rounded-lg bg-stone-100 p-2 text-stone-500">
             <Lock className="h-4 w-4" />

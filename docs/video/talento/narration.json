@@ -1,0 +1,53 @@
+[
+  {
+    "id": "intro",
+    "text": "Talento es la sección de TALENTIA para la gente ya contratada. Cuando Reclutamiento termina, cada colaborador sigue aquí, en dos pantallas: la Matriz 9-Box y Acciones RR.HH.",
+    "say": "Talento es la sección de TALENTIA para la gente ya contratada. Cuando Reclutamiento termina, cada colaborador sigue aquí, en dos pantallas: la Matriz nueve box y Acciones de Recursos Humanos."
+  },
+  {
+    "id": "matriz",
+    "text": "La Matriz 9-Box ubica a cada persona: hacia la derecha, mejor desempeño; hacia arriba, mejor cultura y potencial, ambos de 1 a 5. Arriba a la derecha están Superestrella, Estrella y Futuro Líder; abajo a la izquierda, el riesgo. El cuadrante se calcula solo con los puntajes.",
+    "say": "La Matriz nueve box ubica a cada persona: hacia la derecha, mejor desempeño; hacia arriba, mejor cultura y potencial, ambos de uno a cinco. Arriba a la derecha están Superestrella, Estrella y Futuro Líder; abajo a la izquierda, el riesgo. El cuadrante se calcula solo con los puntajes."
+  },
+  {
+    "id": "filtro",
+    "text": "Con el filtro de departamento, la matriz, la lista de colaboradores y la cultura del equipo muestran solo esa área."
+  },
+  {
+    "id": "perfil",
+    "text": "Al tocar a una persona se abre su perfil: desempeño, cultura, eNPS y cuadrante; el historial de los últimos 6 trimestres con semáforo; y la decisión sugerida de RR.HH., con la base que la justifica.",
+    "say": "Al tocar a una persona se abre su perfil: desempeño, cultura, e ene pe ese y cuadrante; el historial de los últimos seis trimestres con semáforo; y la decisión sugerida de Recursos Humanos, con la base que la justifica."
+  },
+  {
+    "id": "cultura",
+    "text": "Más abajo, sus 10 dimensiones de Cultura 360°, en tres grupos: Liderazgo, Comunicación y Soporte, e Inteligencia Emocional. Verde desde 4, ámbar desde 3, rojo abajo.",
+    "say": "Más abajo, sus diez dimensiones de Cultura trescientos sesenta, en tres grupos: Liderazgo, Comunicación y Soporte, e Inteligencia Emocional. Verde desde cuatro, ámbar desde tres, rojo abajo."
+  },
+  {
+    "id": "crecimiento",
+    "text": "Y la recomendación de crecimiento: la app elige el hábito de Covey en que conviene enfocarse, propone acciones para esta semana y cursos, y deja listo el mensaje de WhatsApp para la persona y para su jefe.",
+    "say": "Y la recomendación de crecimiento: la aplicación elige el hábito de Covey en que conviene enfocarse, propone acciones para esta semana y cursos, y deja listo el mensaje de WhatsApp para la persona y para su jefe."
+  },
+  {
+    "id": "acciones",
+    "text": "Acciones RR.HH. junta las decisiones de todo el equipo por prioridad: Atención / riesgo, Reconocer / premiar y Seguimiento. La regla es fija: según cuántos trimestres seguidos lleva la persona en verde, amarillo o rojo, se sugiere reconocimiento, bono o aumento; seguimiento o capacitación; advertencia, suspensión o desvinculación. Sin IA: reglas auditables.",
+    "say": "Acciones de Recursos Humanos junta las decisiones de todo el equipo por prioridad: atención o riesgo, reconocer o premiar, y seguimiento. La regla es fija: según cuántos trimestres seguidos lleva la persona en verde, amarillo o rojo, se sugiere reconocimiento, bono o aumento; seguimiento o capacitación; advertencia, suspensión o desvinculación. Sin inteligencia artificial: reglas auditables."
+  },
+  {
+    "id": "hecha",
+    "text": "Cada tarjeta dice su base. \"Ver perfil\" abre a la persona y \"Marcar hecha\" la pasa a Completadas. La decisión final siempre es de RR.HH.",
+    "say": "Cada tarjeta dice su base. Ver perfil abre a la persona y Marcar hecha la pasa a Completadas. La decisión final siempre es de Recursos Humanos."
+  },
+  {
+    "id": "reportes",
+    "text": "Reportes a gerentes arma, por departamento, el estado de su equipo: a reconocer, en seguimiento y en riesgo. Lo envías al gerente por WhatsApp, lo copias o lo descargas."
+  },
+  {
+    "id": "help",
+    "text": "¿Dudas? En el botón de ayuda, el chat responde preguntas sobre Talento, la pestaña Guía repite este recorrido y la pestaña Video tiene este video."
+  },
+  {
+    "id": "end",
+    "text": "Talento: del candidato contratado al colaborador que crece."
+  }
+]

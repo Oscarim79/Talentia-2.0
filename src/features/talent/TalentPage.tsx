@@ -78,7 +78,7 @@ export default function TalentPage() {
       />
 
       {/* Filtro por departamento */}
-      <Card className="mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
+      <Card className="mb-5 flex flex-wrap items-center justify-between gap-3 p-4" dataTour="talent:filter">
         <div className="flex items-center gap-3">
           <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">Departamento</span>
           <select
@@ -96,7 +96,7 @@ export default function TalentPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Matriz */}
-        <Card className="p-6 xl:col-span-2">
+        <Card className="p-6 xl:col-span-2" dataTour="talent:matrix">
           <NineBoxMatrix dataPoints={people} onPointClick={setSelectedId} />
           <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] font-medium text-stone-500">
             <Legend color="bg-green-300/60" label="Ideal / Superestrella" />
@@ -106,7 +106,7 @@ export default function TalentPage() {
         </Card>
 
         {/* Lista de colaboradores (nombres clicables → perfil) */}
-        <Card className="p-5">
+        <Card className="p-5" dataTour="talent:list">
           <h2 className="mb-3 text-sm font-bold text-stone-700">
             Colaboradores {dept !== 'Todos' && <span className="text-stone-400">· {dept}</span>}
           </h2>
@@ -143,7 +143,7 @@ export default function TalentPage() {
       </div>
 
       {/* Cultura 360° del equipo (promedio, responde al filtro) */}
-      <Card className="mt-6 p-6">
+      <Card className="mt-6 p-6" dataTour="talent:culture">
         <h2 className="mb-4 text-sm font-bold text-stone-700">
           Cultura 360° del equipo · 10 dimensiones {dept !== 'Todos' && <span className="text-stone-400">· {dept}</span>}
         </h2>

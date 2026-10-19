@@ -89,13 +89,13 @@ export default function MetricsPage() {
       {header}
 
       {/* Filtros */}
-      <div className="mb-5 flex flex-wrap items-center gap-3">
+      <div className="mb-5 flex flex-wrap items-center gap-3" data-tour="metrics:filters">
         <FilterSelect label="Vacante" value={jobId} onChange={setJobId} options={[{ v: 'all', l: 'Todas las vacantes' }, ...jobs.map((j) => ({ v: j.id, l: j.title }))]} />
         <FilterSelect label="Persona" value={userId} onChange={setUserId} options={[{ v: 'all', l: 'Todo el equipo' }, ...users.map((u) => ({ v: u.id, l: u.name }))]} />
       </div>
 
       {/* KPIs del equipo */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour="metrics:kpis">
         <StatCard
           label="Revisar un CV"
           value={fmtDays(kpis.avgReview)}
@@ -196,7 +196,7 @@ export default function MetricsPage() {
         )}
       </Card>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2" data-tour="metrics:stages">
         {/* Tiempo por etapa */}
         <Card className="p-5">
           <div className="mb-4 flex items-start justify-between gap-2">
@@ -263,7 +263,7 @@ export default function MetricsPage() {
       </div>
 
       {/* Por vacante */}
-      <Card className="mt-6 overflow-hidden">
+      <Card className="mt-6 overflow-hidden" dataTour="metrics:jobs">
         <h2 className="border-b border-stone-100 px-5 py-4 text-sm font-bold text-stone-700">Por vacante</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -301,7 +301,7 @@ export default function MetricsPage() {
       </Card>
 
       {/* Pendientes */}
-      <Card className="mt-6 overflow-hidden">
+      <Card className="mt-6 overflow-hidden" dataTour="metrics:pending">
         <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
           <h2 className="flex items-center gap-2 text-sm font-bold text-stone-700">
             <AlertTriangle className="h-4 w-4 text-amber-600" /> Pendientes por persona
