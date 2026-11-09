@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
 import type { ModuleId } from '../core/modules';
 import type { SlaGoals } from '../features/metrics/hrMetrics';
 import { defaultSettings, getSettings, upsertSettings, type AutoReplyRule, type TenantSettings } from '../core/db/settings';
@@ -47,17 +47,51 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const members = data[1];
   const hrTeam = useMemo(() => members.filter((m) => isHrTeam(m.role)), [members]);
 
+  // Última configuración conocida (incluye cambios aún sin render): evita pisar ediciones seguidas.
+  const settingsRef = useRef<TenantSettings>(settings);
+  settingsRef.current = settings;
+
+  /** Aplica `patch` de inmediato y lo guarda. Si falla, `undo` deshace solo ese cambio sobre el estado actual. */
   const update = useCallback(
-    (patch: (prev: TenantSettings) => TenantSettings) => {
-      const prev = data[0] ?? defaultSettings();
-      const next = patch(prev);
+    (patch: (cur: TenantSettings) => TenantSettings, undo: (cur: TenantSettings, before: TenantSettings) => TenantSettings) => {
+      const before = settingsRef.current;
+      const next = patch(before);
+      settingsRef.current = next;
       setData(([, m]) => [next, m]);
       upsertSettings(tenant.id, next).catch(() => {
-        setData(([, m]) => [prev, m]);
+        const reverted = undo(settingsRef.current, before);
+        settingsRef.current = reverted;
+        setData(([, m]) => [reverted, m]);
         notifyError(SAVE_ERROR);
       });
     },
-    [data, setData, tenant.id],
+    [setData, tenant.id],
+  );
+
+  const isModuleEnabled = useCallback((id: ModuleId) => settings.modules[id] ?? false, [settings]);
+  const setModuleEnabled = useCallback(
+    (id: ModuleId, enabled: boolean) =>
+      update(
+        (cur) => ({ ...cur, modules: { ...cur.modules, [id]: enabled } }),
+        (cur, before) => ({ ...cur, modules: { ...cur.modules, [id]: before.modules[id] } }),
+      ),
+    [update],
+  );
+  const setAutoReply = useCallback(
+    (rule: AutoReplyRule) =>
+      update(
+        (cur) => ({ ...cur, autoReply: rule }),
+        (cur, before) => ({ ...cur, autoReply: before.autoReply }),
+      ),
+    [update],
+  );
+  const setSla = useCallback(
+    (sla: SlaGoals) =>
+      update(
+        (cur) => ({ ...cur, sla }),
+        (cur, before) => ({ ...cur, sla: before.sla }),
+      ),
+    [update],
   );
 
   const addTeamMember = useCallback(
@@ -88,10 +122,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const value = useMemo<SettingsCtxValue>(
     () => ({
       settings,
-      isModuleEnabled: (id) => settings.modules[id] ?? false,
-      setModuleEnabled: (id, enabled) => update((prev) => ({ ...prev, modules: { ...prev.modules, [id]: enabled } })),
-      setAutoReply: (rule) => update((prev) => ({ ...prev, autoReply: rule })),
-      setSla: (sla) => update((prev) => ({ ...prev, sla })),
+      isModuleEnabled,
+      setModuleEnabled,
+      setAutoReply,
+      setSla,
       addTeamMember,
       removeTeamMember,
       hrTeam,
@@ -99,7 +133,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       error,
       reload,
     }),
-    [settings, update, addTeamMember, removeTeamMember, hrTeam, ready, error, reload],
+    [settings, isModuleEnabled, setModuleEnabled, setAutoReply, setSla, addTeamMember, removeTeamMember, hrTeam, ready, error, reload],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
