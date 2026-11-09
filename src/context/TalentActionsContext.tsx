@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
 import { listDone, setDone, unsetDone } from '../core/db/talentActions';
+import { createLatestWriteQueue } from '../lib/latestWriteQueue';
 import { notifyError } from '../lib/notify';
 import { useTenant } from './TenantContext';
 import { useTenantData } from './useTenantData';
@@ -25,6 +26,8 @@ export function TalentActionsProvider({ children }: { children: ReactNode }) {
   const { tenant, member } = useTenant();
   const { data, setData, ready, error, reload } = useTenantData(listDone, NONE);
 
+  const queue = useMemo(() => createLatestWriteQueue(), []);
+
   const ref = useRef<string[]>(data);
   ref.current = data;
 
@@ -40,21 +43,25 @@ export function TalentActionsProvider({ children }: { children: ReactNode }) {
 
   const toggleDone = useCallback(
     (personId: string) => {
-      if (ref.current.includes(personId)) {
-        set((l) => l.filter((x) => x !== personId));
-        unsetDone(tenant.id, personId).catch(() => {
-          set((l) => (l.includes(personId) ? l : [...l, personId]));
+      const wanted = !ref.current.includes(personId);
+      set((l) => (wanted ? (l.includes(personId) ? l : [...l, personId]) : l.filter((x) => x !== personId)));
+      // Una escritura a la vez por persona; la tarea lee el estado deseado MÁS RECIENTE al ejecutarse.
+      let wrote = wanted;
+      queue
+        .run(personId, () => {
+          wrote = ref.current.includes(personId);
+          return wrote ? setDone(tenant.id, personId, member.id) : unsetDone(tenant.id, personId);
+        })
+        .catch(() => {
+          // Deshace solo si la lista sigue reflejando este cambio; si no, hay uno más nuevo.
+          set((l) => {
+            if (l.includes(personId) !== wrote) return l;
+            return wrote ? l.filter((x) => x !== personId) : [...l, personId];
+          });
           notifyError(SAVE_ERROR);
         });
-      } else {
-        set((l) => [...l, personId]);
-        setDone(tenant.id, personId, member.id).catch(() => {
-          set((l) => l.filter((x) => x !== personId));
-          notifyError(SAVE_ERROR);
-        });
-      }
     },
-    [tenant.id, member.id, set],
+    [tenant.id, member.id, set, queue],
   );
 
   const value = useMemo<TalentActionsCtxValue>(

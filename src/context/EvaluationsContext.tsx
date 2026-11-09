@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode
 import { listEvaluations, upsertEvaluation } from '../core/db/evaluations';
 import type { InterviewEvaluation } from '../core/interviewGuide';
 import { todayISO } from '../lib/dates';
+import { createLatestWriteQueue } from '../lib/latestWriteQueue';
 import { notifyError } from '../lib/notify';
 import { useTenantData } from './useTenantData';
 
@@ -40,6 +41,8 @@ const EvaluationsContext = createContext<EvaluationsCtxValue | null>(null);
 export function EvaluationsProvider({ children }: { children: ReactNode }) {
   const { data: evaluations, setData, ready, error, reload } = useTenantData(loadAll, NONE);
 
+  const queue = useMemo(() => createLatestWriteQueue(), []);
+
   // Última versión conocida (incluye cambios aún sin render).
   const ref = useRef<EvalMap>(evaluations);
   ref.current = evaluations;
@@ -57,9 +60,11 @@ export function EvaluationsProvider({ children }: { children: ReactNode }) {
       const id = next.candidateId;
       const before = ref.current[id];
       set((s) => ({ ...s, [id]: next }));
-      upsertEvaluation(next).catch(() => {
-        // Restaura solo esta evaluación (o la quita si no existía).
+      // Una escritura a la vez por candidato; si hay varias seguidas, solo se envía la última.
+      queue.run(id, () => upsertEvaluation(next)).catch(() => {
+        // Restaura solo si nadie la cambió después; si no, ya hay una versión más nueva.
         set((s) => {
+          if (s[id] !== next) return s;
           const rest = { ...s };
           delete rest[id];
           return before ? { ...rest, [id]: before } : rest;
@@ -67,7 +72,7 @@ export function EvaluationsProvider({ children }: { children: ReactNode }) {
         notifyError(SAVE_ERROR);
       });
     },
-    [set],
+    [set, queue],
   );
 
   const saveEvaluation = useCallback((ev: InterviewEvaluation) => persist(stamp(ev)), [persist]);
