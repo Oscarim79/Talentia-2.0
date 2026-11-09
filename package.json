@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "check:help": "node scripts/check-help-chat.mjs"
+    "check:help": "node scripts/check-help-chat.mjs",
+    "gen:seed-sql": "node scripts/gen-seed-sql.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
