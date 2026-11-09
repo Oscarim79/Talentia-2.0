@@ -9,12 +9,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
-    "check:help": "node scripts/check-help-chat.mjs"
+    "test": "vitest run",
+    "check:help": "node scripts/check-help-chat.mjs",
+    "gen:seed-sql": "node scripts/gen-seed-sql.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/instrument-sans": "^5.2.8",
     "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@supabase/supabase-js": "^2.119.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.546.0",
     "react": "^19.0.0",
@@ -31,6 +34,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vitest": "^5.1.0"
   }
 }

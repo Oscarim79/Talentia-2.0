@@ -449,4 +449,21 @@ export const CASES = [
   ["donde queda la transcripcion de la entrevista ia","entrevista-ia-evaluacion","/entrevistas"],
   ["que es la sugerencia preliminar","entrevista-ia-evaluacion","/entrevistas"],
   ["como puntuo lo que entrevisto la ia","entrevista-ia-evaluacion","/entrevistas"],
+  // --- inicio de sesión, contraseña y guardado compartido (2026-11-09) ---
+  ["¿por qué tengo que iniciar sesión?","login","/"],
+  ["no puedo entrar","login","/"],
+  ["me pide usuario y contraseña","login","/"],
+  ["cerrar sesión","login","/"],
+  ["¿cómo cambio mi contraseña?","contrasena","/"],
+  ["olvidé mi contraseña","contrasena","/"],
+  ["restablecer contraseña","contrasena","/"],
+  ["¿se guarda lo que hago?","guardado","/configuracion"],
+  ["¿lo ven los demás?","guardado","/configuracion"],
+  ["se me borró lo que cargué","guardado","/configuracion"],
+  ["¿puedo entrar desde el celular?","guardado","/configuracion"],
+  // --- guardas: palabras comunes de RR.HH. no deben irse a login/contrasena/guardado ---
+  ["¿cómo ingreso un candidato?","(sin respuesta)","/"],
+  ["¿cómo ingreso los CVs?","subir-cv","/"],
+  ["¿cuáles son las competencias clave?","competencias","/"],
+  ["¿dónde veo el teléfono del candidato?","(sin respuesta)","/"],
 ];

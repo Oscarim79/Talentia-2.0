@@ -1,10 +1,12 @@
-import { ChevronDown, Menu, Sparkles } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, Sparkles } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { useTenant } from '../../context/TenantContext';
-import { Badge } from '../ui/primitives';
+import { Badge, Button } from '../ui/primitives';
 import { TEAM_PILOT } from '../../core/config';
 
 export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
-  const { tenant, plan, tenants, setTenantId } = useTenant();
+  const { tenant, plan, tenants, setTenantId, member } = useTenant();
+  const { signOut } = useAuth();
 
   return (
     <header className="flex items-center justify-between gap-3 border-b border-stone-200/80 bg-canvas px-4 py-3 sm:px-6">
@@ -51,6 +53,10 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
         <Badge variant="brand" className="hidden sm:inline-flex">
           Plan {plan.name}
         </Badge>
+        <span className="hidden max-w-[10rem] truncate text-sm font-medium text-stone-700 sm:inline">{member.name}</span>
+        <Button variant="secondary" onClick={() => void signOut()} className="!px-2.5 !py-1.5 text-xs">
+          <LogOut className="h-3.5 w-3.5" /> Cerrar sesión
+        </Button>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-200 text-xs font-bold text-stone-600">
           {tenant.logoEmoji}
         </div>

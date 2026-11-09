@@ -1,17 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { GuideId } from '../../core/modules';
+import { deleteQuestions, insertQuestion, listQuestions, type HelpQuestion } from '../../core/db/helpQuestions';
+import { useTenant } from '../../context/TenantContext';
+import { useTenantData } from '../../context/useTenantData';
+import { notifyError } from '../../lib/notify';
 import { isTourId, type HelpVideoId, type TourId } from './tourSteps';
 
 export type HelpTab = 'chat' | 'guide' | 'video';
 
-/** Pregunta hecha al chat de ayuda (se registra para mejorar la guía). */
-export interface HelpQuestion {
-  id: string;
-  at: string;
-  route: string;
-  question: string;
-  answered: boolean;
-}
+export type { HelpQuestion } from '../../core/db/helpQuestions';
 
 interface HelpState {
   welcomeSeen: boolean;
@@ -19,7 +16,6 @@ interface HelpState {
   tourDone: boolean;
   /** Recorridos terminados de módulos opcionales y secciones (Talento, Gestión). */
   moduleToursDone: Exclude<TourId, 'main'>[];
-  questions: HelpQuestion[];
 }
 
 /** Ventana "cómo funciona" de un módulo opcional o de una sección (Talento, Gestión). */
@@ -64,14 +60,22 @@ interface HelpCtxValue {
 
 const STORAGE_KEY = 'talentia.help.v1';
 
-const EMPTY: HelpState = { welcomeSeen: false, tourDone: false, moduleToursDone: [], questions: [] };
+const EMPTY: HelpState = { welcomeSeen: false, tourDone: false, moduleToursDone: [] };
+const NO_QUESTIONS: HelpQuestion[] = [];
+const SAVE_ERROR = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
+const MAX_QUESTIONS = 200;
 
 function load(): HelpState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY;
-    const saved = { ...EMPTY, ...JSON.parse(raw) } as HelpState;
-    return { ...saved, moduleToursDone: Array.isArray(saved.moduleToursDone) ? saved.moduleToursDone : [] };
+    // Un estado antiguo puede traer `questions`: se ignora (ahora viven en la base de datos).
+    const saved = JSON.parse(raw) as Partial<HelpState>;
+    return {
+      welcomeSeen: saved.welcomeSeen === true,
+      tourDone: saved.tourDone === true,
+      moduleToursDone: Array.isArray(saved.moduleToursDone) ? saved.moduleToursDone : [],
+    };
   } catch {
     return EMPTY;
   }
@@ -81,6 +85,8 @@ const HelpContext = createContext<HelpCtxValue | null>(null);
 
 export function HelpProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<HelpState>(load);
+  const { tenant, member } = useTenant();
+  const { data: questions, setData: setQuestions, reload: reloadQuestions } = useTenantData(listQuestions, NO_QUESTIONS);
   const [panelOpen, setPanelOpen] = useState(false);
   const [tab, setTab] = useState<HelpTab>('chat');
   const [video, setVideo] = useState<HelpVideoId>('tour');
@@ -137,6 +143,28 @@ export function HelpProvider({ children }: { children: ReactNode }) {
   }, []);
   const closeModuleIntro = useCallback(() => setModuleIntro(null), []);
 
+  const logQuestion = useCallback(
+    (q: Omit<HelpQuestion, 'id' | 'at'>) => {
+      const tmpId = `tmp_${Date.now().toString(36)}`;
+      const temp: HelpQuestion = { id: tmpId, at: new Date().toISOString(), ...q };
+      setQuestions((prev) => [temp, ...prev].slice(0, MAX_QUESTIONS));
+      insertQuestion(tenant.id, member.id, q)
+        .then((saved) => setQuestions((prev) => prev.map((x) => (x.id === tmpId ? saved : x))))
+        .catch(() => {
+          setQuestions((prev) => prev.filter((x) => x.id !== tmpId));
+          notifyError(SAVE_ERROR);
+        });
+    },
+    [tenant.id, member.id, setQuestions],
+  );
+  const clearQuestions = useCallback(() => {
+    setQuestions([]);
+    deleteQuestions(tenant.id).catch(() => {
+      reloadQuestions();
+      notifyError(SAVE_ERROR);
+    });
+  }, [tenant.id, setQuestions, reloadQuestions]);
+
   const value = useMemo<HelpCtxValue>(
     () => ({
       panelOpen,
@@ -157,15 +185,11 @@ export function HelpProvider({ children }: { children: ReactNode }) {
       moduleIntro,
       openModuleIntro,
       closeModuleIntro,
-      questions: state.questions,
-      logQuestion: (q) =>
-        setState((s) => ({
-          ...s,
-          questions: [{ id: `q_${Date.now().toString(36)}`, at: new Date().toISOString(), ...q }, ...s.questions].slice(0, 200),
-        })),
-      clearQuestions: () => setState((s) => ({ ...s, questions: [] })),
+      questions,
+      logQuestion,
+      clearQuestions,
     }),
-    [panelOpen, tab, video, chatTopic, openPanel, closePanel, tour, tourStep, startTour, endTour, moduleIntro, openModuleIntro, closeModuleIntro, state],
+    [panelOpen, tab, video, chatTopic, openPanel, closePanel, tour, tourStep, startTour, endTour, moduleIntro, openModuleIntro, closeModuleIntro, state, questions, logQuestion, clearQuestions],
   );
 
   return <HelpContext.Provider value={value}>{children}</HelpContext.Provider>;

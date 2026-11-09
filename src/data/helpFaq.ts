@@ -53,7 +53,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'cargo los', 'donde cargo',
     ],
     answer:
-      'En Screening IA elige la vacante y arrastra los archivos (PDF, Word o imagen) a la zona punteada, o pulsa para elegirlos. La IA lee cada CV, lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la evidencia textual de cada requisito. Los CVs quedan guardados en este navegador: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Errores".',
+      'En Screening IA elige la vacante y arrastra los archivos (PDF, Word o imagen) a la zona punteada, o pulsa para elegirlos. La IA lee cada CV, lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la evidencia textual de cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Errores".',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
@@ -646,7 +646,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Los datos son reales?',
     keywords: ['demo', 'datos', 'real', 'reales', 'prueba', 'simulado', 'mock', 'guardar', 'guarda', 'persistencia'],
     answer:
-      'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que haces (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) se guarda en este navegador. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
+      'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que haces (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) se guarda en la nube, para toda la empresa. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
   },
   {
     id: 'comentarios',
@@ -686,7 +686,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'lo que pregunto', 'quien ve mis preguntas', 'quien lee', 'se registra', 'quedo registrada', 'quedó registrada', 'registrada',
     ],
     answer:
-      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Solo se guardan en este navegador; nadie las ve hasta que las envías.',
+      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Quedan guardadas para toda tu empresa: las ve tu equipo y Oscar las revisa para mejorar la guía; solo un jefe u Oscar puede borrarlas.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
@@ -701,7 +701,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'volver a empezar', 'se me descompuso', 'algo se descompuso', 'se trabo', 'se trabó', 'no carga', 'pantalla en blanco',
     ],
     answer:
-      'En Configuración, al pie, "Restablecer la demo en este navegador" borra todo lo que guardaste aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, preguntas al chat y el estado del tour, y vuelve a cargar la app con los datos de ejemplo. Solo afecta a este navegador. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
+      'En Configuración, al pie, "Restablecer la demo de la empresa" (solo la ve quien administra) borra, para toda la empresa, todo lo que se guardó aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, personas agregadas al equipo, y vuelve a cargar la app con los datos de ejemplo. Las preguntas al chat se conservan. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
@@ -735,5 +735,39 @@ export const HELP_FAQ: FaqEntry[] = [
     ],
     answer:
       'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour de Reclutamiento paso a paso, los recorridos de las secciones Talento y Gestión (cada una con su "Cómo funciona") y la ayuda guiada de Entrevistas IA; la pestaña "Video" tiene cuatro videos narrados con capítulos: el recorrido completo (4 min), Talento (2½ min), Gestión (2½ min) y Entrevistas IA por videollamada (3 min).',
+  },
+  {
+    id: 'login',
+    question: '¿Por qué tengo que iniciar sesión y cómo entro?',
+    keywords: [
+      'iniciar sesion', 'iniciar sesión', 'inicio de sesion', 'inicio de sesión', 'cerrar sesion', 'cerrar sesión', 'salir de la cuenta',
+      'no puedo entrar', 'no me deja entrar', 'como entro', 'cómo entro', 'usuario', 'correo y contraseña', 'mi cuenta', 'login', 'no tengo acceso', 'clave de acceso',
+      'entrar a la demo', 'usuario y contraseña', 'pide usuario', 'me pide contraseña',
+    ],
+    answer:
+      'La demo es compartida por todo el equipo y está en internet, por eso cada persona entra con su propio correo y contraseña. Las cuentas las crea Oscar: si todavía no tienes una, pídesela. Para salir, usa "Cerrar sesión", arriba a la derecha.',
+  },
+  {
+    id: 'contrasena',
+    question: '¿Qué hago si olvidé mi contraseña o quiero cambiarla?',
+    keywords: [
+      'contraseña', 'contrasena', 'mi clave', 'olvide', 'olvidé', 'olvido mi', 'cambiar mi contraseña', 'cambio mi contraseña', 'cambiar la contraseña',
+      'restablecer contraseña', 'restablecer mi contraseña', 'recuperar contraseña', 'recuperar mi contraseña', 'password', 'no recuerdo mi',
+    ],
+    answer:
+      'Pídele a Oscar que la restablezca desde su panel: no hay correo automático para recuperarla, así que te la da él. Es personal: no la compartas con nadie.',
+  },
+  {
+    id: 'guardado',
+    question: '¿Se guarda lo que hago y lo ven los demás?',
+    keywords: [
+      'se guarda lo que', 'se guarda lo que hago', 'se guarda', 'se guardan', 'lo ven los demas', 'lo ven los demás', 'ven los demas', 'ven los demás',
+      'lo ve el equipo', 'compartido', 'desde el celular', 'desde el telefono', 'desde el teléfono', 'entrar desde el celular', 'desde el movil', 'desde el móvil', 'desde otro dispositivo', 'otro dispositivo',
+      'se me borro', 'se me borró', 'desaparecio', 'desapareció', 'en la nube', 'nube',
+    ],
+    answer:
+      'Sí: todo lo que ingresas se guarda en la nube y todo el equipo lo ve al recargar la página, también desde el celular (basta con entrar con tu cuenta). Si algo parece haber desaparecido, es posible que alguien haya usado "Restablecer la demo de la empresa", que devuelve todo a los datos de ejemplo para toda la empresa y solo lo puede hacer un jefe u Oscar; las preguntas al chat se conservan.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
   },
 ];

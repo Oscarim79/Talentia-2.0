@@ -8,10 +8,11 @@ Este repo es el producto SaaS nuevo **"TALENTIA 2.0"** (reclutamiento + gestión
 
 - **Lee `ESTADO.md` SIEMPRE**: es el punto de retoma oficial (decisiones firmes, hecho, siguiente). Actualízalo al cerrar la sesión.
 - Oscar también trabaja desde el móvil/web: haz `git pull` antes de editar (ya hubo trabajo duplicado por un clon desactualizado).
+- `npm test` y `npm run check:help` deben pasar antes de un PR; las migraciones viven en `supabase/migrations/` (ver `supabase/README.md`).
 
 ## Claves del producto
 
-- Stack: Vite + React 19 + TS + Tailwind 4. Demo con mocks (`DEMO_MODE = true`); Supabase se conecta DESPUÉS del visto bueno del CEO.
+- Stack: Vite + React 19 + TS + Tailwind 4. **Datos en Supabase** (proyecto TalentIA 2.0; login con correo y contraseña; `.env.local` con `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY`) desde la Entrega A (2026-11). La IA sigue simulada (`DEMO_MODE = true`); la IA real llega en la Entrega B.
 - Principio: **software opinado** — la empresa se adapta al software; los datos entran por plantillas estándar, no por configuraciones flexibles.
 - Americana 2000 es un **retail completo** (línea blanca, muebles, motos, tecnología), NO solo motos.
 - Plan de crecimiento basado en Los 7 Hábitos (Covey).

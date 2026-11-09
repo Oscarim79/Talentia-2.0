@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AlertTriangle, Award, Eye, ClipboardCheck, RotateCcw, FileText, Send } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
+import { useTalentActions } from '../../context/TalentActionsContext';
 import { NINE_BOX } from '../../data/seed';
 import { Card, PageHeader, Badge, Button, StatCard } from '../../components/ui/primitives';
 import type { NineBoxDataPoint } from '../../types';
@@ -46,7 +47,7 @@ export default function ActionsPage() {
   const hasData = tenant.id === 't_americana';
 
   const [dept, setDept] = useState('Todos');
-  const [done, setDone] = useState<Set<string>>(new Set());
+  const { done, toggleDone } = useTalentActions();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [reportDept, setReportDept] = useState<string | null>(null);
 
@@ -72,14 +73,6 @@ export default function ActionsPage() {
     });
     return Array.from(m.values()).sort((a, b) => b.risk - a.risk || a.department.localeCompare(b.department));
   }, [items]);
-
-  function toggleDone(id: string) {
-    setDone((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }
 
   const pending = items.filter((i) => !done.has(i.person.id));
   const completed = items.filter((i) => done.has(i.person.id));

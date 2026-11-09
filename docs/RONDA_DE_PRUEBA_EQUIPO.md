@@ -7,9 +7,8 @@
 ## Antes de empezar
 
 - Es una **demostración**: los datos son de ejemplo y la inteligencia artificial está simulada. Nada de lo que hagan afecta a ningún candidato real.
-- Usa **siempre el mismo navegador en la misma computadora**: lo que configures (metas, equipo, módulos) y tus preguntas se guardan ahí.
-- No hay usuarios ni contraseñas todavía; entra directo con el enlace.
-- Si algo se rompe o quieres empezar de cero: **Configuración → "Restablecer la demo"**.
+- Cada quien entra con su correo y la contraseña que le dio Oscar. Todo se guarda en la nube para todo el equipo: lo que configures (metas, equipo, módulos) y tus preguntas lo ve cualquiera desde su computadora o su celular.
+- Si algo se rompe o quieres empezar de cero: **Configuración → "Restablecer la demo de la empresa"** (solo lo ve el jefe u Oscar).
 
 ## Día 1 — Conocer la herramienta
 Objetivo: entender el orden del trabajo y dónde está cada cosa.

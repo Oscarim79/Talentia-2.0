@@ -4,6 +4,7 @@ import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { useCandidates } from '../../context/CandidatesContext';
 import { providers } from '../../core/providers';
+import { todayISO } from '../../lib/dates';
 import { newId } from '../../lib/utils';
 import type { Candidate, Job } from '../../types';
 import {
@@ -138,6 +139,10 @@ export default function ScreeningPage() {
           </Button>
         }
       />
+
+      <Badge variant="amber" className="mb-4">
+        En esta etapa de prueba la lectura y el puntaje del CV son simulados; los CVs cargados sí se guardan para todo el equipo.
+      </Badge>
 
       {/* Contexto de la vacante + filtros */}
       <Card className="mb-5 p-5">
@@ -417,7 +422,7 @@ function makeScoredCandidate(
     phone: '+502 0000 0000',
     source: 'Carga directa',
     stage: 'screening',
-    appliedAt: '2026-06-15',
+    appliedAt: todayISO(),
     cvFileName: file,
     screeningStatus: 'scored',
     screeningScore: score.score,
@@ -441,7 +446,7 @@ function makeErrorCandidate(file: string, job: Job, reason?: string): Candidate 
     phone: '',
     source: 'Carga directa',
     stage: 'applied',
-    appliedAt: '2026-06-15',
+    appliedAt: todayISO(),
     cvFileName: file,
     screeningStatus: 'error',
     errorReason: reason ?? 'illegible_pdf',

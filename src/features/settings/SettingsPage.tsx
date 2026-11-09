@@ -4,6 +4,8 @@ import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, Mess
 import { useHelp } from '../help/HelpContext';
 import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
 import { downloadTextFile } from '../../lib/utils';
+import { resetDemo } from '../../core/db/demo';
+import { notifyError } from '../../lib/notify';
 import { useTenant } from '../../context/TenantContext';
 import { useSettings } from '../../context/SettingsContext';
 import { MODULES } from '../../core/modules';
@@ -15,7 +17,7 @@ const inputCls =
   'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
 export default function SettingsPage() {
-  const { tenant } = useTenant();
+  const { tenant, canManage } = useTenant();
   const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
   const [newName, setNewName] = useState('');
   const [newTitle, setNewTitle] = useState('');
@@ -40,14 +42,14 @@ export default function SettingsPage() {
       downloadTextFile('preguntas-talentia.txt', questionsText());
     }
   }
-  function resetDemo() {
-    if (!window.confirm('Se borrarán metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, preguntas y el estado del tour en este navegador. ¿Restablecer la demo?')) return;
+  async function handleResetDemo() {
+    if (!window.confirm('Se borrarán, para TODA la empresa, las vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, metas, módulos y personas agregadas al equipo, y volverán los datos de ejemplo. Las preguntas al chat se conservan. ¿Restablecer la demo?')) return;
     try {
-      for (const k of ['talentia.settings.v1', 'talentia.help.v1', 'talentia.jobs.v1', 'talentia.candidates.v1', 'talentia.outreach.v1', 'talentia.evaluations.v1']) localStorage.removeItem(k);
-    } catch {
-      /* sin almacenamiento */
+      await resetDemo(tenant.id);
+      window.location.href = import.meta.env.BASE_URL;
+    } catch (err) {
+      notifyError('No se pudo restablecer la demo. ' + (err instanceof Error ? err.message : ''));
     }
-    window.location.href = import.meta.env.BASE_URL;
   }
   const slaIsDefault = (Object.keys(DEFAULT_SLA) as (keyof SlaGoals)[]).every((k) => settings.sla[k] === DEFAULT_SLA[k]);
 
@@ -75,7 +77,7 @@ export default function SettingsPage() {
         </div>
         <ul className="divide-y divide-stone-100">
           {hrTeam.map((u) => {
-            const added = settings.team.some((m) => m.id === u.id);
+            const added = !u.email;
             return (
               <li key={u.id} className="flex items-center gap-3 px-6 py-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
@@ -218,9 +220,11 @@ export default function SettingsPage() {
             <Button variant="secondary" onClick={() => downloadTextFile('preguntas-talentia.txt', questionsText())} disabled={questions.length === 0}>
               <Download className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" onClick={clearQuestions} disabled={questions.length === 0}>
-              <Eraser className="h-4 w-4" /> Borrar
-            </Button>
+            {canManage && (
+              <Button variant="ghost" onClick={clearQuestions} disabled={questions.length === 0}>
+                <Eraser className="h-4 w-4" /> Borrar
+              </Button>
+            )}
           </span>
         </div>
         {questions.length === 0 ? (
@@ -257,9 +261,11 @@ export default function SettingsPage() {
               KPIs de Desempeño y Cultura 360°). Aquí solo se decide quién está en el equipo, qué tan rápido
               debe atender cada etapa y qué módulos opcionales están encendidos.
             </p>
-            <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={resetDemo}>
-              <RotateCcw className="h-4 w-4" /> Restablecer la demo en este navegador
-            </Button>
+            {canManage && (
+              <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={handleResetDemo}>
+                <RotateCcw className="h-4 w-4" /> Restablecer la demo de la empresa
+              </Button>
+            )}
           </div>
         </div>
       </Card>

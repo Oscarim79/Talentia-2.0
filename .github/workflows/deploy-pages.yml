@@ -27,9 +27,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Verificar variables de Supabase
+        run: |
+          URL='${{ vars.VITE_SUPABASE_URL }}'
+          KEY='${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}'
+          if [ -z "$URL" ]; then echo "Falta la variable del repositorio VITE_SUPABASE_URL (Settings > Secrets and variables > Actions > Variables)."; exit 1; fi
+          if [ -z "$KEY" ]; then echo "Falta la variable del repositorio VITE_SUPABASE_PUBLISHABLE_KEY (Settings > Secrets and variables > Actions > Variables)."; exit 1; fi
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
       # SPA: cualquier ruta profunda (/respuestas, /configuracion…) carga la app.
       - run: cp dist/index.html dist/404.html
       - uses: actions/configure-pages@v5

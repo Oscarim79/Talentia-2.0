@@ -28,10 +28,12 @@ export const TENANTS: Tenant[] = [
 ];
 
 export const USERS: User[] = [
-  { id: 'u_oscar', tenantId: 't_americana', name: 'Oscar Morales', email: 'omorales@americana2000.com', role: 'owner' },
+  { id: 'u_oscar', tenantId: 't_americana', name: 'Oscar Morales', email: 'omorales@americana2000.com', role: 'super_admin' },
   { id: 'u_reynaldo', tenantId: 't_americana', name: 'Reynaldo Velásquez', email: 'reynaldo.velasquez@americana2000.com.gt', role: 'admin', title: 'Jefe de RR.HH.' },
   { id: 'u_jessica', tenantId: 't_americana', name: 'Jessica Ventura', email: 'rrhh@americana2000.com.gt', role: 'recruiter', title: 'Asistente de RR.HH.' },
   { id: 'u_contacta', tenantId: 't_contacta', name: 'Lucía Reyes', email: 'lucia@contacta.gt', role: 'owner' },
+  { id: 'u_oscar_contacta', tenantId: 't_contacta', name: 'Oscar Morales', email: 'omorales@americana2000.com', role: 'super_admin' },
+  { id: 'u_oscar_novapay', tenantId: 't_novapay', name: 'Oscar Morales', email: 'omorales@americana2000.com', role: 'super_admin' },
   { id: 'u_nova', tenantId: 't_novapay', name: 'Diego Paz', email: 'diego@novapay.io', role: 'owner' },
 ];
 
