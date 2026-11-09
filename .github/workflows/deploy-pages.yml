@@ -30,6 +30,8 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
       # SPA: cualquier ruta profunda (/respuestas, /configuracion…) carga la app.
       - run: cp dist/index.html dist/404.html
       - uses: actions/configure-pages@v5

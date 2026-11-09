@@ -1,0 +1,34 @@
+# Supabase (plan gratis) pausa el proyecto tras 7 días sin consultas.
+# Este ping diario llama a la función ping() de la base de datos y lo mantiene activo.
+# También se puede lanzar a mano desde la pestaña Actions → "Mantener despierto Supabase" → Run workflow.
+name: Mantener despierto Supabase
+
+on:
+  schedule:
+    - cron: '17 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar a ping()
+        run: |
+          URL="${{ vars.VITE_SUPABASE_URL }}"
+          KEY="${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}"
+          if [ -z "$URL" ]; then
+            echo "Falta la variable VITE_SUPABASE_URL (Settings → Secrets and variables → Actions → Variables)"
+            exit 1
+          fi
+          if [ -z "$KEY" ]; then
+            echo "Falta la variable VITE_SUPABASE_PUBLISHABLE_KEY (Settings → Secrets and variables → Actions → Variables)"
+            exit 1
+          fi
+          RESPUESTA=$(curl -fsS -X POST "$URL/rest/v1/rpc/ping" \
+            -H "apikey: $KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}')
+          echo "Respuesta de ping(): $RESPUESTA"
