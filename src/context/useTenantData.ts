@@ -14,8 +14,22 @@ export function networkMessage(_err: unknown): string {
 }
 
 /**
+ * Qué hacer cuando falla una carga. Solo la PRIMERA carga de una empresa muestra
+ * error y reinicia los datos; una recarga de fondo fallida conserva lo que ya hay.
+ */
+export function reduceLoadError<T>(
+  hasLoaded: boolean,
+  prevData: T,
+  initial: T,
+  err: unknown,
+): { data: T; error: string | null } {
+  return hasLoaded ? { data: prevData, error: null } : { data: initial, error: networkMessage(err) };
+}
+
+/**
  * Carga los datos de la empresa actual. Recarga al cambiar de empresa y al volver
- * a la pestaña. Si falla: `error` con mensaje, `ready = true` y `data = initial`.
+ * a la pestaña. Si falla la primera carga: `error`, `ready = true` y `data = initial`.
+ * Si falla una recarga posterior, se conservan los datos y solo se avisa en consola.
  */
 export function useTenantData<T>(
   load: (tenantId: string) => Promise<T>,
@@ -23,24 +37,24 @@ export function useTenantData<T>(
 ): { data: T; setData: Dispatch<SetStateAction<T>>; ready: boolean; error: string | null; reload: () => void } {
   const { tenant } = useTenant();
   const [data, setData] = useState<T>(initial);
-  const [ready, setReady] = useState(false);
+  // Empresa a la que pertenecen los datos actuales: así `ready` nunca muestra filas de otra empresa.
+  const [loadedFor, setLoadedFor] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
 
   // Siempre la última versión de lo recibido, sin re-disparar el efecto.
   const loadRef = useRef(load);
   const initialRef = useRef(initial);
+  const dataRef = useRef(data);
+  const loadedForRef = useRef(loadedFor);
   const currentTenant = useRef(tenant.id);
   loadRef.current = load;
   initialRef.current = initial;
+  dataRef.current = data;
+  loadedForRef.current = loadedFor;
   currentTenant.current = tenant.id;
 
   const reload = useCallback(() => setTick((n) => n + 1), []);
-
-  // Al cambiar de empresa, no mostrar datos de la anterior mientras carga.
-  useEffect(() => {
-    setReady(false);
-  }, [tenant.id]);
 
   useEffect(() => {
     const requested = tenant.id;
@@ -51,13 +65,16 @@ export function useTenantData<T>(
         if (cancelled || currentTenant.current !== requested) return;
         setData(result);
         setError(null);
-        setReady(true);
+        setLoadedFor(requested);
       },
       (err) => {
         if (cancelled || currentTenant.current !== requested) return;
-        setData(initialRef.current);
-        setError(networkMessage(err));
-        setReady(true);
+        const hasLoaded = loadedForRef.current === requested;
+        if (hasLoaded) console.warn('[talentia] No se pudo actualizar los datos en segundo plano', err);
+        const next = reduceLoadError(hasLoaded, dataRef.current, initialRef.current, err);
+        setData(next.data);
+        setError(next.error);
+        setLoadedFor(requested);
       },
     );
     return () => {
@@ -73,5 +90,5 @@ export function useTenantData<T>(
     return () => document.removeEventListener('visibilitychange', onVisibility);
   }, [reload]);
 
-  return { data, setData, ready, error, reload };
+  return { data, setData, ready: loadedFor === tenant.id, error, reload };
 }

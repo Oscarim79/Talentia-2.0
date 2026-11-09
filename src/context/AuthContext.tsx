@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { supabase } from '../core/supabase';
+import { notifyError } from '../lib/notify';
 
 export type AuthStatus = 'loading' | 'signed_out' | 'signed_in';
 
@@ -63,7 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       },
       signOut: async () => {
-        await supabase.auth.signOut();
+        try {
+          const { error } = await supabase.auth.signOut();
+          if (error) throw error;
+        } catch {
+          notifyError('No se pudo cerrar la sesión. Revisa tu conexión e inténtalo de nuevo.');
+        }
       },
     }),
     [status, email],
