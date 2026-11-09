@@ -1,6 +1,6 @@
 import { supabase } from '../supabase';
 import type { InterviewEvaluation } from '../interviewGuide';
-import { stripUndefined } from './rows';
+import { nullToUndefined, stripUndefined } from './rows';
 
 /** Fila de `public.interview_evaluations`. */
 export interface EvaluationRow {
@@ -18,6 +18,7 @@ export interface EvaluationRow {
   story: InterviewEvaluation['story'] | null;
   choices: InterviewEvaluation['choices'] | null;
   observations: InterviewEvaluation['observations'] | null;
+  source: 'ai' | 'human' | null; // nulo = hecha por una persona
   updated_at: string; // timestamptz
 }
 
@@ -37,6 +38,7 @@ export function rowToEvaluation(r: EvaluationRow): InterviewEvaluation {
     story: r.story ?? {},
     choices: r.choices ?? {},
     observations: r.observations ?? {},
+    source: nullToUndefined(r.source),
     updatedAt: r.updated_at,
   });
 }
@@ -57,6 +59,7 @@ export function evaluationToRow(ev: InterviewEvaluation): EvaluationRow {
     story: ev.story,
     choices: ev.choices,
     observations: ev.observations,
+    source: ev.source ?? null,
     updated_at: ev.updatedAt,
   };
 }

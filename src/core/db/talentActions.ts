@@ -5,7 +5,7 @@ export interface TalentActionRow {
   tenant_id: string;
   person_id: string;
   done_by: string | null;
-  done_at: string | null; // timestamptz
+  done_at: string; // timestamptz, lo pone la base de datos
 }
 
 /** Ids de las personas cuya acción de Talento ya se marcó como hecha. */
@@ -22,7 +22,7 @@ export async function setDone(tenantId: string, personId: string, memberId: stri
   const { error } = await supabase
     .from('talent_actions_done')
     .upsert(
-      { tenant_id: tenantId, person_id: personId, done_by: memberId, done_at: new Date().toISOString() },
+      { tenant_id: tenantId, person_id: personId, done_by: memberId },
       { onConflict: 'tenant_id,person_id' },
     );
   if (error) throw error;
