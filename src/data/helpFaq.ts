@@ -741,8 +741,8 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Por qué tengo que iniciar sesión y cómo entro?',
     keywords: [
       'iniciar sesion', 'iniciar sesión', 'inicio de sesion', 'inicio de sesión', 'cerrar sesion', 'cerrar sesión', 'salir de la cuenta',
-      'no puedo entrar', 'no me deja entrar', 'como entro', 'cómo entro', 'usuario', 'correo y contraseña', 'cuenta', 'login', 'ingresar',
-      'acceso', 'entrar a la demo', 'usuario y contraseña', 'pide usuario', 'me pide contraseña',
+      'no puedo entrar', 'no me deja entrar', 'como entro', 'cómo entro', 'usuario', 'correo y contraseña', 'mi cuenta', 'login', 'no tengo acceso', 'clave de acceso',
+      'entrar a la demo', 'usuario y contraseña', 'pide usuario', 'me pide contraseña',
     ],
     answer:
       'La demo es compartida por todo el equipo y está en internet, por eso cada persona entra con su propio correo y contraseña. Las cuentas las crea Oscar: si todavía no tienes una, pídesela. Para salir, usa "Cerrar sesión", arriba a la derecha.',
@@ -751,7 +751,7 @@ export const HELP_FAQ: FaqEntry[] = [
     id: 'contrasena',
     question: '¿Qué hago si olvidé mi contraseña o quiero cambiarla?',
     keywords: [
-      'contraseña', 'contrasena', 'clave', 'olvide', 'olvidé', 'olvido mi', 'cambiar mi contraseña', 'cambio mi contraseña', 'cambiar la contraseña',
+      'contraseña', 'contrasena', 'mi clave', 'olvide', 'olvidé', 'olvido mi', 'cambiar mi contraseña', 'cambio mi contraseña', 'cambiar la contraseña',
       'restablecer contraseña', 'restablecer mi contraseña', 'recuperar contraseña', 'recuperar mi contraseña', 'password', 'no recuerdo mi',
     ],
     answer:
@@ -762,7 +762,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Se guarda lo que hago y lo ven los demás?',
     keywords: [
       'se guarda lo que', 'se guarda lo que hago', 'se guarda', 'se guardan', 'lo ven los demas', 'lo ven los demás', 'ven los demas', 'ven los demás',
-      'lo ve el equipo', 'compartido', 'celular', 'telefono', 'teléfono', 'movil', 'móvil', 'desde otro dispositivo', 'otro dispositivo',
+      'lo ve el equipo', 'compartido', 'desde el celular', 'desde el telefono', 'desde el teléfono', 'entrar desde el celular', 'desde el movil', 'desde el móvil', 'desde otro dispositivo', 'otro dispositivo',
       'se me borro', 'se me borró', 'desaparecio', 'desapareció', 'en la nube', 'nube',
     ],
     answer:
