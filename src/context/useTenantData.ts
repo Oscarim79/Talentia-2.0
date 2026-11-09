@@ -27,6 +27,15 @@ export function reduceLoadError<T>(
 }
 
 /**
+ * Empresa cuyos datos actuales vienen de una carga exitosa. Un fallo para otra empresa
+ * (o sin éxito previo) vacía los datos, así que el éxito recordado se descarta.
+ */
+export function nextSucceededFor(prev: string | null, requested: string, ok: boolean): string | null {
+  if (ok) return requested;
+  return prev === requested ? prev : null;
+}
+
+/**
  * Carga los datos de la empresa actual. Recarga al cambiar de empresa y al volver
  * a la pestaña. Si falla la primera carga: `error`, `ready = true` y `data = initial`.
  * Si falla una recarga posterior, se conservan los datos y solo se avisa en consola.
@@ -55,6 +64,10 @@ export function useTenantData<T>(
   currentTenant.current = tenant.id;
 
   const reload = useCallback(() => setTick((n) => n + 1), []);
+  // Al cambiar de empresa, el error de la anterior no debe seguir visible.
+  useEffect(() => {
+    setError(null);
+  }, [tenant.id]);
 
   useEffect(() => {
     const requested = tenant.id;
@@ -64,7 +77,7 @@ export function useTenantData<T>(
         // Ignorar respuestas viejas (la empresa cambió mientras tanto).
         if (cancelled || currentTenant.current !== requested) return;
         setData(result);
-        succeededForRef.current = requested;
+        succeededForRef.current = nextSucceededFor(succeededForRef.current, requested, true);
         setError(null);
         setLoadedFor(requested);
       },
@@ -73,6 +86,7 @@ export function useTenantData<T>(
         const hasLoaded = succeededForRef.current === requested;
         if (hasLoaded) console.warn('[talentia] No se pudo actualizar los datos en segundo plano', err);
         const next = reduceLoadError(hasLoaded, dataRef.current, initialRef.current, err);
+        succeededForRef.current = nextSucceededFor(succeededForRef.current, requested, false);
         setData(next.data);
         setError(next.error);
         setLoadedFor(requested);

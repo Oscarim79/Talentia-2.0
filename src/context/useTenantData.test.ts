@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { networkMessage, reduceLoadError, shouldReloadOnVisibility } from './useTenantData';
+import { networkMessage, nextSucceededFor, reduceLoadError, shouldReloadOnVisibility } from './useTenantData';
 
 describe('useTenantData helpers', () => {
   it('recarga solo al volver a estar visible', () => {
@@ -27,5 +27,22 @@ describe('reduceLoadError: errores consecutivos', () => {
     const first = reduceLoadError(false, ['x'], [], err);
     const second = reduceLoadError(false, first.data, [], err);
     expect(second).toEqual({ data: [], error: networkMessage(err) });
+  });
+});
+
+describe('A ok, B falla, A recarga y falla', () => {
+  it('no queda en silencio: hay error y datos iniciales', () => {
+    const err = new TypeError('Failed to fetch');
+    let succeeded: string | null = null;
+    succeeded = nextSucceededFor(succeeded, 'A', true); // A carga bien
+    expect(succeeded).toBe('A');
+    succeeded = nextSucceededFor(succeeded, 'B', false); // B falla: vacía los datos
+    expect(succeeded).toBeNull();
+    const hasLoaded = succeeded === 'A'; // A recarga y falla
+    expect(hasLoaded).toBe(false);
+    expect(reduceLoadError(hasLoaded, [], [], err)).toEqual({ data: [], error: networkMessage(err) });
+  });
+  it('un fallo de la misma empresa con éxito previo conserva el éxito', () => {
+    expect(nextSucceededFor('A', 'A', false)).toBe('A');
   });
 });
