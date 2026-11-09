@@ -449,4 +449,16 @@ export const CASES = [
   ["donde queda la transcripcion de la entrevista ia","entrevista-ia-evaluacion","/entrevistas"],
   ["que es la sugerencia preliminar","entrevista-ia-evaluacion","/entrevistas"],
   ["como puntuo lo que entrevisto la ia","entrevista-ia-evaluacion","/entrevistas"],
+  // --- inicio de sesión, contraseña y guardado compartido (2026-11-09) ---
+  ["¿por qué tengo que iniciar sesión?","login","/"],
+  ["no puedo entrar","login","/"],
+  ["me pide usuario y contraseña","login","/"],
+  ["cerrar sesión","login","/configuracion"],
+  ["¿cómo cambio mi contraseña?","contrasena","/"],
+  ["olvidé mi contraseña","contrasena","/"],
+  ["restablecer contraseña","contrasena","/configuracion"],
+  ["¿se guarda lo que hago?","guardado","/"],
+  ["¿lo ven los demás?","guardado","/"],
+  ["se me borró lo que cargué","guardado","/screening"],
+  ["¿puedo entrar desde el celular?","guardado","/"],
 ];

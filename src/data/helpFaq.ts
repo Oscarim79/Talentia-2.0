@@ -736,4 +736,38 @@ export const HELP_FAQ: FaqEntry[] = [
     answer:
       'Desde el botón de ayuda (abajo a la derecha): la pestaña "Guía" inicia el tour de Reclutamiento paso a paso, los recorridos de las secciones Talento y Gestión (cada una con su "Cómo funciona") y la ayuda guiada de Entrevistas IA; la pestaña "Video" tiene cuatro videos narrados con capítulos: el recorrido completo (4 min), Talento (2½ min), Gestión (2½ min) y Entrevistas IA por videollamada (3 min).',
   },
+  {
+    id: 'login',
+    question: '¿Por qué tengo que iniciar sesión y cómo entro?',
+    keywords: [
+      'iniciar sesion', 'iniciar sesión', 'inicio de sesion', 'inicio de sesión', 'cerrar sesion', 'cerrar sesión', 'salir de la cuenta',
+      'no puedo entrar', 'no me deja entrar', 'como entro', 'cómo entro', 'usuario', 'correo y contraseña', 'cuenta', 'login', 'ingresar',
+      'acceso', 'entrar a la demo', 'usuario y contraseña', 'pide usuario', 'me pide contraseña',
+    ],
+    answer:
+      'La demo es compartida por todo el equipo y está en internet, por eso cada persona entra con su propio correo y contraseña. Las cuentas las crea Oscar: si todavía no tienes una, pídesela. Para salir, usa "Cerrar sesión", arriba a la derecha.',
+  },
+  {
+    id: 'contrasena',
+    question: '¿Qué hago si olvidé mi contraseña o quiero cambiarla?',
+    keywords: [
+      'contraseña', 'contrasena', 'clave', 'olvide', 'olvidé', 'olvido mi', 'cambiar mi contraseña', 'cambio mi contraseña', 'cambiar la contraseña',
+      'restablecer contraseña', 'restablecer mi contraseña', 'recuperar contraseña', 'recuperar mi contraseña', 'password', 'no recuerdo mi',
+    ],
+    answer:
+      'Pídele a Oscar que la restablezca desde su panel: no hay correo automático para recuperarla, así que te la da él. Es personal: no la compartas con nadie.',
+  },
+  {
+    id: 'guardado',
+    question: '¿Se guarda lo que hago y lo ven los demás?',
+    keywords: [
+      'se guarda lo que', 'se guarda lo que hago', 'se guarda', 'se guardan', 'lo ven los demas', 'lo ven los demás', 'ven los demas', 'ven los demás',
+      'lo ve el equipo', 'compartido', 'celular', 'telefono', 'teléfono', 'movil', 'móvil', 'desde otro dispositivo', 'otro dispositivo',
+      'se me borro', 'se me borró', 'desaparecio', 'desapareció', 'en la nube', 'nube',
+    ],
+    answer:
+      'Sí: todo lo que ingresas se guarda en la nube y todo el equipo lo ve al recargar la página, también desde el celular (basta con entrar con tu cuenta). Si algo parece haber desaparecido, es posible que alguien haya usado "Restablecer la demo de la empresa", que devuelve todo a los datos de ejemplo para toda la empresa y solo lo puede hacer un jefe u Oscar; las preguntas al chat se conservan.',
+    route: '/configuracion',
+    routeLabel: 'Ir a Configuración',
+  },
 ];
