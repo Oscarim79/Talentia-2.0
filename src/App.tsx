@@ -1,4 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { AuthGate } from './features/auth/AuthGate';
+import { DataReadyGate } from './components/DataReadyGate';
 import { TenantProvider } from './context/TenantContext';
 import { JobsProvider } from './context/JobsContext';
 import { SettingsProvider } from './context/SettingsContext';
@@ -23,12 +26,16 @@ import AdminPage from './features/admin/AdminPage';
 
 export default function App() {
   return (
+    <AuthProvider>
+    <AuthGate>
     <TenantProvider>
       <SettingsProvider>
       <JobsProvider>
       <CandidatesProvider>
       <OutreachProvider>
       <EvaluationsProvider>
+      {/* Tarea 10: aquí va <TalentActionsProvider> */}
+      <DataReadyGate>
       <Routes>
         <Route element={<AppShell />}>
           <Route path="/" element={<DashboardPage />} />
@@ -54,11 +61,14 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      </DataReadyGate>
       </EvaluationsProvider>
       </OutreachProvider>
       </CandidatesProvider>
       </JobsProvider>
       </SettingsProvider>
     </TenantProvider>
+    </AuthGate>
+    </AuthProvider>
   );
 }
