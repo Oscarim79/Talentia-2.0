@@ -68,7 +68,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const { error } = await supabase.auth.signOut();
           if (error) throw error;
         } catch {
-          notifyError('No se pudo cerrar la sesión. Revisa tu conexión e inténtalo de nuevo.');
+          // Sin red o con el proyecto pausado el cierre global falla y la sesión
+          // local seguiría abierta. Se cierra solo en este navegador (la sesión
+          // del servidor sigue hasta que venza).
+          try {
+            const { error } = await supabase.auth.signOut({ scope: 'local' });
+            if (error) throw error;
+          } catch {
+            notifyError('No se pudo cerrar la sesión. Revisa tu conexión e inténtalo de nuevo.');
+          }
         }
       },
     }),
