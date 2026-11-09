@@ -83,7 +83,7 @@ export const PILOT_QUESTIONS = [
 
 export const PILOT_RULES = [
   'Es una demostración: los datos son de ejemplo y la IA está simulada. Nada de lo que hagan afecta a ningún candidato real.',
-  'Usa siempre el mismo navegador en la misma computadora: lo que hagas (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) y tus preguntas se guardan ahí.',
+  'Entra con tu usuario desde cualquier computadora: lo que hagas (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) y tus preguntas quedan guardados en la nube, para toda la empresa.',
   'No hay usuarios ni contraseñas todavía; entra directo con el enlace.',
   'Si algo se rompe o quieres empezar de cero: Configuración → "Restablecer la demo".',
 ];

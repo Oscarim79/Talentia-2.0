@@ -205,7 +205,7 @@ export const MANAGEMENT_TOUR_STEPS: TourStep[] = [
     route: '/configuracion',
     target: 'settings:reset',
     title: 'Restablecer la demo',
-    body: 'TALENTIA es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, este botón borra lo guardado en este navegador (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo, módulos y preguntas).',
+    body: 'TALENTIA es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, este botón (solo lo ve quien administra) borra, para toda la empresa, lo guardado en la nube (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo y módulos); las preguntas al chat se conservan.',
   },
 ];
 

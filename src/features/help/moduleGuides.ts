@@ -189,11 +189,11 @@ export const SECTION_GUIDES: Record<SectionId, ModuleGuide> = {
         text: 'Al terminar la semana, envía tus preguntas y comentarios desde "Preguntas al chat de ayuda" → "Enviar a Oscar".',
       },
       {
-        text: 'Si quieres empezar de cero, "Restablecer la demo" borra lo guardado en este navegador.',
+        text: 'Si quieres empezar de cero, "Restablecer la demo" borra, para toda la empresa, lo guardado en la nube.',
       },
     ],
     demoNote:
-      'Los tiempos salen del set de ejemplo (23 candidatos de dos vacantes de Americana, con corte al 20 de junio de 2026): las fechas no avanzan con el reloj real y los CVs que cargues no entran todavía a Métricas. Equipo, metas y módulos se guardan solo en este navegador.',
+      'Los tiempos salen del set de ejemplo (23 candidatos de dos vacantes de Americana, con corte al 20 de junio de 2026): las fechas no avanzan con el reloj real y los CVs que cargues no entran todavía a Métricas. Equipo, metas y módulos se guardan en la nube, para toda la empresa.',
     video: 'management',
     chatSuggestions: ['metricas', 'metricas-pendientes', 'metas', 'equipo'],
   },

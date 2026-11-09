@@ -53,7 +53,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'cargo los', 'donde cargo',
     ],
     answer:
-      'En Screening IA elige la vacante y arrastra los archivos (PDF, Word o imagen) a la zona punteada, o pulsa para elegirlos. La IA lee cada CV, lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la evidencia textual de cada requisito. Los CVs quedan guardados en este navegador: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Errores".',
+      'En Screening IA elige la vacante y arrastra los archivos (PDF, Word o imagen) a la zona punteada, o pulsa para elegirlos. La IA lee cada CV, lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la evidencia textual de cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Errores".',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
@@ -646,7 +646,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Los datos son reales?',
     keywords: ['demo', 'datos', 'real', 'reales', 'prueba', 'simulado', 'mock', 'guardar', 'guarda', 'persistencia'],
     answer:
-      'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que haces (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) se guarda en este navegador. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
+      'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que haces (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) se guarda en la nube, para toda la empresa. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
   },
   {
     id: 'comentarios',
@@ -686,7 +686,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'lo que pregunto', 'quien ve mis preguntas', 'quien lee', 'se registra', 'quedo registrada', 'quedó registrada', 'registrada',
     ],
     answer:
-      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Solo se guardan en este navegador; nadie las ve hasta que las envías.',
+      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Se guardan en la nube, para toda la empresa; solo las ve quien administra hasta que las envías.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
@@ -701,7 +701,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'volver a empezar', 'se me descompuso', 'algo se descompuso', 'se trabo', 'se trabó', 'no carga', 'pantalla en blanco',
     ],
     answer:
-      'En Configuración, al pie, "Restablecer la demo en este navegador" borra todo lo que guardaste aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, preguntas al chat y el estado del tour, y vuelve a cargar la app con los datos de ejemplo. Solo afecta a este navegador. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
+      'En Configuración, al pie, "Restablecer la demo de la empresa" (solo la ve quien administra) borra, para toda la empresa, todo lo que se guardó aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, personas agregadas al equipo, y vuelve a cargar la app con los datos de ejemplo. Las preguntas al chat se conservan. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
