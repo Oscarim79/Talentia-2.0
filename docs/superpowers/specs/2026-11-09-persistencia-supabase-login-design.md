@@ -1,6 +1,6 @@
 # Entrega A — Base de datos compartida (Supabase) + inicio de sesión
 
-**Fecha:** 2026-11-09 · **Estado:** diseño aprobado en conversación, pendiente de revisión escrita por Oscar · **Rama:** `supabase-persistencia`
+**Fecha:** 2026-11-09 · **Estado:** implementada en la rama `supabase-persistencia` (2026-11-09); PR pendiente · **Rama:** `supabase-persistencia`
 
 ## 1. Problema
 
