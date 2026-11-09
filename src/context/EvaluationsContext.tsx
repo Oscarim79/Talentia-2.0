@@ -1,13 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { SEED_EVALUATIONS } from '../data/seedEvaluations';
+import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
+import { listEvaluations, upsertEvaluation } from '../core/db/evaluations';
 import type { InterviewEvaluation } from '../core/interviewGuide';
-import { useTenant } from './TenantContext';
+import { todayISO } from '../lib/dates';
+import { notifyError } from '../lib/notify';
+import { useTenantData } from './useTenantData';
 
 /**
- * Evaluaciones de la Entrevista por competencias (una por candidato): las de
- * ejemplo + las que el equipo captura. Demo: se guardan en localStorage de este
- * navegador; con Supabase pasarán a la tabla `interview_evaluations` sin cambiar
- * las páginas.
+ * Evaluaciones de la Entrevista por competencias (una por candidato).
+ * Se guardan en Supabase (tabla `interview_evaluations`): todo el equipo ve las mismas.
  */
 interface EvaluationsCtxValue {
   /** Evaluaciones de la empresa actual, por id de candidato. */
@@ -15,56 +15,75 @@ interface EvaluationsCtxValue {
   saveEvaluation: (ev: InterviewEvaluation) => void;
   /** Cambia una evaluación existente a partir de su versión más reciente (no se pierden cambios seguidos). */
   updateEvaluation: (candidateId: string, fn: (prev: InterviewEvaluation) => InterviewEvaluation) => void;
+  ready: boolean;
+  error: string | null;
+  reload: () => void;
 }
 
-const STORAGE_KEY = 'talentia.evaluations.v1';
+type EvalMap = Record<string, InterviewEvaluation>;
 
-const SEED_BY_ID: Record<string, InterviewEvaluation> = Object.fromEntries(SEED_EVALUATIONS.map((ev) => [ev.candidateId, ev]));
+const SAVE_ERROR = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
+const NONE: EvalMap = {};
 
-function load(): Record<string, InterviewEvaluation> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const saved = raw ? (JSON.parse(raw) as Record<string, InterviewEvaluation>) : {};
-    return saved && typeof saved === 'object' ? saved : {};
-  } catch {
-    return {};
-  }
+async function loadAll(tenantId: string): Promise<EvalMap> {
+  const list = await listEvaluations(tenantId);
+  return Object.fromEntries(list.map((ev) => [ev.candidateId, ev]));
+}
+
+/** Fija la fecha (nunca vacía: la columna es obligatoria) y la hora de modificación. */
+function stamp(ev: InterviewEvaluation): InterviewEvaluation {
+  return { ...ev, date: ev.date || todayISO(), updatedAt: new Date().toISOString() };
 }
 
 const EvaluationsContext = createContext<EvaluationsCtxValue | null>(null);
 
 export function EvaluationsProvider({ children }: { children: ReactNode }) {
-  const { tenant } = useTenant();
-  const [saved, setSaved] = useState<Record<string, InterviewEvaluation>>(load);
+  const { data: evaluations, setData, ready, error, reload } = useTenantData(loadAll, NONE);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-    } catch {
-      /* modo privado / almacenamiento lleno: la sesión sigue en memoria */
-    }
-  }, [saved]);
+  // Última versión conocida (incluye cambios aún sin render).
+  const ref = useRef<EvalMap>(evaluations);
+  ref.current = evaluations;
 
-  const saveEvaluation = useCallback((ev: InterviewEvaluation) => {
-    setSaved((s) => ({ ...s, [ev.candidateId]: { ...ev, updatedAt: new Date().toISOString() } }));
-  }, []);
+  const set = useCallback(
+    (fn: (s: EvalMap) => EvalMap) => {
+      ref.current = fn(ref.current);
+      setData(fn);
+    },
+    [setData],
+  );
 
-  const updateEvaluation = useCallback((candidateId: string, fn: (prev: InterviewEvaluation) => InterviewEvaluation) => {
-    setSaved((s) => {
-      const prev = s[candidateId] ?? SEED_BY_ID[candidateId];
-      if (!prev) return s;
-      return { ...s, [candidateId]: { ...fn(prev), updatedAt: new Date().toISOString() } };
-    });
-  }, []);
+  const persist = useCallback(
+    (next: InterviewEvaluation) => {
+      const id = next.candidateId;
+      const before = ref.current[id];
+      set((s) => ({ ...s, [id]: next }));
+      upsertEvaluation(next).catch(() => {
+        // Restaura solo esta evaluación (o la quita si no existía).
+        set((s) => {
+          const rest = { ...s };
+          delete rest[id];
+          return before ? { ...rest, [id]: before } : rest;
+        });
+        notifyError(SAVE_ERROR);
+      });
+    },
+    [set],
+  );
 
-  const evaluations = useMemo(() => {
-    const all: Record<string, InterviewEvaluation> = { ...SEED_BY_ID, ...saved };
-    return Object.fromEntries(Object.entries(all).filter(([, ev]) => ev.tenantId === tenant.id));
-  }, [saved, tenant.id]);
+  const saveEvaluation = useCallback((ev: InterviewEvaluation) => persist(stamp(ev)), [persist]);
+
+  const updateEvaluation = useCallback(
+    (candidateId: string, fn: (prev: InterviewEvaluation) => InterviewEvaluation) => {
+      const prev = ref.current[candidateId];
+      if (!prev) return;
+      persist(stamp(fn(prev)));
+    },
+    [persist],
+  );
 
   const value = useMemo<EvaluationsCtxValue>(
-    () => ({ evaluations, saveEvaluation, updateEvaluation }),
-    [evaluations, saveEvaluation, updateEvaluation],
+    () => ({ evaluations, saveEvaluation, updateEvaluation, ready, error, reload }),
+    [evaluations, saveEvaluation, updateEvaluation, ready, error, reload],
   );
 
   return <EvaluationsContext.Provider value={value}>{children}</EvaluationsContext.Provider>;

@@ -8,6 +8,7 @@ import { SettingsProvider } from './context/SettingsContext';
 import { OutreachProvider } from './context/OutreachContext';
 import { CandidatesProvider } from './context/CandidatesContext';
 import { EvaluationsProvider } from './context/EvaluationsContext';
+import { TalentActionsProvider } from './context/TalentActionsContext';
 import { ModuleGate } from './components/ModuleGate';
 import { AppShell } from './components/layout/AppShell';
 import DashboardPage from './features/dashboard/DashboardPage';
@@ -34,7 +35,7 @@ export default function App() {
       <CandidatesProvider>
       <OutreachProvider>
       <EvaluationsProvider>
-      {/* Tarea 10: aquí va <TalentActionsProvider> */}
+      <TalentActionsProvider>
       <DataReadyGate>
       <Routes>
         <Route element={<AppShell />}>
@@ -62,6 +63,7 @@ export default function App() {
         </Route>
       </Routes>
       </DataReadyGate>
+      </TalentActionsProvider>
       </EvaluationsProvider>
       </OutreachProvider>
       </CandidatesProvider>
