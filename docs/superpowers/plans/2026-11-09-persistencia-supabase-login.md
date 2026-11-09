@@ -175,7 +175,7 @@ git commit -m "feat(db): esquema multi-empresa y políticas RLS por membresía"
 
 **Files:**
 - Create: `scripts/seed-sql-lib.mjs`, `scripts/seed-sql-lib.test.mjs`, `scripts/gen-seed-sql.mjs`
-- Create (generado): `supabase/migrations/0003_seed_functions.sql`
+- Create (generado): `supabase/migrations/0004_seed_functions.sql`
 - Modify: `src/data/seed.ts` (`USERS`), `package.json` (script `gen:seed-sql`)
 
 **Interfaces:**
@@ -231,9 +231,9 @@ begin
 end $$;
 ```
 
-- [ ] **Step 5: `scripts/gen-seed-sql.mjs`** — igual que `scripts/check-help-chat.mjs`: con `esbuild` empaqueta un entry que exporta `DEMO_NOW, TENANTS, USERS, JOBS, CANDIDATES` de `src/data/seed.ts` y `SEED_EVALUATIONS` de `src/data/seedEvaluations.ts` a `node_modules/.cache/seed-sql/bundle.mjs`, lo importa y escribe `supabase/migrations/0003_seed_functions.sql` con: cabecera `-- GENERADO por scripts/gen-seed-sql.mjs — no editar a mano`, `tenantsSql` (`on conflict (id) do nothing`), `membersSql` (`on conflict do nothing`), `seedTenantFunctionSql`, `resetDemoFunctionSql`, `grant execute on function public.reset_demo(text) to authenticated;`, `revoke all on function public.seed_tenant(text) from public;` y al final `select public.seed_tenant(id) from public.tenants;`. Script en `package.json`: `"gen:seed-sql": "node scripts/gen-seed-sql.mjs"`.
+- [ ] **Step 5: `scripts/gen-seed-sql.mjs`** — igual que `scripts/check-help-chat.mjs`: con `esbuild` empaqueta un entry que exporta `DEMO_NOW, TENANTS, USERS, JOBS, CANDIDATES` de `src/data/seed.ts` y `SEED_EVALUATIONS` de `src/data/seedEvaluations.ts` a `node_modules/.cache/seed-sql/bundle.mjs`, lo importa y escribe `supabase/migrations/0004_seed_functions.sql` con: cabecera `-- GENERADO por scripts/gen-seed-sql.mjs — no editar a mano`, `tenantsSql` (`on conflict (id) do nothing`), `membersSql` (`on conflict do nothing`), `seedTenantFunctionSql`, `resetDemoFunctionSql`, `grant execute on function public.reset_demo(text) to authenticated;`, `revoke all on function public.seed_tenant(text) from public;` y al final `select public.seed_tenant(id) from public.tenants;`. Script en `package.json`: `"gen:seed-sql": "node scripts/gen-seed-sql.mjs"`.
 
-- [ ] **Step 6: Generar y revisar** — `npm run gen:seed-sql`; `grep -c "insert into candidates" supabase/migrations/0003_seed_functions.sql` ≥ 1; el archivo no contiene `2026-06-` salvo en `tenants.created_at`.
+- [ ] **Step 6: Generar y revisar** — `npm run gen:seed-sql`; `grep -c "insert into candidates" supabase/migrations/0004_seed_functions.sql` ≥ 1; el archivo no contiene `2026-06-` salvo en `tenants.created_at`.
 
 - [ ] **Step 7: Aplicar** — MCP `apply_migration` (`name: seed_functions`).
 
@@ -262,7 +262,7 @@ Esperado: `americana` > 0, `contacta = 0`, `tenants = 1` (correo en mayúsculas 
 - [ ] **Step 11: Commit**
 
 ```bash
-git add scripts/seed-sql-lib.mjs scripts/seed-sql-lib.test.mjs scripts/gen-seed-sql.mjs supabase/migrations/0003_seed_functions.sql src/data/seed.ts package.json
+git add scripts/seed-sql-lib.mjs scripts/seed-sql-lib.test.mjs scripts/gen-seed-sql.mjs supabase/migrations/0004_seed_functions.sql src/data/seed.ts package.json
 git commit -m "feat(db): datos de ejemplo generados desde el seed con fechas relativas; seed_tenant y reset_demo"
 ```
 
