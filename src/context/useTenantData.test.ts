@@ -20,3 +20,12 @@ describe('reduceLoadError', () => {
     expect(reduceLoadError(true, ['viejo'], [], err)).toEqual({ data: ['viejo'], error: null });
   });
 });
+
+describe('reduceLoadError: errores consecutivos', () => {
+  it('primera carga falló y la recarga falla otra vez: el error persiste', () => {
+    const err = new TypeError('Failed to fetch');
+    const first = reduceLoadError(false, ['x'], [], err);
+    const second = reduceLoadError(false, first.data, [], err);
+    expect(second).toEqual({ data: [], error: networkMessage(err) });
+  });
+});

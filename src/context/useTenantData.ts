@@ -46,12 +46,12 @@ export function useTenantData<T>(
   const loadRef = useRef(load);
   const initialRef = useRef(initial);
   const dataRef = useRef(data);
-  const loadedForRef = useRef(loadedFor);
+  // Empresa cuya última carga TUVO ÉXITO (distinto de loadedFor, que incluye intentos fallidos).
+  const succeededForRef = useRef<string | null>(null);
   const currentTenant = useRef(tenant.id);
   loadRef.current = load;
   initialRef.current = initial;
   dataRef.current = data;
-  loadedForRef.current = loadedFor;
   currentTenant.current = tenant.id;
 
   const reload = useCallback(() => setTick((n) => n + 1), []);
@@ -64,12 +64,13 @@ export function useTenantData<T>(
         // Ignorar respuestas viejas (la empresa cambió mientras tanto).
         if (cancelled || currentTenant.current !== requested) return;
         setData(result);
+        succeededForRef.current = requested;
         setError(null);
         setLoadedFor(requested);
       },
       (err) => {
         if (cancelled || currentTenant.current !== requested) return;
-        const hasLoaded = loadedForRef.current === requested;
+        const hasLoaded = succeededForRef.current === requested;
         if (hasLoaded) console.warn('[talentia] No se pudo actualizar los datos en segundo plano', err);
         const next = reduceLoadError(hasLoaded, dataRef.current, initialRef.current, err);
         setData(next.data);
