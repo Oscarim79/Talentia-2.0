@@ -15,7 +15,8 @@ import {
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { useSettings } from '../../context/SettingsContext';
-import { CANDIDATES, DEMO_NOW } from '../../data/seed';
+import { useCandidates } from '../../context/CandidatesContext';
+import { todayISO } from '../../lib/dates';
 import { Card, PageHeader, StatCard, Badge } from '../../components/ui/primitives';
 import { cn } from '../../lib/utils';
 import { alerts, jobStats, recruiterStats, stageTimes, teamKpis, type RecruiterStats, type SlaGoals } from './hrMetrics';
@@ -35,6 +36,8 @@ export default function MetricsPage() {
   const { tenant } = useTenant();
   const { jobs: allJobs } = useJobs();
   const { settings, hrTeam: users } = useSettings();
+  const { candidates: allCands } = useCandidates();
+  const today = todayISO();
   const SLA = settings.sla;
   const jobs = useMemo(() => allJobs.filter((j) => j.tenantId === tenant.id), [allJobs, tenant.id]);
 
@@ -43,20 +46,20 @@ export default function MetricsPage() {
 
   const cands = useMemo(
     () =>
-      CANDIDATES.filter((c) => c.tenantId === tenant.id)
+      allCands
         .filter((c) => (jobId === 'all' ? true : c.jobId === jobId))
         .filter((c) => (userId === 'all' ? true : c.ownerId === userId)),
-    [tenant.id, jobId, userId],
+    [allCands, jobId, userId],
   );
 
-  const kpis = useMemo(() => teamKpis(cands, jobs, users, DEMO_NOW, SLA), [cands, jobs, users, SLA]);
-  const byPerson = useMemo(() => recruiterStats(cands, users, DEMO_NOW, SLA), [cands, users, SLA]);
+  const kpis = useMemo(() => teamKpis(cands, jobs, users, today, SLA), [cands, jobs, users, SLA, today]);
+  const byPerson = useMemo(() => recruiterStats(cands, users, today, SLA), [cands, users, SLA, today]);
   const stages = useMemo(() => stageTimes(cands, SLA), [cands, SLA]);
   const byJob = useMemo(
-    () => jobStats(jobId === 'all' ? jobs : jobs.filter((j) => j.id === jobId), cands, DEMO_NOW),
-    [jobs, jobId, cands],
+    () => jobStats(jobId === 'all' ? jobs : jobs.filter((j) => j.id === jobId), cands, today),
+    [jobs, jobId, cands, today],
   );
-  const pending = useMemo(() => alerts(cands, users, DEMO_NOW, SLA), [cands, users, SLA]);
+  const pending = useMemo(() => alerts(cands, users, today, SLA), [cands, users, SLA, today]);
 
   const bottleneck = stages.filter((s) => s.avg != null).sort((a, b) => b.avg! / b.sla - a.avg! / a.sla)[0];
 
@@ -67,13 +70,13 @@ export default function MetricsPage() {
       subtitle="Cuánto tarda cada quien en hacer lo suyo: revisar, responder, entrevistar, decidir y cerrar."
       actions={
         <Badge variant="stone">
-          <Hourglass className="h-3 w-3" /> Corte al {new Date(DEMO_NOW + 'T12:00:00').toLocaleDateString('es-GT', { day: 'numeric', month: 'long' })}
+          <Hourglass className="h-3 w-3" /> Corte al {new Date(today + 'T12:00:00').toLocaleDateString('es-GT', { day: 'numeric', month: 'long' })}
         </Badge>
       }
     />
   );
 
-  if (CANDIDATES.filter((c) => c.tenantId === tenant.id).length === 0) {
+  if (allCands.length === 0) {
     return (
       <div>
         {header}
@@ -327,7 +330,7 @@ export default function MetricsPage() {
       </Card>
 
       <p className="mt-5 text-[11px] leading-relaxed text-stone-400">
-        Datos de demostración con corte al {DEMO_NOW}. Los tiempos se calculan con las fechas en que RR.HH. movió a cada candidato de etapa; los CVs ilegibles no cuentan para los promedios pero sí aparecen como pendientes.
+        Los tiempos se calculan con las fechas en que RR.HH. movió a cada candidato de etapa; los CVs ilegibles no cuentan para los promedios pero sí aparecen como pendientes.
       </p>
     </div>
   );
