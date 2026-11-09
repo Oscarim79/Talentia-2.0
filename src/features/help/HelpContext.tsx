@@ -1,17 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { GuideId } from '../../core/modules';
-import { isTourId, type HelpVideoId, type TourId } from './tourSteps';
+import type { HelpQuestion } from '../../core/db/helpQuestions';
+import { isTourId,type HelpVideoId, type TourId } from './tourSteps';
 
 export type HelpTab = 'chat' | 'guide' | 'video';
 
-/** Pregunta hecha al chat de ayuda (se registra para mejorar la guía). */
-export interface HelpQuestion {
-  id: string;
-  at: string;
-  route: string;
-  question: string;
-  answered: boolean;
-}
+export type { HelpQuestion } from '../../core/db/helpQuestions';
 
 interface HelpState {
   welcomeSeen: boolean;
