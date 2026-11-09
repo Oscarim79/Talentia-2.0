@@ -686,7 +686,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'lo que pregunto', 'quien ve mis preguntas', 'quien lee', 'se registra', 'quedo registrada', 'quedó registrada', 'registrada',
     ],
     answer:
-      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Se guardan en la nube, para toda la empresa; solo las ve quien administra hasta que las envías.',
+      'Cada pregunta que haces aquí se guarda en Configuración → "Preguntas al chat de ayuda", con fecha, la pantalla donde la hiciste y si tuvo respuesta ("Sin respuesta" es lo que falta en la guía). Desde ahí "Enviar a Oscar" abre un correo con la lista y espacio para tus comentarios, y también puedes copiarla, descargarla como .txt o borrarla. Quedan guardadas para toda tu empresa: las ve tu equipo y Oscar las revisa para mejorar la guía; solo un jefe u Oscar puede borrarlas.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
