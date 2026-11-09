@@ -75,7 +75,7 @@ export default function SettingsPage() {
         </div>
         <ul className="divide-y divide-stone-100">
           {hrTeam.map((u) => {
-            const added = settings.team.some((m) => m.id === u.id);
+            const added = !u.email;
             return (
               <li key={u.id} className="flex items-center gap-3 px-6 py-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">

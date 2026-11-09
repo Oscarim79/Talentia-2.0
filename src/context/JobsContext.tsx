@@ -1,41 +1,34 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { JOBS } from '../data/seed';
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
+import { insertJob, listJobs } from '../core/db/jobs';
+import { notifyError } from '../lib/notify';
 import type { Job } from '../types';
+import { useTenantData } from './useTenantData';
 
 interface JobsCtxValue {
   jobs: Job[];
   /** Crea una vacante nueva (la antepone a la lista para verla de inmediato). */
   addJob: (job: Job) => void;
+  ready: boolean;
+  error: string | null;
+  reload: () => void;
 }
 
-/** Demo: las vacantes creadas se guardan en este navegador (sus CVs cargados también, ver CandidatesContext). */
-const STORAGE_KEY = 'talentia.jobs.v1';
-
-function loadCreated(): Job[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const saved = raw ? (JSON.parse(raw) as Job[]) : [];
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
-  }
-}
-
+const INITIAL: Job[] = [];
 const JobsContext = createContext<JobsCtxValue | null>(null);
 
 export function JobsProvider({ children }: { children: ReactNode }) {
-  const [created, setCreated] = useState<Job[]>(loadCreated);
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(created));
-    } catch {
-      /* sin almacenamiento: la sesión sigue en memoria */
-    }
-  }, [created]);
-  const value = useMemo<JobsCtxValue>(
-    () => ({ jobs: [...created, ...JOBS], addJob: (job) => setCreated((prev) => [job, ...prev]) }),
-    [created],
+  const { data: jobs, setData, ready, error, reload } = useTenantData(listJobs, INITIAL);
+  const addJob = useCallback(
+    (job: Job) => {
+      setData((prev) => [job, ...prev]);
+      insertJob(job).catch(() => {
+        setData((prev) => prev.filter((j) => j.id !== job.id));
+        notifyError('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+      });
+    },
+    [setData],
   );
+  const value = useMemo<JobsCtxValue>(() => ({ jobs, addJob, ready, error, reload }), [jobs, addJob, ready, error, reload]);
   return <JobsContext.Provider value={value}>{children}</JobsContext.Provider>;
 }
 

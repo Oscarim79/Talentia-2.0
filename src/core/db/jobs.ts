@@ -73,7 +73,9 @@ export async function listJobs(tenantId: string): Promise<Job[]> {
     .from('jobs')
     .select('*')
     .eq('tenant_id', tenantId)
-    .order('inserted_at', { ascending: false });
+    .order('inserted_at', { ascending: false })
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: true });
   if (error) throw error;
   return (data as JobRow[]).map(rowToJob);
 }
