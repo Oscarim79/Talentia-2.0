@@ -1,19 +1,19 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CANDIDATES } from '../data/seed';
+import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
+import { insertCandidate, listCandidates, updateCandidate } from '../core/db/candidates';
+import { applyReplied, applyStage } from '../core/stages';
+import { todayISO } from '../lib/dates';
+import { notifyError } from '../lib/notify';
 import type { Candidate, CandidateStage } from '../types';
 import { useTenant } from './TenantContext';
+import { useTenantData } from './useTenantData';
 
 /**
- * Candidatos compartidos por Screening, Respuestas a CVs, Candidatos y Entrevistas IA:
- * los de ejemplo (seed) + los CVs que el equipo carga en Screening IA.
- *
- * Antes los CVs cargados vivían solo dentro de la página de Screening: al ir a
- * Respuestas a CVs no aparecían y al volver ya no estaban (reporte de Reynaldo,
- * 2026-09-22). Demo: se guardan en localStorage de este navegador. Con Supabase
- * pasará a la tabla `candidates` sin cambiar las páginas.
+ * Candidatos compartidos por Screening, Respuestas a CVs, Candidatos y Entrevistas IA.
+ * Se guardan en Supabase (tabla `candidates`): todo el equipo ve los mismos.
+ * La línea de tiempo (fechas de cada etapa) se llena sola con cada acción de RR.HH.
  */
 interface CandidatesCtxValue {
-  /** Candidatos de la empresa actual: ejemplo + cargados, con su etapa vigente. */
+  /** Candidatos de la empresa actual, con su etapa vigente. */
   candidates: Candidate[];
   /** Agrega un CV procesado en Screening IA. */
   addCandidate: (c: Candidate) => void;
@@ -21,72 +21,103 @@ interface CandidatesCtxValue {
   markInterviewScheduled: (candidateId: string) => void;
   /** RR.HH. mueve al candidato de etapa (ej. después de evaluar la entrevista: Oferta o Descartado). */
   setStage: (candidateId: string, stage: CandidateStage) => void;
+  /** Se le envió la respuesta al candidato: queda la fecha de la primera respuesta. */
+  markReplied: (candidateId: string) => void;
+  ready: boolean;
+  error: string | null;
+  reload: () => void;
 }
 
-const STORAGE_KEY = 'talentia.candidates.v1';
-/** Tope de CVs cargados que se guardan en el navegador (los más recientes). */
-const MAX_UPLOADED = 500;
-
-interface Store {
-  uploaded: Candidate[];
-  /** Etapa actual cuando cambió desde la app (ej. entrevista confirmada). */
-  stages: Record<string, CandidateStage>;
-}
-
-function load(): Store {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const s = raw ? (JSON.parse(raw) as Partial<Store>) : {};
-    return { uploaded: Array.isArray(s.uploaded) ? s.uploaded : [], stages: s.stages ?? {} };
-  } catch {
-    return { uploaded: [], stages: {} };
-  }
-}
-
+const SAVE_ERROR = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
 const EARLY: CandidateStage[] = ['applied', 'screening'];
+const NONE: Candidate[] = [];
 
 const CandidatesContext = createContext<CandidatesCtxValue | null>(null);
 
 export function CandidatesProvider({ children }: { children: ReactNode }) {
-  const { tenant } = useTenant();
-  const [store, setStore] = useState<Store>(load);
+  const { member } = useTenant();
+  const { data: candidates, setData, ready, error, reload } = useTenantData(listCandidates, NONE);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-    } catch {
-      /* modo privado / almacenamiento lleno: la sesión sigue en memoria */
-    }
-  }, [store]);
+  // Última lista conocida (incluye cambios aún sin render): evita calcular sobre datos viejos.
+  const ref = useRef<Candidate[]>(candidates);
+  ref.current = candidates;
 
-  const addCandidate = useCallback((c: Candidate) => {
-    setStore((s) => ({ ...s, uploaded: [...s.uploaded, c].slice(-MAX_UPLOADED) }));
-  }, []);
+  const set = useCallback(
+    (fn: (list: Candidate[]) => Candidate[]) => {
+      ref.current = fn(ref.current);
+      setData(fn);
+    },
+    [setData],
+  );
 
-  const markInterviewScheduled = useCallback((candidateId: string) => {
-    setStore((s) => {
-      const base = s.uploaded.find((c) => c.id === candidateId) ?? CANDIDATES.find((c) => c.id === candidateId);
-      const current = s.stages[candidateId] ?? base?.stage;
-      if (!current || !EARLY.includes(current)) return s;
-      return { ...s, stages: { ...s.stages, [candidateId]: 'interview' } };
-    });
-  }, []);
+  /** Aplica el cambio a un candidato y lo guarda. Si falla, restaura solo esos campos del candidato. */
+  const change = useCallback(
+    (id: string, next: Candidate, patch: Parameters<typeof updateCandidate>[1]) => {
+      const before = ref.current.find((c) => c.id === id);
+      if (!before) return;
+      set((list) => list.map((c) => (c.id === id ? next : c)));
+      updateCandidate(id, patch).catch(() => {
+        set((list) =>
+          list.map((c) =>
+            c.id === id ? { ...c, stage: before.stage, timeline: before.timeline, hiredAt: before.hiredAt } : c,
+          ),
+        );
+        notifyError(SAVE_ERROR);
+      });
+    },
+    [set],
+  );
 
-  const setStage = useCallback((candidateId: string, stage: CandidateStage) => {
-    setStore((s) => ({ ...s, stages: { ...s.stages, [candidateId]: stage } }));
-  }, []);
+  const addCandidate = useCallback(
+    (c: Candidate) => {
+      const today = todayISO();
+      const final: Candidate = {
+        ...c,
+        ownerId: member.id,
+        appliedAt: today,
+        ...(c.screeningStatus === 'scored' ? { timeline: { screened: today } } : {}),
+      };
+      set((list) => [...list, final]);
+      insertCandidate(final).catch(() => {
+        set((list) => list.filter((x) => x.id !== final.id));
+        notifyError(SAVE_ERROR);
+      });
+    },
+    [member.id, set],
+  );
 
-  const candidates = useMemo(
-    () =>
-      [...CANDIDATES, ...store.uploaded]
-        .filter((c) => c.tenantId === tenant.id)
-        .map((c) => (store.stages[c.id] ? { ...c, stage: store.stages[c.id] } : c)),
-    [store, tenant.id],
+  const markInterviewScheduled = useCallback(
+    (candidateId: string) => {
+      const cur = ref.current.find((c) => c.id === candidateId);
+      if (!cur || !EARLY.includes(cur.stage)) return;
+      change(candidateId, { ...cur, stage: 'interview' }, { stage: 'interview' });
+    },
+    [change],
+  );
+
+  const setStage = useCallback(
+    (candidateId: string, stage: CandidateStage) => {
+      const cur = ref.current.find((c) => c.id === candidateId);
+      if (!cur) return;
+      const next = applyStage(cur, stage, todayISO());
+      change(candidateId, next, { stage: next.stage, timeline: next.timeline, hiredAt: next.hiredAt });
+    },
+    [change],
+  );
+
+  const markReplied = useCallback(
+    (candidateId: string) => {
+      const cur = ref.current.find((c) => c.id === candidateId);
+      if (!cur || cur.timeline?.replied) return;
+      const next = applyReplied(cur, todayISO());
+      change(candidateId, next, { timeline: next.timeline });
+    },
+    [change],
   );
 
   const value = useMemo<CandidatesCtxValue>(
-    () => ({ candidates, addCandidate, markInterviewScheduled, setStage }),
-    [candidates, addCandidate, markInterviewScheduled, setStage],
+    () => ({ candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload }),
+    [candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload],
   );
 
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;

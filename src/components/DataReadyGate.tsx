@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useCandidates } from '../context/CandidatesContext';
 import { useJobs } from '../context/JobsContext';
+import { useOutreach } from '../context/OutreachContext';
 import { useSettings } from '../context/SettingsContext';
 import { LoadingScreen, ErrorScreen } from './StatusScreens';
 
@@ -15,8 +17,10 @@ export function DataReadyGate({ children }: { children: ReactNode }) {
   const { signOut } = useAuth();
   const settings = useSettings();
   const jobs = useJobs();
-  // Tareas 9–11: agregar aquí los demás contextos de datos (cada uno con ready/error/reload).
-  const entries: ReadyEntry[] = [settings, jobs];
+  const candidates = useCandidates();
+  const outreach = useOutreach();
+  // Tareas 10–11: agregar aquí los demás contextos de datos.
+  const entries: ReadyEntry[] = [settings, jobs, candidates, outreach];
 
   if (entries.some((e) => !e.ready)) return <LoadingScreen label="Cargando datos de la empresa…" />;
   const failed = entries.find((e) => e.error);
