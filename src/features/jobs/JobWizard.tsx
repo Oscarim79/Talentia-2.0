@@ -7,6 +7,7 @@ import { providers } from '../../core/providers';
 import { Button, Badge } from '../../components/ui/primitives';
 import { slugify, downloadTextFile, fmtMoney } from '../../lib/utils';
 import { useEscape } from '../../lib/useEscape';
+import { useConfirm } from '../../components/ui/ConfirmDialog';
 import { jobToLinkedInXml } from '../../lib/linkedin';
 import type { Job, ScreeningFilter, InterviewQuestion } from '../../types';
 
@@ -113,8 +114,9 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
   // Evita perder el trabajo con un clic fuera del modal o Escape.
   const dirty =
     title.trim().length > 0 || description.trim().length > 0 || filters.length > 0 || questions.length > 0;
-  function safeClose() {
-    if (!dirty || window.confirm('¿Descartar la vacante en progreso?')) onClose();
+  const confirm = useConfirm();
+  async function safeClose() {
+    if (!dirty || (await confirm({ title: 'Descartar la vacante', message: 'Se perderá la vacante en progreso y lo que ya escribiste.', confirmLabel: 'Descartar', tone: 'danger' }))) onClose();
   }
   useEscape(safeClose);
 

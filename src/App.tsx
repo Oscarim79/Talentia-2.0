@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ConfirmProvider } from './components/ui/ConfirmDialog';
+import { Notices } from './components/Notices';
 import { AuthGate } from './features/auth/AuthGate';
 import { DataReadyGate } from './components/DataReadyGate';
 import { TenantProvider } from './context/TenantContext';
@@ -27,6 +29,8 @@ import AdminPage from './features/admin/AdminPage';
 
 export default function App() {
   return (
+    <ConfirmProvider>
+    <Notices />
     <AuthProvider>
     <AuthGate>
     <TenantProvider>
@@ -72,5 +76,6 @@ export default function App() {
     </TenantProvider>
     </AuthGate>
     </AuthProvider>
+    </ConfirmProvider>
   );
 }

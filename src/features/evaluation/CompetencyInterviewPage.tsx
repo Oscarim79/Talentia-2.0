@@ -26,6 +26,7 @@ import { useJobs } from '../../context/JobsContext';
 import { useEvaluations } from '../../context/EvaluationsContext';
 import { useSettings } from '../../context/SettingsContext';
 import { Badge, Button, Card, PageHeader } from '../../components/ui/primitives';
+import { useConfirm } from '../../components/ui/ConfirmDialog';
 import { cn, downloadTextFile, slugify } from '../../lib/utils';
 import {
   BEHAVIORAL,
@@ -280,6 +281,7 @@ function Workspace({
   onUpdate: (candidateId: string, fn: (prev: InterviewEvaluation) => InterviewEvaluation) => void;
   onStage: (stage: CandidateStage) => void;
 }) {
+  const confirm = useConfirm();
   const [step, setStep] = useState<Step>(() => (ev?.status === 'done' ? 'report' : 'interview'));
   useEffect(() => {
     document.querySelector('main')?.scrollTo({ top: 0 });
@@ -445,8 +447,9 @@ function Workspace({
       {!readOnly && !isBlank(ev) && (
         <div className="flex justify-end">
           <button
-            onClick={() => {
-              if (!window.confirm(`Se borrarán las notas y los puntajes de ${fullName(cand)}. ¿Empezar de nuevo?`)) return;
+            onClick={async () => {
+              const ok = await confirm({ title: 'Borrar y empezar de nuevo', message: `Se borrarán las notas y los puntajes de ${fullName(cand)}.`, confirmLabel: 'Sí, borrar', tone: 'danger' });
+              if (!ok) return;
               onSave(emptyEvaluation({ candidateId: ev.candidateId, tenantId: ev.tenantId, jobId: ev.jobId, role: ev.role, interviewerId: ev.interviewerId, date: ev.date }));
               setStep('interview');
             }}

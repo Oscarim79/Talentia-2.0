@@ -88,22 +88,30 @@ export function Button({
   onClick,
   disabled,
   dataTour,
+  autoFocus,
+  type,
 }: {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   className?: string;
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   dataTour?: string;
+  /** Dónde empieza el foco al abrir un diálogo. */
+  autoFocus?: boolean;
+  type?: 'button' | 'submit';
 }) {
   const variants = {
     primary:
       'bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-600/40 shadow-[0_1px_2px_rgba(0,0,0,0.2)]',
     secondary: 'border border-neutral-300 bg-white text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50',
     ghost: 'text-neutral-600 hover:bg-neutral-200/60',
+    danger: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600/40 shadow-[0_1px_2px_rgba(0,0,0,0.2)]',
   };
   return (
     <button
+      type={type}
+      autoFocus={autoFocus}
       onClick={onClick}
       disabled={disabled}
       data-tour={dataTour}
