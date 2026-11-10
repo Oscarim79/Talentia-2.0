@@ -14,7 +14,7 @@ import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives'
 import { cn } from '../../lib/utils';
 
 const inputCls =
-  'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
 export default function SettingsPage() {
   const { tenant, canManage } = useTenant();
@@ -29,10 +29,10 @@ export default function SettingsPage() {
       .slice()
       .reverse()
       .map((q) => `${new Date(q.at).toLocaleString('es-GT')} · ${q.route} · ${q.answered ? 'respondida' : 'SIN RESPUESTA'}\n  ${q.question}`);
-    return `Preguntas al chat de ayuda de TALENTIA — ${tenant.name}\n\n${lines.join('\n\n')}\n\nMis respuestas a las 7 preguntas de la ronda de prueba:\n1.\n2.\n3.\n4.\n5.\n6.\n7.\n`;
+    return `Preguntas al chat de ayuda de Talentia Labs — ${tenant.name}\n\n${lines.join('\n\n')}\n\nMis respuestas a las 7 preguntas de la ronda de prueba:\n1.\n2.\n3.\n4.\n5.\n6.\n7.\n`;
   };
   const mailto = () =>
-    `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('TALENTIA — preguntas y comentarios de la ronda de prueba')}&body=${encodeURIComponent(questionsText())}`;
+    `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('Talentia Labs — preguntas y comentarios de la ronda de prueba')}&body=${encodeURIComponent(questionsText())}`;
   async function copyQuestions() {
     try {
       await navigator.clipboard.writeText(questionsText());
@@ -70,12 +70,12 @@ export default function SettingsPage() {
 
       {/* Equipo de RR.HH. */}
       <Card className="mb-6 overflow-hidden" dataTour="settings:team">
-        <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
-          <Users className="h-4 w-4 text-brand-600" />
-          <h2 className="text-sm font-bold text-stone-700">Equipo de RR.HH.</h2>
-          <span className="ml-auto text-xs text-stone-400">Las personas que aparecen en "Cada quien" de Métricas</span>
+        <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
+          <Users className="h-4 w-4 text-brand-700" />
+          <h2 className="text-sm font-bold text-neutral-700">Equipo de RR.HH.</h2>
+          <span className="ml-auto text-xs text-neutral-400">Las personas que aparecen en "Cada quien" de Métricas</span>
         </div>
-        <ul className="divide-y divide-stone-100">
+        <ul className="divide-y divide-neutral-100">
           {hrTeam.map((u) => {
             const added = !u.email;
             return (
@@ -84,11 +84,11 @@ export default function SettingsPage() {
                   {u.name.split(' ').map((p) => p[0]).slice(0, 2).join('')}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-stone-800">{u.name}</p>
-                  <p className="text-xs text-stone-500">{u.title ?? (u.role === 'admin' ? 'Jefe de RR.HH.' : 'Reclutador/a')}{u.email ? ` · ${u.email}` : ''}</p>
+                  <p className="text-sm font-semibold text-neutral-800">{u.name}</p>
+                  <p className="text-xs text-neutral-500">{u.title ?? (u.role === 'admin' ? 'Jefe de RR.HH.' : 'Reclutador/a')}{u.email ? ` · ${u.email}` : ''}</p>
                 </div>
                 {added ? (
-                  <button onClick={() => removeTeamMember(u.id)} aria-label={`Quitar a ${u.name}`} className="rounded-lg p-1.5 text-stone-400 hover:bg-red-50 hover:text-red-600">
+                  <button onClick={() => removeTeamMember(u.id)} aria-label={`Quitar a ${u.name}`} className="rounded-lg p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 ) : (
@@ -98,13 +98,13 @@ export default function SettingsPage() {
             );
           })}
         </ul>
-        <div className="flex flex-wrap items-end gap-2 border-t border-stone-100 bg-stone-50/60 px-6 py-4">
+        <div className="flex flex-wrap items-end gap-2 border-t border-neutral-100 bg-neutral-50/60 px-6 py-4">
           <label className="min-w-[200px] flex-1">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">Nombre</span>
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Nombre</span>
             <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Nombre y apellido" className={inputCls} />
           </label>
           <label className="min-w-[180px] flex-1">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">Cargo</span>
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Cargo</span>
             <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Reclutador/a" className={inputCls} />
           </label>
           <Button onClick={submitMember} disabled={!newName.trim()}>
@@ -115,9 +115,9 @@ export default function SettingsPage() {
 
       {/* Metas de servicio */}
       <Card className="mb-6 overflow-hidden" dataTour="settings:goals">
-        <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
-          <Timer className="h-4 w-4 text-brand-600" />
-          <h2 className="text-sm font-bold text-stone-700">Metas de servicio (días)</h2>
+        <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
+          <Timer className="h-4 w-4 text-brand-700" />
+          <h2 className="text-sm font-bold text-neutral-700">Metas de servicio (días)</h2>
           <span className="ml-auto flex items-center gap-2">
             {!slaIsDefault && <Badge variant="gold">Personalizadas</Badge>}
             <Button variant="ghost" onClick={() => setSla({ ...DEFAULT_SLA })} disabled={slaIsDefault}>
@@ -128,8 +128,8 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2 lg:grid-cols-5">
           {(Object.keys(SLA_LABELS) as (keyof SlaGoals)[]).map((k) => (
             <label key={k} className="block">
-              <span className="block text-sm font-semibold text-stone-800">{SLA_LABELS[k].label}</span>
-              <span className="mb-2 block text-[11px] text-stone-400">{SLA_LABELS[k].help}</span>
+              <span className="block text-sm font-semibold text-neutral-800">{SLA_LABELS[k].label}</span>
+              <span className="mb-2 block text-[11px] text-neutral-400">{SLA_LABELS[k].help}</span>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
@@ -140,44 +140,44 @@ export default function SettingsPage() {
                   aria-label={`Meta: ${SLA_LABELS[k].label}`}
                   className={cn(inputCls, 'w-20')}
                 />
-                <span className="text-xs text-stone-500">días</span>
+                <span className="text-xs text-neutral-500">días</span>
               </div>
             </label>
           ))}
         </div>
-        <p className="border-t border-stone-100 px-6 py-3 text-[11px] text-stone-400">
+        <p className="border-t border-neutral-100 px-6 py-3 text-[11px] text-neutral-400">
           Las metas definen el semáforo y los "pendientes fuera de meta" en Métricas RR.HH. y en el Dashboard. Se aplican al instante.
         </p>
       </Card>
 
       <Card className="mb-6 overflow-hidden" dataTour="settings:modules">
-        <div className="flex items-center gap-2 border-b border-stone-100 px-6 py-4">
-          <Puzzle className="h-4 w-4 text-brand-600" />
-          <h2 className="text-sm font-bold text-stone-700">Módulos opcionales</h2>
+        <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
+          <Puzzle className="h-4 w-4 text-brand-700" />
+          <h2 className="text-sm font-bold text-neutral-700">Módulos opcionales</h2>
         </div>
-        <ul className="divide-y divide-stone-100">
+        <ul className="divide-y divide-neutral-100">
           {MODULES.map((m) => {
             const on = isModuleEnabled(m.id);
             return (
               <li key={m.id} data-tour={`settings:module:${m.id}`} className="flex flex-wrap items-start justify-between gap-4 px-6 py-5">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-bold text-stone-800">{m.name}</p>
+                    <p className="text-sm font-bold text-neutral-800">{m.name}</p>
                     <Badge variant={on ? 'green' : 'stone'}>{on ? 'Activo' : 'Desactivado'}</Badge>
                   </div>
-                  <p className="mt-1 max-w-2xl text-sm text-stone-500">{m.description}</p>
-                  <p className="mt-2 text-xs text-stone-400">Al activarlo: {m.unlocks}</p>
+                  <p className="mt-1 max-w-2xl text-sm text-neutral-500">{m.description}</p>
+                  <p className="mt-2 text-xs text-neutral-400">Al activarlo: {m.unlocks}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
                     <button
                       onClick={() => openModuleIntro(m.id)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
                     >
                       <Compass className="h-3 w-3" /> Cómo funciona y qué hacer
                     </button>
                     {on && (
                       <Link
                         to={m.route}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
                       >
                         Abrir {m.name} <ArrowUpRight className="h-3 w-3" />
                       </Link>
@@ -201,9 +201,9 @@ export default function SettingsPage() {
 
       {/* Preguntas al chat de ayuda */}
       <Card className="mb-6 overflow-hidden" dataTour="settings:questions">
-        <div className="flex flex-wrap items-center gap-2 border-b border-stone-100 px-6 py-4">
-          <MessageCircleQuestion className="h-4 w-4 text-brand-600" />
-          <h2 className="text-sm font-bold text-stone-700">Preguntas al chat de ayuda</h2>
+        <div className="flex flex-wrap items-center gap-2 border-b border-neutral-100 px-6 py-4">
+          <MessageCircleQuestion className="h-4 w-4 text-brand-700" />
+          <h2 className="text-sm font-bold text-neutral-700">Preguntas al chat de ayuda</h2>
           <Badge variant={questions.some((q) => !q.answered) ? 'amber' : 'stone'}>
             {questions.length} · {questions.filter((q) => !q.answered).length} sin respuesta
           </Badge>
@@ -228,35 +228,35 @@ export default function SettingsPage() {
           </span>
         </div>
         {questions.length === 0 ? (
-          <p className="px-6 py-6 text-sm text-stone-400">Aún no has hecho preguntas. Todo lo que preguntes en el botón Ayuda aparecerá aquí para mejorar la guía.</p>
+          <p className="px-6 py-6 text-sm text-neutral-400">Aún no has hecho preguntas. Todo lo que preguntes en el botón Ayuda aparecerá aquí para mejorar la guía.</p>
         ) : (
-          <ul className="max-h-72 divide-y divide-stone-100 overflow-y-auto">
+          <ul className="max-h-72 divide-y divide-neutral-100 overflow-y-auto">
             {questions.map((q) => (
               <li key={q.id} className="flex flex-wrap items-center gap-3 px-6 py-2.5 text-sm">
                 <Badge variant={q.answered ? 'green' : 'red'}>{q.answered ? 'Respondida' : 'Sin respuesta'}</Badge>
-                <span className="text-stone-800">{q.question}</span>
-                <span className="ml-auto text-[11px] text-stone-400">{q.route} · {new Date(q.at).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="text-neutral-800">{q.question}</span>
+                <span className="ml-auto text-[11px] text-neutral-400">{q.route} · {new Date(q.at).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </li>
             ))}
           </ul>
         )}
         {TEAM_PILOT && (
-          <p className="border-t border-stone-100 px-6 py-3 text-[11px] text-stone-400">
+          <p className="border-t border-neutral-100 px-6 py-3 text-[11px] text-neutral-400">
             Al terminar la ronda de prueba, "Enviar a Oscar" abre un correo con estas preguntas y espacio para tus respuestas.{' '}
-            <Link to="/ronda-de-prueba" className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline"><ClipboardList className="h-3 w-3" /> Ver el guion</Link>
+            <Link to="/ronda-de-prueba" className="inline-flex items-center gap-1 font-semibold text-brand-700 hover:underline"><ClipboardList className="h-3 w-3" /> Ver el guion</Link>
           </p>
         )}
       </Card>
 
       <Card className="p-5" dataTour="settings:reset">
         <div className="flex items-start gap-3">
-          <div className="rounded-lg bg-stone-100 p-2 text-stone-500">
+          <div className="rounded-lg bg-neutral-100 p-2 text-neutral-500">
             <Lock className="h-4 w-4" />
           </div>
-          <div className="text-sm text-stone-600">
-            <p className="font-semibold text-stone-800">Software opinado</p>
-            <p className="mt-1 text-stone-500">
-              TALENTIA no tiene pantallas de configuración flexible: el proceso de reclutamiento ya viene
+          <div className="text-sm text-neutral-600">
+            <p className="font-semibold text-neutral-800">Software opinado</p>
+            <p className="mt-1 text-neutral-500">
+              Talentia Labs no tiene pantallas de configuración flexible: el proceso de reclutamiento ya viene
               definido y la empresa se adapta a él. Los datos entran por plantillas estándar (Colaboradores,
               KPIs de Desempeño y Cultura 360°). Aquí solo se decide quién está en el equipo, qué tan rápido
               debe atender cada etapa y qué módulos opcionales están encendidos.
@@ -291,7 +291,7 @@ export function Toggle({
       onClick={() => onChange(!checked)}
       className={cn(
         'relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
-        checked ? 'bg-brand-600' : 'bg-stone-300',
+        checked ? 'bg-brand-600' : 'bg-neutral-300',
       )}
     >
       <span

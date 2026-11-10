@@ -20,11 +20,11 @@ import { teamKpis } from '../metrics/hrMetrics';
 import { scoreVariant } from '../../components/ui/primitives';
 
 const STAGES: { key: string; label: string; color: string }[] = [
-  { key: 'applied', label: 'Aplicados', color: '#d6d3d1' },
-  { key: 'screening', label: 'Screening', color: '#7cc4a6' },
-  { key: 'interview', label: 'Entrevista', color: '#1f8a66' },
-  { key: 'offer', label: 'Oferta', color: '#c99043' },
-  { key: 'hired', label: 'Contratado', color: '#0c5b44' },
+  { key: 'applied', label: 'Aplicados', color: '#d8d8d8' },
+  { key: 'screening', label: 'Screening', color: '#ffc5b3' },
+  { key: 'interview', label: 'Entrevista', color: '#f57a57' },
+  { key: 'offer', label: 'Oferta', color: '#e94823' },
+  { key: 'hired', label: 'Contratado', color: '#000000' },
 ];
 
 export default function DashboardPage() {
@@ -74,17 +74,17 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-2">
-          <h2 className="mb-4 text-sm font-bold text-stone-700">Funnel de reclutamiento</h2>
+          <h2 className="mb-4 text-sm font-bold text-neutral-700">Funnel de reclutamiento</h2>
           {cands.length === 0 ? (
             <EmptyState text="Aún no hay candidatos para esta empresa. Ve a Screening IA para cargar CVs." />
           ) : (
             <div style={{ height: 280 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={funnel} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e7e5e4" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
-                  <Tooltip cursor={{ fill: '#f5f5f4' }} contentStyle={{ borderRadius: 12, border: '1px solid #e7e5e4', fontSize: 13 }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5e5" />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#737373' }} axisLine={false} tickLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#737373' }} axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: '#f5f5f5' }} contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 13 }} />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {funnel.map((f) => (
                       <Cell key={f.label} fill={f.color} />
@@ -97,7 +97,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card className="p-5">
-          <h2 className="mb-4 text-sm font-bold text-stone-700">Mejores candidatos (IA)</h2>
+          <h2 className="mb-4 text-sm font-bold text-neutral-700">Mejores candidatos (IA)</h2>
           {topCandidates.length === 0 ? (
             <EmptyState text="Sin candidatos puntuados todavía." />
           ) : (
@@ -109,7 +109,7 @@ export default function DashboardPage() {
                     {c.lastName[0]}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-stone-800">
+                    <p className="truncate text-sm font-semibold text-neutral-800">
                       {c.firstName} {c.lastName}
                     </p>
                     <ProgressBar value={c.screeningScore ?? 0} className="mt-1" />
@@ -127,7 +127,7 @@ export default function DashboardPage() {
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-stone-200 px-6 text-center text-sm text-stone-400">
+    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-200 px-6 text-center text-sm text-neutral-400">
       {text}
     </div>
   );

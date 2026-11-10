@@ -1,6 +1,6 @@
-# TALENTIA 2.0 — producto SaaS nuevo (ACTIVO)
+# Talentia Labs (antes "TALENTIA 2.0") — producto SaaS nuevo (ACTIVO)
 
-Este repo es el producto SaaS nuevo **"TALENTIA 2.0"** (reclutamiento + gestión de talento con IA, demo-first para presentar al CEO de Americana 2000). GitHub: `Oscarim79/Talentia-2.0`.
+Este repo es el producto SaaS nuevo **"Talentia Labs"** (reclutamiento + gestión de talento con IA, demo-first para presentar al CEO de Americana 2000). Se llamó "TALENTIA 2.0" hasta el 2026-11-10; el repo, la carpeta y la URL de Pages siguen siendo `Talentia-2.0` hasta que Oscar decida renombrarlos. GitHub: `Oscarim79/Talentia-2.0`. Marca: paleta de 4 colores (rojo-naranja `#E94823`, blanco, gris `#D8D8D8`, negro) en `src/index.css`; logo en `src/components/brand/Logo.tsx` y SVG en `public/brand/`.
 
 ⚠️ **No confundir con `D:\Proyectos\Talentia-Americana-2000`** — ese es el HRIS interno original ("Talentia 1.0", OKRs/Gemini/Firebase). Los nombres se prestan a confusión: la carpeta llamada "Talentia-2.0" es el producto nuevo; la carpeta con el nombre largo es el viejo. Si Oscar pide algo del HRIS interno, indícale abrir la otra carpeta.
 

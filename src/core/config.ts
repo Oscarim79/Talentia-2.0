@@ -1,7 +1,7 @@
 export const APP = {
-  name: 'TALENTIA',
+  name: 'Talentia Labs',
   version: '2.0',
-  tagline: 'Reclutamiento masivo con IA — del candidato al 9-Box',
+  tagline: 'Reclutamiento masivo con IA — del candidato al plan de crecimiento',
 };
 
 /**

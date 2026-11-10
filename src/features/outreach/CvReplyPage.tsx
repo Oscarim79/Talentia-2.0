@@ -285,7 +285,7 @@ export default function CvReplyPage() {
 
       {/* Filtros */}
       <Card className="mb-5 p-5" dataTour="reply:filters">
-        <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
+        <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
           <Filter className="h-3.5 w-3.5" /> Filtro de CVs
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -338,7 +338,7 @@ export default function CvReplyPage() {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Lista de candidatos */}
         <Card className="overflow-hidden xl:col-span-2">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 px-5 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 px-5 py-4">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -348,7 +348,7 @@ export default function CvReplyPage() {
                 aria-label="Seleccionar todos"
                 className="h-4 w-4 accent-brand-600"
               />
-              <h2 className="text-sm font-bold text-stone-700">
+              <h2 className="text-sm font-bold text-neutral-700">
                 {filtered.length} {filtered.length === 1 ? 'CV cumple' : 'CVs cumplen'} el filtro
               </h2>
             </div>
@@ -359,13 +359,13 @@ export default function CvReplyPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="p-10 text-center text-sm text-stone-400">
+            <div className="p-10 text-center text-sm text-neutral-400">
               {tenantCands.length === 0
                 ? 'Sin CVs puntuados para esta empresa. Puntúa CVs en Screening IA primero.'
                 : 'Ningún CV cumple el filtro. Baja el score mínimo o cambia los criterios.'}
             </div>
           ) : (
-            <ul className="divide-y divide-stone-100">
+            <ul className="divide-y divide-neutral-100">
               {filtered.map((c) => {
                 const req = requirementsMet(c);
                 const msg = lastFor(c.id);
@@ -383,11 +383,11 @@ export default function CvReplyPage() {
                       {c.firstName[0]}{c.lastName[0]}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-stone-800">
+                      <p className="truncate text-sm font-semibold text-neutral-800">
                         {c.firstName} {c.lastName}
-                        <span className="ml-2 text-xs font-normal text-stone-400">{j?.title}{j?.brand ? ` · ${j.brand}` : ''}</span>
+                        <span className="ml-2 text-xs font-normal text-neutral-400">{j?.title}{j?.brand ? ` · ${j.brand}` : ''}</span>
                       </p>
-                      <p className="truncate text-[11px] text-stone-400">
+                      <p className="truncate text-[11px] text-neutral-400">
                         {c.phone} · {c.email} · {(c.parsed?.skills ?? []).slice(0, 3).join(', ')}
                       </p>
                     </div>
@@ -402,32 +402,32 @@ export default function CvReplyPage() {
                       <button
                         onClick={() => setPreview(c)}
                         aria-label="Vista previa del mensaje"
-                        className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700"
+                        className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
                     </div>
                     {selected.has(c.id) && canReply(c) && (
                       <div className="flex w-full flex-wrap items-center gap-2 pl-7 sm:pl-[64px]" data-tour={c.id === queue[0]?.id ? 'reply:slot' : undefined}>
-                        <CalendarClock className="h-3.5 w-3.5 text-brand-600" />
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-stone-400">Entrevista</span>
+                        <CalendarClock className="h-3.5 w-3.5 text-brand-700" />
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Entrevista</span>
                         <input
                           type="datetime-local"
                           value={toInput(queueSlots.get(c.id)!)}
                           onChange={(e) => setOverrides((prev) => ({ ...prev, [c.id]: e.target.value }))}
                           aria-label={`Horario de la entrevista de ${c.firstName} ${c.lastName}`}
-                          className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          className="rounded-lg border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
                         />
-                        <span className="text-[11px] text-stone-500">{formatSlot(queueSlots.get(c.id)!)}</span>
+                        <span className="text-[11px] text-neutral-500">{formatSlot(queueSlots.get(c.id)!)}</span>
                         {overrides[c.id] ? (
                           <button
                             onClick={() => setOverrides((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => id !== c.id)))}
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 hover:underline"
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-700 hover:underline"
                           >
                             <RotateCcw className="h-3 w-3" /> Usar el de la agenda
                           </button>
                         ) : (
-                          <span className="text-[11px] text-stone-400">(de la agenda)</span>
+                          <span className="text-[11px] text-neutral-400">(de la agenda)</span>
                         )}
                       </div>
                     )}
@@ -441,8 +441,8 @@ export default function CvReplyPage() {
         {/* Respuesta automática */}
         <div className="space-y-4">
           <Card className="p-5" dataTour="reply:template">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-700">
-              <CalendarCheck className="h-4 w-4 text-brand-600" /> Mensaje para agendar entrevista
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-neutral-700">
+              <CalendarCheck className="h-4 w-4 text-brand-700" /> Mensaje para agendar entrevista
             </h3>
             <div className="space-y-3">
               <Field label="Canal">
@@ -469,15 +469,15 @@ export default function CvReplyPage() {
                     ))}
                   </select>
                 </Field>
-                <p className="text-[11px] text-stone-400">
+                <p className="text-[11px] text-neutral-400">
                   Cada seleccionado recibe su propio horario, uno seguido del otro (después de las 5:00 p.m. pasa al siguiente día hábil). Cámbialo en su fila si tu agenda lo pide.
                 </p>
               </div>
               {aiModule && (
                 <label className="flex items-start gap-2.5 rounded-lg border border-brand-200 bg-brand-50/60 p-3" data-tour="reply:ai-notice">
                   <input type="checkbox" checked={aiChoice} onChange={(e) => setAiChoice(e.target.checked)} className="mt-0.5 h-4 w-4 accent-brand-600" />
-                  <span className="text-xs text-stone-700">
-                    <span className="flex items-center gap-1 font-semibold text-stone-800"><Bot className="h-3.5 w-3.5 text-brand-600" /> La entrevista la hará el asistente de IA</span>
+                  <span className="text-xs text-neutral-700">
+                    <span className="flex items-center gap-1 font-semibold text-neutral-800"><Bot className="h-3.5 w-3.5 text-brand-700" /> La entrevista la hará el asistente de IA</span>
                     Agrega al mensaje: "{AI_NOTICE}" Desmárcala si la entrevista la hará una persona del equipo.
                   </span>
                 </label>
@@ -489,18 +489,18 @@ export default function CvReplyPage() {
                 <input value={contact} onChange={(e) => setContact(e.target.value)} className={inputCls} />
               </Field>
             </div>
-            <p className="mt-3 text-[11px] text-stone-400">
-              Plantilla estándar de TALENTIA: el nombre, la vacante, la marca y el horario se completan solos por cada candidato.
+            <p className="mt-3 text-[11px] text-neutral-400">
+              Plantilla estándar de Talentia Labs: el nombre, la vacante, la marca y el horario se completan solos por cada candidato.
             </p>
           </Card>
 
           <Card className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold text-stone-700">
-                  <Zap className="h-4 w-4 text-gold-500" /> Regla automática
+                <h3 className="flex items-center gap-2 text-sm font-bold text-neutral-700">
+                  <Zap className="h-4 w-4 text-brand-600" /> Regla automática
                 </h3>
-                <p className="mt-1 text-xs text-stone-500">
+                <p className="mt-1 text-xs text-neutral-500">
                   Responder solo a los CVs con score ≥ <b>{settings.autoReply.minScore}</b> apenas terminan el screening.
                 </p>
               </div>
@@ -517,7 +517,7 @@ export default function CvReplyPage() {
               aria-label="Umbral de la regla automática"
             />
             <div className="mt-3 flex items-center justify-between gap-2">
-              <span className="text-xs text-stone-500">
+              <span className="text-xs text-neutral-500">
                 {ruleTargets.length} CV{ruleTargets.length === 1 ? '' : 's'} pendiente{ruleTargets.length === 1 ? '' : 's'} de respuesta
               </span>
               <Button variant="secondary" onClick={runRule} disabled={sending || ruleTargets.length === 0}>
@@ -530,19 +530,19 @@ export default function CvReplyPage() {
 
       {/* Bandeja de envíos */}
       <Card className="mt-6 overflow-hidden">
-        <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
-          <h2 className="flex items-center gap-2 text-sm font-bold text-stone-700">
-            <Inbox className="h-4 w-4 text-brand-600" /> Bandeja de envíos
+        <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
+          <h2 className="flex items-center gap-2 text-sm font-bold text-neutral-700">
+            <Inbox className="h-4 w-4 text-brand-700" /> Bandeja de envíos
           </h2>
           <Badge variant="stone">{tenantMessages.length}</Badge>
         </div>
         {tenantMessages.length === 0 ? (
-          <p className="p-8 text-center text-sm text-stone-400">Aún no se ha enviado ninguna respuesta.</p>
+          <p className="p-8 text-center text-sm text-neutral-400">Aún no se ha enviado ninguna respuesta.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-stone-100 text-left text-xs uppercase tracking-wide text-stone-400">
+                <tr className="border-b border-neutral-100 text-left text-xs uppercase tracking-wide text-neutral-400">
                   <th className="px-5 py-3 font-semibold">Hora</th>
                   <th className="px-5 py-3 font-semibold">Candidato</th>
                   <th className="px-5 py-3 font-semibold">Canal</th>
@@ -552,18 +552,18 @@ export default function CvReplyPage() {
               </thead>
               <tbody>
                 {tenantMessages.map((m) => (
-                  <tr key={m.id} className="border-b border-stone-50 last:border-0">
-                    <td className="whitespace-nowrap px-5 py-3 text-stone-500">
+                  <tr key={m.id} className="border-b border-neutral-50 last:border-0">
+                    <td className="whitespace-nowrap px-5 py-3 text-neutral-500">
                       {new Date(m.sentAt).toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' })}
                     </td>
-                    <td className="px-5 py-3 font-semibold text-stone-800">
+                    <td className="px-5 py-3 font-semibold text-neutral-800">
                       {m.candidateName}
-                      <span className="ml-2 text-xs font-normal text-stone-400">{m.to}</span>
+                      <span className="ml-2 text-xs font-normal text-neutral-400">{m.to}</span>
                     </td>
-                    <td className="px-5 py-3 text-stone-600">{m.channel === 'whatsapp' ? 'WhatsApp' : 'Correo'}</td>
+                    <td className="px-5 py-3 text-neutral-600">{m.channel === 'whatsapp' ? 'WhatsApp' : 'Correo'}</td>
                     <td className="px-5 py-3"><StatusBadge msg={m} /></td>
-                    <td className="px-5 py-3 text-stone-600">
-                      {m.confirmedSlot ?? (m.slot ? <span className="text-stone-400">{m.slot} (propuesto)</span> : '—')}
+                    <td className="px-5 py-3 text-neutral-600">
+                      {m.confirmedSlot ?? (m.slot ? <span className="text-neutral-400">{m.slot} (propuesto)</span> : '—')}
                     </td>
                   </tr>
                 ))}
@@ -590,12 +590,12 @@ export default function CvReplyPage() {
 // ---------- Subcomponentes ----------
 
 const inputCls =
-  'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">{label}</span>
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
       {children}
     </label>
   );
@@ -618,7 +618,7 @@ function ChannelBtn({
       onClick={onClick}
       className={cn(
         'inline-flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors',
-        active ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-stone-300 bg-white text-stone-600 hover:bg-stone-50',
+        active ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-neutral-300 bg-white text-neutral-600 hover:bg-neutral-50',
       )}
     >
       <Icon className="h-4 w-4" /> {label}
@@ -657,7 +657,7 @@ function PreviewModal({
 }) {
   useEscape(onClose);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-950/60 p-4 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
@@ -665,21 +665,21 @@ function PreviewModal({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-lg rounded-2xl bg-white shadow-xl"
       >
-        <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
           <div>
-            <p className="text-sm font-bold text-stone-800">{candidate.firstName} {candidate.lastName}</p>
-            <p className="text-xs text-stone-400">
+            <p className="text-sm font-bold text-neutral-800">{candidate.firstName} {candidate.lastName}</p>
+            <p className="text-xs text-neutral-400">
               {channel === 'whatsapp' ? `WhatsApp · ${candidate.phone}` : `Correo · ${candidate.email}`}
             </p>
           </div>
-          <button onClick={onClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100">
+          <button onClick={onClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <pre className="max-h-[50vh] overflow-y-auto whitespace-pre-wrap px-5 py-4 font-sans text-sm leading-relaxed text-stone-700">
+        <pre className="max-h-[50vh] overflow-y-auto whitespace-pre-wrap px-5 py-4 font-sans text-sm leading-relaxed text-neutral-700">
           {text}
         </pre>
-        <div className="flex justify-end gap-2 border-t border-stone-100 px-5 py-3">
+        <div className="flex justify-end gap-2 border-t border-neutral-100 px-5 py-3">
           <Button variant="secondary" onClick={onClose}>Cerrar</Button>
           {onSend && (
             <Button onClick={onSend}>

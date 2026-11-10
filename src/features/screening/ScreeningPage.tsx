@@ -230,13 +230,13 @@ export default function ScreeningPage() {
       <Card className="mb-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">Vacante</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Vacante</span>
             <select
               value={jobId}
               onChange={(e) => setJobId(e.target.value)}
               disabled={busy}
               title={busy ? 'Espera a que termine el lote en proceso' : undefined}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>
@@ -245,7 +245,7 @@ export default function ScreeningPage() {
               ))}
             </select>
           </div>
-          <div className="text-sm text-stone-500">
+          <div className="text-sm text-neutral-500">
             {ranked.length} puntuados
             {pending.length > 0 && <> · <span className="text-brand-700">{pending.length} en proceso</span></>} ·{' '}
             <span className="text-red-600">{errors.length} con error</span>
@@ -282,8 +282,8 @@ export default function ScreeningPage() {
           dragging
             ? 'border-brand-500 bg-brand-50'
             : busy
-              ? 'cursor-not-allowed border-stone-200 bg-stone-50'
-              : 'border-stone-300 bg-white hover:border-brand-400 hover:bg-stone-50'
+              ? 'cursor-not-allowed border-neutral-200 bg-neutral-50'
+              : 'border-neutral-300 bg-white hover:border-brand-400 hover:bg-neutral-50'
         }`}
       >
         <input
@@ -305,22 +305,22 @@ export default function ScreeningPage() {
               Procesando lote… {batch.done}/{batch.total}
             </div>
             <ProgressBar value={pct} tone="brand" />
-            <p className="mt-2 truncate text-xs text-stone-500">
-              {batch.current ? <>Leyendo <span className="font-medium text-stone-700">{batch.current}</span></> : '¡Lote completado!'}
+            <p className="mt-2 truncate text-xs text-neutral-500">
+              {batch.current ? <>Leyendo <span className="font-medium text-neutral-700">{batch.current}</span></> : '¡Lote completado!'}
             </p>
           </div>
         ) : (
           <>
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700">
               <UploadCloud className="h-6 w-6" />
             </div>
-            <p className="text-sm font-semibold text-stone-700">
+            <p className="text-sm font-semibold text-neutral-700">
               Arrastra y suelta los CVs aquí
             </p>
-            <p className="mt-1 text-xs text-stone-400">
-              o <span className="font-medium text-brand-600">selecciona archivos</span> · PDF o Word (.docx) hasta {MAX_FILE_MB} MB · imágenes hasta {MAX_IMAGE_MB} MB · carga por lote
+            <p className="mt-1 text-xs text-neutral-400">
+              o <span className="font-medium text-brand-700">selecciona archivos</span> · PDF o Word (.docx) hasta {MAX_FILE_MB} MB · imágenes hasta {MAX_IMAGE_MB} MB · carga por lote
             </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-stone-400">
+            <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-neutral-400">
               <Upload className="h-3 w-3" /> Los escaneos ilegibles caen automáticamente en la cola de errores
             </div>
           </>
@@ -343,7 +343,7 @@ export default function ScreeningPage() {
             <PendingRow key={c.id} candidate={c} state={pendingState(c, inFlight) ?? 'stale'} onRetry={() => retry(c)} busy={busy} />
           ))}
           {ranked.length === 0 && pending.length === 0 && (
-            <Card className="p-10 text-center text-sm text-stone-400">
+            <Card className="p-10 text-center text-sm text-neutral-400">
               No hay candidatos puntuados. Suelta CVs arriba o pulsa <b>CVs de ejemplo</b> para ver el flujo.
             </Card>
           )}
@@ -354,7 +354,7 @@ export default function ScreeningPage() {
       ) : (
         <div className="space-y-3">
           {errors.length === 0 && (
-            <Card className="p-10 text-center text-sm text-stone-400">Sin errores de lectura. 🎉</Card>
+            <Card className="p-10 text-center text-sm text-neutral-400">Sin errores de lectura. 🎉</Card>
           )}
           {errors.map((c) => (
             <ErrorRow key={c.id} candidate={c} onRetry={() => retry(c)} busy={busy} />
@@ -371,7 +371,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
     <Card className="p-4">
       <div className="flex items-start gap-4">
         <div className="flex w-8 shrink-0 flex-col items-center pt-1">
-          <span className="text-lg font-black text-stone-300">#{rank}</span>
+          <span className="text-lg font-black text-neutral-300">#{rank}</span>
         </div>
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
           {candidate.firstName[0]}
@@ -380,7 +380,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-bold text-stone-900">
+            <p className="text-sm font-bold text-neutral-900">
               {candidate.firstName} {candidate.lastName}
             </p>
             <Badge variant="stone">{candidate.source}</Badge>
@@ -391,7 +391,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
             ))}
           </div>
 
-          <p className="mt-1.5 text-sm text-stone-600">{candidate.justification}</p>
+          <p className="mt-1.5 text-sm text-neutral-600">{candidate.justification}</p>
 
           {/* Evidencia anclada al CV (anti-alucinación) */}
           {candidate.evidence && (
@@ -400,7 +400,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
                 <span
                   key={e.criterion}
                   className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${
-                    e.matched ? 'bg-green-50 text-green-700' : 'bg-stone-100 text-stone-400'
+                    e.matched ? 'bg-green-50 text-green-700' : 'bg-neutral-100 text-neutral-400'
                   }`}
                   title={e.quote}
                 >
@@ -418,7 +418,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
               {score}
             </Badge>
           </div>
-          <p className="mt-1 text-[11px] text-stone-400">match {candidate.matchPercent}%</p>
+          <p className="mt-1 text-[11px] text-neutral-400">match {candidate.matchPercent}%</p>
           <ProgressBar value={score} className="mt-2" />
           <div className="mt-2 flex justify-end">
             <CvLink cvPath={candidate.cvPath} />
@@ -442,15 +442,15 @@ function PendingRow({
 }) {
   return (
     <Card className="flex items-center gap-4 p-4">
-      <div className="rounded-lg bg-brand-50 p-2.5 text-brand-600">
+      <div className="rounded-lg bg-brand-50 p-2.5 text-brand-700">
         {state === 'processing' ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileText className="h-5 w-5" />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-stone-800">
+        <p className="truncate text-sm font-semibold text-neutral-800">
           {candidate.firstName} {candidate.lastName}
-          <span className="ml-2 text-xs font-normal text-stone-400">{candidate.cvFileName}</span>
+          <span className="ml-2 text-xs font-normal text-neutral-400">{candidate.cvFileName}</span>
         </p>
-        <p className="text-xs text-stone-500">
+        <p className="text-xs text-neutral-500">
           {state === 'processing' ? 'Leyendo el CV…' : 'Quedó pendiente (la lectura no terminó). Puedes reintentar.'}
         </p>
       </div>
@@ -470,7 +470,7 @@ function ErrorRow({ candidate, onRetry, busy }: { candidate: Candidate; onRetry:
         <FileText className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-stone-800">{candidate.cvFileName}</p>
+        <p className="truncate text-sm font-semibold text-neutral-800">{candidate.cvFileName}</p>
         <p className="text-xs text-red-600">{screeningErrorLabel(candidate.errorReason)}</p>
       </div>
       <div className="flex items-center gap-2">
@@ -498,7 +498,7 @@ function TabButton({
     <button
       onClick={onClick}
       className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-        active ? 'bg-brand-600 text-white' : 'bg-white text-stone-600 hover:bg-stone-100'
+        active ? 'bg-brand-600 text-white' : 'bg-white text-neutral-600 hover:bg-neutral-100'
       }`}
     >
       {children}

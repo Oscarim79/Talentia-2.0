@@ -14,7 +14,8 @@ import {
   NotebookPen,
   X,
 } from 'lucide-react';
-import { APP, TEAM_PILOT } from '../../core/config';
+import { TEAM_PILOT } from '../../core/config';
+import { LogoMark, Wordmark } from '../brand/Logo';
 import { cn } from '../../lib/utils';
 import { useSettings } from '../../context/SettingsContext';
 import type { ModuleId } from '../../core/modules';
@@ -70,16 +71,12 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     items: g.items.filter((it) => (!it.module || isModuleEnabled(it.module)) && !(TEAM_PILOT && it.hideInPilot)),
   }));
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col bg-brand-950 text-brand-100">
+    <aside className="flex h-full w-64 shrink-0 flex-col bg-ink text-neutral-200">
       <div className="flex items-center gap-3 px-5 pb-4 pt-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500 font-display text-lg font-bold text-brand-950 shadow-[0_2px_8px_rgba(201,144,67,0.4)]">
-          T
-        </div>
-        <div className="flex-1">
-          <p className="font-display text-[15px] font-semibold leading-tight tracking-wide text-white">
-            {APP.name} <span className="text-gold-400">{APP.version}</span>
-          </p>
-          <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-brand-300">
+        <LogoMark className="h-10 w-10 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <Wordmark className="h-[15px] w-auto text-white" accentClassName="text-brand-500" />
+          <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.22em] text-neutral-400">
             Reclutamiento con IA
           </p>
         </div>
@@ -87,7 +84,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
           <button
             onClick={onClose}
             aria-label="Cerrar menú"
-            className="rounded-lg p-1.5 text-brand-300 hover:bg-white/10 hover:text-white lg:hidden"
+            className="rounded-lg p-1.5 text-neutral-400 hover:bg-white/10 hover:text-white lg:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -98,7 +95,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {visibleGroups.map((g) => (
           <div key={g.label ?? 'main'} className="mb-1">
             {g.label && (
-              <p className="mb-1 mt-4 px-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.22em] text-brand-400/80">
+              <p className="mb-1 mt-4 px-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.22em] text-neutral-500">
                 {g.label}
               </p>
             )}
@@ -114,8 +111,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                     cn(
                       'group flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium transition-colors',
                       isActive
-                        ? 'bg-white/10 text-white shadow-[inset_2px_0_0_0_var(--color-gold-500)]'
-                        : 'text-brand-200/80 hover:bg-white/5 hover:text-white',
+                        ? 'bg-white/10 text-white shadow-[inset_2px_0_0_0_var(--color-brand-600)]'
+                        : 'text-neutral-400 hover:bg-white/5 hover:text-white',
                     )
                   }
                 >
@@ -129,9 +126,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       <div className="px-3 py-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-brand-200">
-          <p className="font-semibold text-gold-300">Modo demostración</p>
-          <p className="mt-0.5 text-brand-300">Screening con IA real · entrevistas y ayuda simuladas.</p>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-neutral-300">
+          <p className="font-semibold text-brand-400">Modo demostración</p>
+          <p className="mt-0.5 text-neutral-400">Screening con IA real · entrevistas y ayuda simuladas.</p>
         </div>
       </div>
     </aside>

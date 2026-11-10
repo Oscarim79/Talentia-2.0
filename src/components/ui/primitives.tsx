@@ -6,7 +6,7 @@ export function Card({ className, children, dataTour }: { className?: string; ch
     <div
       data-tour={dataTour}
       className={cn(
-        'rounded-2xl border border-stone-200/80 bg-white shadow-[0_1px_2px_rgba(33,49,43,0.05),0_4px_16px_-8px_rgba(33,49,43,0.06)]',
+        'rounded-2xl border border-neutral-200/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_-8px_rgba(0,0,0,0.06)]',
         className,
       )}
     >
@@ -30,14 +30,14 @@ export function PageHeader({
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
         {eyebrow && (
-          <p className="mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-brand-600">
+          <p className="mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-brand-700">
             {eyebrow}
           </p>
         )}
         <h1 className="font-display text-[28px] font-semibold leading-tight tracking-tight text-ink">
           {title}
         </h1>
-        {subtitle && <p className="mt-1 text-sm text-stone-500">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
@@ -46,13 +46,13 @@ export function PageHeader({
 
 type BadgeVariant = 'stone' | 'green' | 'amber' | 'red' | 'brand' | 'blue' | 'gold';
 const badgeStyles: Record<BadgeVariant, string> = {
-  stone: 'bg-stone-100 text-stone-700',
+  stone: 'bg-neutral-100 text-neutral-700',
   green: 'bg-green-100 text-green-800',
   amber: 'bg-amber-100 text-amber-800',
   red: 'bg-red-100 text-red-700',
   brand: 'bg-brand-50 text-brand-700',
-  blue: 'bg-blue-100 text-blue-700',
-  gold: 'bg-gold-100 text-gold-700',
+  blue: 'bg-white text-neutral-800 ring-1 ring-inset ring-neutral-300',
+  gold: 'bg-ink text-white',
 };
 
 export function Badge({
@@ -98,9 +98,9 @@ export function Button({
 }) {
   const variants = {
     primary:
-      'bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-600/40 shadow-[0_1px_2px_rgba(5,42,32,0.3)]',
-    secondary: 'border border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-50',
-    ghost: 'text-stone-600 hover:bg-stone-200/60',
+      'bg-brand-600 text-white hover:bg-brand-700 disabled:bg-brand-600/40 shadow-[0_1px_2px_rgba(0,0,0,0.2)]',
+    secondary: 'border border-neutral-300 bg-white text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50',
+    ghost: 'text-neutral-600 hover:bg-neutral-200/60',
   };
   return (
     <button
@@ -135,13 +135,13 @@ export function StatCard({
     up: 'text-green-700',
     warn: 'text-amber-700',
     risk: 'text-red-600',
-    muted: 'text-stone-500',
+    muted: 'text-neutral-500',
   };
   return (
     <Card className="p-5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[13px] font-medium text-stone-500">{label}</p>
+          <p className="text-[13px] font-medium text-neutral-500">{label}</p>
           <p className="mt-2 font-display text-[32px] font-semibold leading-none tracking-tight text-ink">
             {value}
           </p>
@@ -178,7 +178,7 @@ export function ProgressBar({
           ? 'bg-amber-500'
           : 'bg-red-500';
   return (
-    <div className={cn('h-2 w-full overflow-hidden rounded-full bg-stone-100', className)}>
+    <div className={cn('h-2 w-full overflow-hidden rounded-full bg-neutral-100', className)}>
       <div className={cn('h-full rounded-full', color)} style={{ width: `${v}%` }} />
     </div>
   );

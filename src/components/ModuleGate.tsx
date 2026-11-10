@@ -20,11 +20,11 @@ export function ModuleGate({ module, children }: { module: ModuleId; children: R
         actions={<Badge variant="stone">Desactivado</Badge>}
       />
       <Card className="mx-auto max-w-xl p-10 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
           <Puzzle className="h-6 w-6" />
         </div>
-        <p className="text-sm font-semibold text-stone-800">Este módulo no está activo para tu empresa.</p>
-        <p className="mx-auto mt-2 max-w-md text-sm text-stone-500">{def.description}</p>
+        <p className="text-sm font-semibold text-neutral-800">Este módulo no está activo para tu empresa.</p>
+        <p className="mx-auto mt-2 max-w-md text-sm text-neutral-500">{def.description}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             to="/configuracion"
@@ -34,7 +34,7 @@ export function ModuleGate({ module, children }: { module: ModuleId; children: R
           </Link>
           <button
             onClick={() => openModuleIntro(module)}
-            className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
           >
             <Info className="h-4 w-4" /> Cómo funciona
           </button>

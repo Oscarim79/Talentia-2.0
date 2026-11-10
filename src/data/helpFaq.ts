@@ -20,7 +20,7 @@ export interface FaqEntry {
 export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'flujo',
-    question: '¿Cómo funciona TALENTIA en general?',
+    question: '¿Cómo funciona Talentia Labs en general?',
     keywords: ['flujo', 'proceso', 'general', 'empezar', 'inicio', 'como funciona', 'que hace talentia', 'que hace la app', 'pasos'],
     answer:
       'El proceso siempre es el mismo, en este orden: 1) creas la vacante en Vacantes, 2) subes los CVs en Screening IA y la IA los puntúa, 3) en Respuestas a CVs filtras los mejores y les mandas el mensaje para agendar la entrevista, 4) en Entrevistas haces la entrevista con la guía de competencias y la app calcula el reporte, 5) en Candidatos sigues a cada persona por etapa, y 6) en Métricas RR.HH. ves cuánto tarda cada quien. Quien es contratado pasa a Talento (Matriz 9-Box y Acciones RR.HH.), y en Configuración se ajustan equipo, metas y módulos. Puedes ver el tour guiado desde el botón de ayuda; Talento y Gestión tienen su propio recorrido en Ayuda → Guía.',
@@ -111,7 +111,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'responder automatico', 'respuesta automatica',
     ],
     answer:
-      'Con la regla activa, TALENTIA responde sola a todo CV que supere el score que tú definas (por ejemplo 70), sin que tengas que seleccionarlo, con horarios seguidos desde la primera entrevista. "Ejecutar ahora" la aplica de inmediato a los pendientes. Puedes apagarla cuando quieras.',
+      'Con la regla activa, Talentia Labs responde sola a todo CV que supere el score que tú definas (por ejemplo 70), sin que tengas que seleccionarlo, con horarios seguidos desde la primera entrevista. "Ejecutar ahora" la aplica de inmediato a los pendientes. Puedes apagarla cuando quieras.',
     route: '/respuestas',
     routeLabel: 'Ir a Respuestas a CVs',
   },
@@ -735,7 +735,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'agregar un campo a', 'campos a la vacante', 'campos al candidato',
     ],
     answer:
-      'TALENTIA es software opinado: el proceso de reclutamiento ya viene definido y la empresa se adapta a él, no al revés. Por eso no hay pantallas de configuración flexible ni etapas o campos a la medida: así nunca se vuelve un revoltijo de configuraciones y todos trabajan igual. Lo único que se decide en Configuración es quién está en el equipo, las metas en días y qué módulos opcionales están encendidos. Si falta un dato o una etapa que de verdad necesitan, anótalo en tus comentarios: se evalúa para el estándar de todos.',
+      'Talentia Labs es software opinado: el proceso de reclutamiento ya viene definido y la empresa se adapta a él, no al revés. Por eso no hay pantallas de configuración flexible ni etapas o campos a la medida: así nunca se vuelve un revoltijo de configuraciones y todos trabajan igual. Lo único que se decide en Configuración es quién está en el equipo, las metas en días y qué módulos opcionales están encendidos. Si falta un dato o una etapa que de verdad necesitan, anótalo en tus comentarios: se evalúa para el estándar de todos.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
