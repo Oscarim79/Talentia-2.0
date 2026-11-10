@@ -21,3 +21,24 @@ describe('candidates mapper', () => {
     expect(candidatePatchToRow({ hiredAt: undefined, ownerId: 'u1' })).toEqual({ hired_at: null, owner_id: 'u1' });
   });
 });
+
+describe('candidates: Entrega B (cv_path y parche de screening)', () => {
+  it('cv_path hace ida y vuelta', () => {
+    const c = { ...CANDIDATES[0], cvPath: 't/c/cv.pdf' };
+    expect(rowToCandidate(candidateToRow(c))).toEqual(c);
+    expect(candidateToRow(CANDIDATES[0]).cv_path).toBeNull();
+  });
+  it('el parche de screening manda sus columnas', () => {
+    expect(candidatePatchToRow({ screeningStatus: 'scored', screeningScore: 88, errorReason: undefined, firstName: 'Ana' })).toEqual({
+      screening_status: 'scored',
+      screening_score: 88,
+      error_reason: null,
+      first_name: 'Ana',
+    });
+    expect(candidatePatchToRow({ timeline: { screened: '2026-11-10' }, cvPath: 'a/b/c.pdf', parsed: undefined })).toEqual({
+      timeline: { screened: '2026-11-10' },
+      cv_path: 'a/b/c.pdf',
+      parsed: null,
+    });
+  });
+});

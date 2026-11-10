@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
-import { insertCandidate, listCandidates, updateCandidate } from '../core/db/candidates';
+import { insertCandidate, listCandidates, updateCandidate, type CandidatePatch } from '../core/db/candidates';
+import { stripUndefined } from '../core/db/rows';
 import { applyReplied, applyStage } from '../core/stages';
 import { todayISO } from '../lib/dates';
 import { notifyError } from '../lib/notify';
@@ -23,6 +24,8 @@ interface CandidatesCtxValue {
   setStage: (candidateId: string, stage: CandidateStage) => void;
   /** Se le envió la respuesta al candidato: queda la fecha de la primera respuesta. */
   markReplied: (candidateId: string) => void;
+  /** Guarda el resultado de la lectura del CV (o cualquier otro campo) de un candidato ya creado. */
+  updateCandidateFields: (candidateId: string, patch: CandidatePatch) => void;
   ready: boolean;
   error: string | null;
   reload: () => void;
@@ -115,9 +118,23 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
     [change],
   );
 
+  const updateCandidateFields = useCallback(
+    (candidateId: string, patch: CandidatePatch) => {
+      const before = ref.current.find((c) => c.id === candidateId);
+      if (!before) return;
+      const next = stripUndefined({ ...before, ...patch }) as Candidate;
+      set((list) => list.map((c) => (c.id === candidateId ? next : c)));
+      updateCandidate(candidateId, patch).catch(() => {
+        set((list) => list.map((c) => (c.id === candidateId ? before : c)));
+        notifyError(SAVE_ERROR);
+      });
+    },
+    [set],
+  );
+
   const value = useMemo<CandidatesCtxValue>(
-    () => ({ candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload }),
-    [candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload],
+    () => ({ candidates, addCandidate, markInterviewScheduled, setStage, markReplied, updateCandidateFields, ready, error, reload }),
+    [candidates, addCandidate, markInterviewScheduled, setStage, markReplied, updateCandidateFields, ready, error, reload],
   );
 
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;
