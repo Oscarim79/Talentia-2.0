@@ -33,7 +33,7 @@ export function HelpLauncher() {
         onClick={() => (panelOpen ? closePanel() : openPanel())}
         aria-label={panelOpen ? 'Cerrar ayuda' : 'Abrir ayuda'}
         className={cn(
-          'fixed bottom-5 right-5 z-[55] flex h-13 items-center gap-2 rounded-full bg-brand-600 pl-4 pr-5 text-sm font-semibold text-white shadow-[0_6px_20px_-6px_rgba(5,42,32,0.6)] transition-colors hover:bg-brand-700',
+          'fixed bottom-5 right-5 z-[55] flex h-13 items-center gap-2 rounded-full bg-brand-600 pl-4 pr-5 text-sm font-semibold text-white shadow-[0_6px_20px_-6px_rgba(0,0,0,0.35)] transition-colors hover:bg-brand-700',
           tourStep != null && 'pointer-events-none',
         )}
       >
@@ -42,10 +42,10 @@ export function HelpLauncher() {
       </button>
 
       {panelOpen && (
-        <div className="fixed bottom-20 right-5 z-[55] flex max-h-[min(640px,calc(100vh-110px))] w-[min(400px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-2xl" role="dialog" aria-label="Centro de ayuda">
-          <div className="border-b border-stone-100 bg-brand-950 px-4 pb-0 pt-4 text-white">
+        <div className="fixed bottom-20 right-5 z-[55] flex max-h-[min(640px,calc(100vh-110px))] w-[min(400px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl" role="dialog" aria-label="Centro de ayuda">
+          <div className="border-b border-neutral-100 bg-ink px-4 pb-0 pt-4 text-white">
             <p className="font-display text-base font-semibold">Centro de ayuda</p>
-            <p className="text-xs text-brand-300">Pregunta cómo hacer algo, repite el tour o mira los videos.</p>
+            <p className="text-xs text-neutral-400">Pregunta cómo hacer algo, repite el tour o mira los videos.</p>
             <div className="mt-3 flex gap-1">
               <TabBtn active={tab === 'chat'} onClick={() => openPanel('chat')} icon={MessageCircle} label="Chat" />
               <TabBtn active={tab === 'guide'} onClick={() => openPanel('guide')} icon={Compass} label="Guía" />
@@ -67,7 +67,7 @@ function TabBtn({ active, onClick, icon: Icon, label }: { active: boolean; onCli
       onClick={onClick}
       className={cn(
         'flex items-center gap-1.5 rounded-t-lg px-3 py-2 text-xs font-semibold transition-colors',
-        active ? 'bg-white text-brand-800' : 'text-brand-200 hover:bg-white/10 hover:text-white',
+        active ? 'bg-white text-brand-800' : 'text-neutral-300 hover:bg-white/10 hover:text-white',
       )}
     >
       <Icon className="h-3.5 w-3.5" /> {label}
@@ -84,8 +84,8 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
     {
       role: 'bot',
       text: topic
-        ? `Hola, soy la ayuda de TALENTIA. Pregúntame lo que quieras sobre ${GUIDES[topic].title}: cómo funciona, qué te toca hacer o cómo leer lo que muestra.`
-        : 'Hola, soy la ayuda de TALENTIA. Pregúntame cómo hacer algo (por ejemplo "¿cómo subo CVs?") y te explico y te llevo a la pantalla.',
+        ? `Hola, soy la ayuda de Talentia Labs. Pregúntame lo que quieras sobre ${GUIDES[topic].title}: cómo funciona, qué te toca hacer o cómo leer lo que muestra.`
+        : 'Hola, soy la ayuda de Talentia Labs. Pregúntame cómo hacer algo (por ejemplo "¿cómo subo CVs?") y te explico y te llevo a la pantalla.',
     },
   ]);
   const [input, setInput] = useState('');
@@ -122,11 +122,11 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
         {msgs.map((m, i) => (
           <div key={i} className={cn('flex gap-2', m.role === 'user' && 'flex-row-reverse')}>
-            <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-full', m.role === 'bot' ? 'bg-brand-100 text-brand-700' : 'bg-stone-200 text-stone-600')}>
+            <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-full', m.role === 'bot' ? 'bg-brand-100 text-brand-700' : 'bg-neutral-200 text-neutral-600')}>
               {m.role === 'bot' ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
             </div>
             <div className="max-w-[85%] space-y-2">
-              <div className={cn('rounded-2xl px-3.5 py-2 text-sm leading-relaxed', m.role === 'bot' ? 'bg-stone-100 text-stone-700' : 'bg-brand-600 text-white')}>{m.text}</div>
+              <div className={cn('rounded-2xl px-3.5 py-2 text-sm leading-relaxed', m.role === 'bot' ? 'bg-neutral-100 text-neutral-700' : 'bg-brand-600 text-white')}>{m.text}</div>
               {m.route && m.route !== route && (
                 <button
                   onClick={() => {
@@ -141,7 +141,7 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
               {m.related && m.related.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {m.related.map((r) => (
-                    <button key={r} onClick={() => ask(r)} className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[11px] text-stone-600 hover:border-brand-300 hover:text-brand-700">
+                    <button key={r} onClick={() => ask(r)} className="rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[11px] text-neutral-600 hover:border-brand-300 hover:text-brand-700">
                       {r}
                     </button>
                   ))}
@@ -155,10 +155,10 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
               <Bot className="h-4 w-4" />
             </div>
-            <div className="flex items-center gap-1 rounded-2xl bg-stone-100 px-3.5 py-3">
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 [animation-delay:-0.3s]" />
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 [animation-delay:-0.15s]" />
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400" />
+            <div className="flex items-center gap-1 rounded-2xl bg-neutral-100 px-3.5 py-3">
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400 [animation-delay:-0.3s]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400 [animation-delay:-0.15s]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400" />
             </div>
           </div>
         )}
@@ -172,20 +172,20 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
           </div>
         )}
       </div>
-      <div className="flex items-center gap-2 border-t border-stone-100 p-3">
+      <div className="flex items-center gap-2 border-t border-neutral-100 p-3">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && ask(input)}
           placeholder="¿Cómo hago para…?"
           aria-label="Pregunta de ayuda"
-          className="flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <Button onClick={() => ask(input)} disabled={thinking || !input.trim()}>
           <Send className="h-4 w-4" />
         </Button>
       </div>
-      <p className="border-t border-stone-100 px-4 py-2 text-[10px] text-stone-400">Tus preguntas se guardan en Configuración → Preguntas al chat, para mejorar la ayuda. Demo: responde desde la guía de uso; en producción, la IA con la guía como contexto.</p>
+      <p className="border-t border-neutral-100 px-4 py-2 text-[10px] text-neutral-400">Tus preguntas se guardan en Configuración → Preguntas al chat, para mejorar la ayuda. Demo: responde desde la guía de uso; en producción, la IA con la guía como contexto.</p>
     </>
   );
 }
@@ -218,37 +218,37 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
             navigate('/ronda-de-prueba');
             closePanel();
           }}
-          className="mb-4 flex w-full items-center gap-3 rounded-xl border border-gold-300 bg-gold-100/60 p-3 text-left hover:bg-gold-100"
+          className="mb-4 flex w-full items-center gap-3 rounded-xl border border-brand-200 bg-brand-50 p-3 text-left hover:bg-brand-100"
         >
-          <ClipboardList className="h-5 w-5 shrink-0 text-gold-700" />
+          <ClipboardList className="h-5 w-5 shrink-0 text-brand-700" />
           <span>
-            <span className="block text-sm font-bold text-stone-800">Ronda de prueba del equipo</span>
-            <span className="block text-xs text-stone-600">El guion de la semana: qué probar cada día y cómo enviar tus comentarios.</span>
+            <span className="block text-sm font-bold text-neutral-800">Ronda de prueba del equipo</span>
+            <span className="block text-xs text-neutral-600">El guion de la semana: qué probar cada día y cómo enviar tus comentarios.</span>
           </span>
         </button>
       )}
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Secciones de la app</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Secciones de la app</p>
       <div className="mb-4 space-y-2">
         {SECTION_IDS.map((id) => {
           const guide = SECTION_GUIDES[id];
           const Icon = id === 'talent' ? Grid3x3 : TrendingUp;
           const steps = TOURS[guide.tour].length;
           return (
-            <div key={id} className="rounded-xl border border-stone-200 p-3.5" data-tour={`help:section:${id}`}>
+            <div key={id} className="rounded-xl border border-neutral-200 p-3.5" data-tour={`help:section:${id}`}>
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-gold-100 p-2 text-gold-700">
+                <div className="rounded-lg bg-brand-50 p-2 text-brand-700">
                   <Icon className="h-4 w-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="text-sm font-bold text-stone-800">{guide.title}</p>
+                    <p className="text-sm font-bold text-neutral-800">{guide.title}</p>
                     {isTourDone(guide.tour) && (
                       <Badge variant="green" className="whitespace-nowrap">
                         <Check className="h-3 w-3" /> Recorrido visto
                       </Badge>
                     )}
                   </div>
-                  <p className="mt-1 text-xs text-stone-500">{guide.summary}</p>
+                  <p className="mt-1 text-xs text-neutral-500">{guide.summary}</p>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     <Button onClick={() => startTour(guide.tour)}>
                       <Compass className="h-4 w-4" /> {isTourDone(guide.tour) ? 'Repetir el recorrido' : 'Iniciar el recorrido'} ({steps} pasos)
@@ -263,20 +263,20 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           );
         })}
       </div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Módulos opcionales</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Módulos opcionales</p>
       <div className="mb-4 space-y-2">
         {MODULES.map((m) => {
           const guide = GUIDES[m.id];
           const on = isModuleEnabled(m.id);
           return (
-            <div key={m.id} className="rounded-xl border border-stone-200 p-3.5">
+            <div key={m.id} className="rounded-xl border border-neutral-200 p-3.5">
               <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-brand-50 p-2 text-brand-600">
+                <div className="rounded-lg bg-brand-50 p-2 text-brand-700">
                   <Video className="h-4 w-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="text-sm font-bold text-stone-800">{guide.title}</p>
+                    <p className="text-sm font-bold text-neutral-800">{guide.title}</p>
                     <Badge variant={on ? 'green' : 'stone'}>{on ? 'Activo' : 'Desactivado'}</Badge>
                     {isTourDone(m.id) && (
                       <Badge variant="green" className="whitespace-nowrap">
@@ -284,8 +284,8 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
                       </Badge>
                     )}
                   </div>
-                  <p className="mt-1 text-xs text-stone-500">{guide.summary}</p>
-                  {!on && <p className="mt-1 text-[11px] text-stone-400">Se activa en Configuración → Módulos opcionales. Al activarlo se abre esta ayuda guiada.</p>}
+                  <p className="mt-1 text-xs text-neutral-500">{guide.summary}</p>
+                  {!on && <p className="mt-1 text-[11px] text-neutral-400">Se activa en Configuración → Módulos opcionales. Al activarlo se abre esta ayuda guiada.</p>}
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {on && (
                       <Button onClick={() => startTour(m.id)}>
@@ -302,7 +302,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           );
         })}
       </div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-400">Los pasos del tour de Reclutamiento</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Los pasos del tour de Reclutamiento</p>
       <ol className="space-y-1">
         {TOUR_STEPS.map((s, i) => (
           <li key={i}>
@@ -311,12 +311,12 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
                 navigate(s.route);
                 closePanel();
               }}
-              className="flex w-full items-start gap-3 rounded-lg px-2 py-2 text-left hover:bg-stone-50"
+              className="flex w-full items-start gap-3 rounded-lg px-2 py-2 text-left hover:bg-neutral-50"
             >
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stone-100 text-[10px] font-bold text-stone-600">{i + 1}</span>
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-[10px] font-bold text-neutral-600">{i + 1}</span>
               <span>
-                <span className="block text-sm font-semibold text-stone-800">{s.title}</span>
-                <span className="block text-xs text-stone-500 line-clamp-2">{s.body}</span>
+                <span className="block text-sm font-semibold text-neutral-800">{s.title}</span>
+                <span className="block text-xs text-neutral-500 line-clamp-2">{s.body}</span>
               </span>
             </button>
           </li>
@@ -340,7 +340,7 @@ function VideoTab() {
   }
   return (
     <div className="flex-1 overflow-y-auto p-4">
-      <div className="mb-3 flex flex-wrap gap-1 rounded-lg bg-stone-100 p-1" role="tablist" aria-label="Videos de ayuda">
+      <div className="mb-3 flex flex-wrap gap-1 rounded-lg bg-neutral-100 p-1" role="tablist" aria-label="Videos de ayuda">
         {HELP_VIDEOS.map((v) => (
           <button
             key={v.id}
@@ -349,7 +349,7 @@ function VideoTab() {
             onClick={() => openPanel('video', { video: v.id })}
             className={cn(
               'min-w-[calc(50%-2px)] flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-colors',
-              v.id === video.id ? 'bg-white text-brand-800 shadow-sm' : 'text-stone-500 hover:text-stone-800',
+              v.id === video.id ? 'bg-white text-brand-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-800',
             )}
           >
             {v.tab}
@@ -357,18 +357,18 @@ function VideoTab() {
         ))}
       </div>
       {/* key: al cambiar de video, el reproductor se vuelve a montar con la nueva fuente. */}
-      <video key={video.id} ref={ref} controls preload="metadata" className="w-full rounded-xl bg-brand-950" aria-label={video.title}>
+      <video key={video.id} ref={ref} controls preload="metadata" className="w-full rounded-xl bg-ink" aria-label={video.title}>
         <source src={video.mp4} type="video/mp4" />
         <source src={video.webm} type="video/webm" />
         Tu navegador no puede reproducir este video.
       </video>
-      <p className="mt-2 text-xs text-stone-500">{video.description}</p>
+      <p className="mt-2 text-xs text-neutral-500">{video.description}</p>
       <ol className="mt-3 space-y-1">
         {video.chapters.map((c) => (
           <li key={c.t}>
-            <button onClick={() => seek(c.t)} className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-stone-50">
-              <span className="w-10 shrink-0 font-mono text-[11px] text-stone-400">{Math.floor(c.t / 60)}:{String(c.t % 60).padStart(2, '0')}</span>
-              <span className="text-stone-700">{c.label}</span>
+            <button onClick={() => seek(c.t)} className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-neutral-50">
+              <span className="w-10 shrink-0 font-mono text-[11px] text-neutral-400">{Math.floor(c.t / 60)}:{String(c.t % 60).padStart(2, '0')}</span>
+              <span className="text-neutral-700">{c.label}</span>
             </button>
           </li>
         ))}

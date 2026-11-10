@@ -77,7 +77,7 @@ export function deriveDecision(history: EvaluationPeriod[]): Decision {
 export const TONE_STYLES: Record<DecisionTone, { box: string; title: string }> = {
   positive: { box: 'border-green-200 bg-green-50', title: 'text-green-800' },
   neutral: { box: 'border-amber-200 bg-amber-50', title: 'text-amber-800' },
-  negative: { box: 'border-orange-200 bg-orange-50', title: 'text-orange-800' },
+  negative: { box: 'border-rose-200 bg-rose-50', title: 'text-rose-800' },
   critical: { box: 'border-red-200 bg-red-50', title: 'text-red-800' },
 };
 

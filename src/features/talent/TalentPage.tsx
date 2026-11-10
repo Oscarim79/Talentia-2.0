@@ -59,7 +59,7 @@ export default function TalentPage() {
           title="Matriz 9-Box"
           subtitle="Del candidato al colaborador: desempeño vs. cultura/potencial (escala 1–5)."
         />
-        <Card className="p-12 text-center text-sm text-stone-400">
+        <Card className="p-12 text-center text-sm text-neutral-400">
           El módulo de Talento se activa cuando hay colaboradores contratados y evaluados.
           <br />
           (Datos de demostración disponibles en la empresa <b>Americana 2000</b>.)
@@ -80,25 +80,25 @@ export default function TalentPage() {
       {/* Filtro por departamento */}
       <Card className="mb-5 flex flex-wrap items-center justify-between gap-3 p-4" dataTour="talent:filter">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">Departamento</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Departamento</span>
           <select
             value={dept}
             onChange={(e) => setDept(e.target.value)}
-            className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-semibold text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
           >
             {departments.map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
         </div>
-        <span className="text-sm text-stone-500">{people.length} colaboradores</span>
+        <span className="text-sm text-neutral-500">{people.length} colaboradores</span>
       </Card>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Matriz */}
         <Card className="p-6 xl:col-span-2" dataTour="talent:matrix">
           <NineBoxMatrix dataPoints={people} onPointClick={setSelectedId} />
-          <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] font-medium text-stone-500">
+          <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] font-medium text-neutral-500">
             <Legend color="bg-green-300/60" label="Ideal / Superestrella" />
             <Legend color="bg-yellow-200/60" label="Desarrollo / Futuro Líder" />
             <Legend color="bg-red-300/60" label="Riesgo / Crítico" />
@@ -107,29 +107,29 @@ export default function TalentPage() {
 
         {/* Lista de colaboradores (nombres clicables → perfil) */}
         <Card className="p-5" dataTour="talent:list">
-          <h2 className="mb-3 text-sm font-bold text-stone-700">
-            Colaboradores {dept !== 'Todos' && <span className="text-stone-400">· {dept}</span>}
+          <h2 className="mb-3 text-sm font-bold text-neutral-700">
+            Colaboradores {dept !== 'Todos' && <span className="text-neutral-400">· {dept}</span>}
           </h2>
           <ul className="space-y-1">
             {people.map((p) => (
               <li key={p.id}>
                 <button
                   onClick={() => setSelectedId(p.id)}
-                  className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-stone-50"
+                  className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-neutral-50"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                     {p.initials}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <p className="text-sm font-semibold leading-snug text-stone-800">{p.name}</p>
-                      <span className="shrink-0 text-[11px] font-medium text-stone-400">
+                      <p className="text-sm font-semibold leading-snug text-neutral-800">{p.name}</p>
+                      <span className="shrink-0 text-[11px] font-medium text-neutral-400">
                         {(p.refinedPerformanceScore || p.performanceScore).toFixed(1)} ·{' '}
                         {(p.refinedCultureScore || p.cultureScore).toFixed(1)}
                       </span>
                     </div>
                     <div className="mt-0.5 flex items-center justify-between gap-2">
-                      <p className="truncate text-xs text-stone-500">{p.role}</p>
+                      <p className="truncate text-xs text-neutral-500">{p.role}</p>
                       <Badge variant={quadrantVariant(p.quadrant)} className="shrink-0 whitespace-nowrap text-[10px]">
                         {p.quadrant}
                       </Badge>
@@ -144,24 +144,24 @@ export default function TalentPage() {
 
       {/* Cultura 360° del equipo (promedio, responde al filtro) */}
       <Card className="mt-6 p-6" dataTour="talent:culture">
-        <h2 className="mb-4 text-sm font-bold text-stone-700">
-          Cultura 360° del equipo · 10 dimensiones {dept !== 'Todos' && <span className="text-stone-400">· {dept}</span>}
+        <h2 className="mb-4 text-sm font-bold text-neutral-700">
+          Cultura 360° del equipo · 10 dimensiones {dept !== 'Todos' && <span className="text-neutral-400">· {dept}</span>}
         </h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {teamGroups.map(({ group, dims, avg }) => (
             <div key={group}>
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wide text-stone-500">{group}</span>
+                <span className="text-xs font-bold uppercase tracking-wide text-neutral-500">{group}</span>
                 <Badge variant={avg >= 4 ? 'green' : avg >= 3 ? 'amber' : 'red'}>{avg.toFixed(2)}/5</Badge>
               </div>
               <div className="space-y-2">
                 {dims.map((d) => (
                   <div key={d.key} className="flex items-center gap-2">
-                    <span className="w-40 shrink-0 truncate text-xs text-stone-600">{d.label}</span>
-                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-stone-100">
+                    <span className="w-40 shrink-0 truncate text-xs text-neutral-600">{d.label}</span>
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-neutral-100">
                       <div className={`h-full rounded-full ${scoreColor(d.score)}`} style={{ width: `${(d.score / 5) * 100}%` }} />
                     </div>
-                    <span className="w-8 shrink-0 text-right text-xs font-semibold text-stone-700">
+                    <span className="w-8 shrink-0 text-right text-xs font-semibold text-neutral-700">
                       {d.score.toFixed(1)}
                     </span>
                   </div>

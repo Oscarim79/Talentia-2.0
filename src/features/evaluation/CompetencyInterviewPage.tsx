@@ -115,9 +115,9 @@ export default function CompetencyInterviewPage() {
 
       {pool.length === 0 ? (
         <Card className="p-10 text-center">
-          <NotebookPen className="mx-auto h-8 w-8 text-stone-300" />
-          <p className="mt-3 text-sm font-semibold text-stone-700">Nadie en la etapa Entrevista todavía.</p>
-          <p className="mt-1 text-sm text-stone-500">Quien confirma su entrevista en Respuestas a CVs aparece aquí para entrevistarlo con la guía.</p>
+          <NotebookPen className="mx-auto h-8 w-8 text-neutral-300" />
+          <p className="mt-3 text-sm font-semibold text-neutral-700">Nadie en la etapa Entrevista todavía.</p>
+          <p className="mt-1 text-sm text-neutral-500">Quien confirma su entrevista en Respuestas a CVs aparece aquí para entrevistarlo con la guía.</p>
           <Link to="/respuestas" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:underline">
             Ir a Respuestas a CVs <ArrowRight className="h-4 w-4" />
           </Link>
@@ -128,11 +128,11 @@ export default function CompetencyInterviewPage() {
           <div className="min-w-0">
             {/* Móvil: selector */}
             <label className="mb-3 block lg:hidden">
-              <span className="mb-1 block text-xs font-semibold text-stone-500">Candidato</span>
+              <span className="mb-1 block text-xs font-semibold text-neutral-500">Candidato</span>
               <select
                 value={selected?.id ?? ''}
                 onChange={(e) => select(e.target.value)}
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm"
               >
                 <optgroup label={`Por evaluar (${pending.length})`}>
                   {pending.map((c) => (
@@ -157,7 +157,7 @@ export default function CompetencyInterviewPage() {
                   value={jobFilter}
                   onChange={(e) => setJobFilter(e.target.value)}
                   aria-label="Filtrar por vacante"
-                  className="mb-1 w-full rounded-lg border border-stone-200 bg-stone-50 px-2.5 py-1.5 text-xs font-semibold text-stone-600"
+                  className="mb-1 w-full rounded-lg border border-neutral-200 bg-neutral-50 px-2.5 py-1.5 text-xs font-semibold text-neutral-600"
                 >
                   <option value="all">Todas las vacantes</option>
                   {poolJobs.map((j) => (
@@ -171,13 +171,13 @@ export default function CompetencyInterviewPage() {
                 {pending.map((c) => (
                   <CandidateRow key={c.id} cand={c} job={jobs.find((j) => j.id === c.jobId)} ev={evaluations[c.id]} active={c.id === selected?.id} onClick={() => select(c.id)} />
                 ))}
-                {pending.length === 0 && <p className="px-2 py-3 text-xs text-stone-400">Nadie pendiente.</p>}
+                {pending.length === 0 && <p className="px-2 py-3 text-xs text-neutral-400">Nadie pendiente.</p>}
               </ListGroup>
               <ListGroup title="Evaluadas" count={finished.length}>
                 {finished.map((c) => (
                   <CandidateRow key={c.id} cand={c} job={jobs.find((j) => j.id === c.jobId)} ev={evaluations[c.id]} active={c.id === selected?.id} onClick={() => select(c.id)} />
                 ))}
-                {finished.length === 0 && <p className="px-2 py-3 text-xs text-stone-400">Todavía ninguna.</p>}
+                {finished.length === 0 && <p className="px-2 py-3 text-xs text-neutral-400">Todavía ninguna.</p>}
               </ListGroup>
             </Card>
           </div>
@@ -196,7 +196,7 @@ export default function CompetencyInterviewPage() {
                 onStage={(stage) => setStage(selected.id, stage)}
               />
             ) : (
-              <Card className="p-10 text-center text-sm text-stone-400">Elige un candidato de la lista.</Card>
+              <Card className="p-10 text-center text-sm text-neutral-400">Elige un candidato de la lista.</Card>
             )}
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function CompetencyInterviewPage() {
 function ListGroup({ title, count, children }: { title: string; count: number; children: ReactNode }) {
   return (
     <div className="mb-1">
-      <p className="flex items-center justify-between px-2 pb-1 pt-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-stone-400">
+      <p className="flex items-center justify-between px-2 pb-1 pt-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-neutral-400">
         {title} <span>{count}</span>
       </p>
       <div className="space-y-0.5">{children}</div>
@@ -238,7 +238,7 @@ function CandidateRow({ cand, job, ev, active, onClick }: { cand: Candidate; job
       aria-current={active ? 'true' : undefined}
       className={cn(
         'flex w-full items-start gap-2.5 rounded-xl px-2 py-2 text-left transition-colors',
-        active ? 'bg-brand-50 ring-1 ring-brand-200' : 'hover:bg-stone-50',
+        active ? 'bg-brand-50 ring-1 ring-brand-200' : 'hover:bg-neutral-50',
       )}
     >
       <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
@@ -246,8 +246,8 @@ function CandidateRow({ cand, job, ev, active, onClick }: { cand: Candidate; job
         {cand.lastName[0]}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-stone-800">{fullName(cand)}</p>
-        <p className="truncate text-[11px] text-stone-500">
+        <p className="truncate text-sm font-semibold text-neutral-800">{fullName(cand)}</p>
+        <p className="truncate text-[11px] text-neutral-500">
           {job?.title ?? 'Vacante'}
           {cand.stage !== 'interview' && ` · ${STAGE_LABEL[cand.stage]}`}
         </p>
@@ -338,7 +338,7 @@ function Workspace({
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-stone-500">
+            <p className="text-sm text-neutral-500">
               {job ? `${job.title} · ${job.brand}` : 'Vacante'} · etapa {STAGE_LABEL[cand.stage]}
               {cand.screeningScore != null && ` · score CV ${cand.screeningScore}`}
             </p>
@@ -359,7 +359,7 @@ function Workspace({
               disabled={readOnly || !isBlank(ev)}
               title={!isBlank(ev) ? 'Ya hay notas o puntajes: para cambiar de guía, borra la evaluación y empieza de nuevo.' : undefined}
               onChange={(e) => update({ role: e.target.value as GuideRole })}
-              className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-stone-50 disabled:text-stone-600"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-neutral-50 disabled:text-neutral-600"
             >
               {(Object.keys(GUIDES) as GuideRole[]).map((r) => (
                 <option key={r} value={r}>
@@ -373,7 +373,7 @@ function Workspace({
               value={ev.interviewerId}
               disabled={readOnly}
               onChange={(e) => update({ interviewerId: e.target.value })}
-              className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-stone-50 disabled:text-stone-600"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-neutral-50 disabled:text-neutral-600"
             >
               {!interviewer && <option value={ev.interviewerId}>—</option>}
               {team.map((u) => (
@@ -389,7 +389,7 @@ function Workspace({
               value={ev.date}
               disabled={readOnly}
               onChange={(e) => e.target.value && update({ date: e.target.value })}
-              className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-stone-50 disabled:text-stone-600"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-neutral-50 disabled:text-neutral-600"
             />
           </Field>
         </div>
@@ -405,14 +405,14 @@ function Workspace({
             onClick={() => setStep(s.id)}
             className={cn(
               'rounded-xl border px-3 py-2.5 text-left transition-colors',
-              step === s.id ? 'border-brand-600 bg-brand-600 text-white shadow-sm' : 'border-stone-200 bg-white text-stone-700 hover:border-brand-300',
+              step === s.id ? 'border-brand-600 bg-brand-600 text-white shadow-sm' : 'border-neutral-200 bg-white text-neutral-700 hover:border-brand-300',
             )}
           >
             <span className="flex items-center gap-2 text-sm font-bold">
-              <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-[11px]', step === s.id ? 'bg-white/20' : 'bg-stone-100')}>{s.n}</span>
+              <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-[11px]', step === s.id ? 'bg-white/20' : 'bg-neutral-100')}>{s.n}</span>
               {s.label}
             </span>
-            <span className={cn('mt-0.5 block truncate text-[11px]', step === s.id ? 'text-brand-100' : 'text-stone-400')}>{s.hint}</span>
+            <span className={cn('mt-0.5 block truncate text-[11px]', step === s.id ? 'text-brand-100' : 'text-neutral-400')}>{s.hint}</span>
           </button>
         ))}
       </div>
@@ -450,7 +450,7 @@ function Workspace({
               onSave(emptyEvaluation({ candidateId: ev.candidateId, tenantId: ev.tenantId, jobId: ev.jobId, role: ev.role, interviewerId: ev.interviewerId, date: ev.date }));
               setStep('interview');
             }}
-            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-stone-400 hover:bg-stone-100 hover:text-stone-600"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Borrar y empezar de nuevo
           </button>
@@ -463,7 +463,7 @@ function Workspace({
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-stone-400">{label}</span>
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
       {children}
     </label>
   );
@@ -480,7 +480,7 @@ function StartCard({ cand, job, role, onStart }: { cand: Candidate; job?: Job; r
         </div>
         <div className="min-w-0 flex-1">
           <h2 className="font-display text-lg font-semibold text-ink">{fullName(cand)}</h2>
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-neutral-500">
             {job ? `${job.title} · ${job.brand}` : 'Vacante'} · etapa {STAGE_LABEL[cand.stage]}
           </p>
         </div>
@@ -491,15 +491,15 @@ function StartCard({ cand, job, role, onStart }: { cand: Candidate; job?: Job; r
         <MiniStat value={`1 + ${choiceQuestionsFor(role).length}`} label="Historia + opción múltiple" />
         <MiniStat value={`${g.minutes} min`} label="Duración aproximada" />
       </div>
-      <ol className="mt-5 space-y-2 text-sm text-stone-600">
+      <ol className="mt-5 space-y-2 text-sm text-neutral-600">
         <li className="flex gap-2">
-          <StepDot n={1} /> <span><b className="text-stone-800">Entrevista:</b> haces las preguntas en orden y anotas frases textuales del candidato.</span>
+          <StepDot n={1} /> <span><b className="text-neutral-800">Entrevista:</b> haces las preguntas en orden y anotas frases textuales del candidato.</span>
         </li>
         <li className="flex gap-2">
-          <StepDot n={2} /> <span><b className="text-stone-800">Puntuar:</b> al terminar, das de 1 a 5 a cada respuesta con la escala de la guía.</span>
+          <StepDot n={2} /> <span><b className="text-neutral-800">Puntuar:</b> al terminar, das de 1 a 5 a cada respuesta con la escala de la guía.</span>
         </li>
         <li className="flex gap-2">
-          <StepDot n={3} /> <span><b className="text-stone-800">Reporte:</b> la app calcula cada competencia, el Índice General y la recomendación.</span>
+          <StepDot n={3} /> <span><b className="text-neutral-800">Reporte:</b> la app calcula cada competencia, el Índice General y la recomendación.</span>
         </li>
       </ol>
       <div className="mt-6 flex flex-wrap gap-2">
@@ -516,9 +516,9 @@ function StartCard({ cand, job, role, onStart }: { cand: Candidate; job?: Job; r
 
 function MiniStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-xl border border-stone-100 bg-stone-50/60 p-3">
+    <div className="rounded-xl border border-neutral-100 bg-neutral-50/60 p-3">
       <p className="font-display text-lg font-semibold text-ink">{value}</p>
-      <p className="text-[11px] leading-tight text-stone-500">{label}</p>
+      <p className="text-[11px] leading-tight text-neutral-500">{label}</p>
     </div>
   );
 }
@@ -531,10 +531,10 @@ function SectionTitle({ n, title, subtitle }: { n?: string; title: string; subti
   return (
     <div className="mb-3">
       <h3 className="font-display text-base font-semibold text-ink">
-        {n && <span className="mr-1.5 text-brand-600">{n}</span>}
+        {n && <span className="mr-1.5 text-brand-700">{n}</span>}
         {title}
       </h3>
-      {subtitle && <p className="text-xs text-stone-500">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-neutral-500">{subtitle}</p>}
     </div>
   );
 }
@@ -547,7 +547,7 @@ function NotesBox({ value, onChange, readOnly, placeholder }: { value: string; o
       onChange={(e) => onChange(e.target.value)}
       rows={2}
       placeholder={placeholder ?? 'Frases textuales del candidato…'}
-      className="mt-2 w-full resize-y rounded-lg border border-stone-200 bg-stone-50/50 px-3 py-2 text-sm text-stone-800 placeholder:text-stone-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 read-only:bg-stone-50"
+      className="mt-2 w-full resize-y rounded-lg border border-neutral-200 bg-neutral-50/50 px-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 read-only:bg-neutral-50"
     />
   );
 }
@@ -570,12 +570,12 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
 
   return (
     <div className="space-y-4">
-      <details className="group rounded-2xl border border-gold-200 bg-gold-100/40 p-4" open={isBlank(ev)}>
-        <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-bold text-stone-800">
-          <BookOpen className="h-4 w-4 text-gold-700" /> Cómo aplicar la entrevista
-          <span className="ml-auto text-xs font-medium text-stone-500 group-open:hidden">Ver</span>
+      <details className="group rounded-2xl border border-neutral-300 bg-neutral-50 p-4" open={isBlank(ev)}>
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-bold text-neutral-800">
+          <BookOpen className="h-4 w-4 text-brand-700" /> Cómo aplicar la entrevista
+          <span className="ml-auto text-xs font-medium text-neutral-500 group-open:hidden">Ver</span>
         </summary>
-        <ul className="mt-3 space-y-1.5 text-sm text-stone-700">
+        <ul className="mt-3 space-y-1.5 text-sm text-neutral-700">
           {INSTRUCTIONS.map((i) => (
             <li key={i.title}>
               <b>{i.title}:</b> {i.text}
@@ -585,10 +585,10 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
       </details>
 
       {/* Repreguntas siempre a la vista */}
-      <div className="sticky top-0 z-10 -mx-1 rounded-xl border border-stone-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500">
-          <MessageSquareQuote className="h-3.5 w-3.5 text-brand-600" />
-          <span className="font-semibold text-stone-700">Repreguntas neutrales:</span>
+      <div className="sticky top-0 z-10 -mx-1 rounded-xl border border-neutral-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+          <MessageSquareQuote className="h-3.5 w-3.5 text-brand-700" />
+          <span className="font-semibold text-neutral-700">Repreguntas neutrales:</span>
           {FOLLOW_UPS.map((f) => (
             <span key={f} className="rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-800">
               {f}
@@ -602,18 +602,18 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
         <div className="space-y-5">
           {competenciesFor(ev.role).map((c) => (
             <div key={c.key}>
-              <p className="mb-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-brand-600">{c.label}</p>
+              <p className="mb-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-brand-700">{c.label}</p>
               <div className="space-y-3">
                 {questions
                   .filter((q) => q.competency === c.key)
                   .map((q) => (
-                    <div key={q.id} className="rounded-xl border border-stone-100 p-3">
-                      <p className="text-[15px] font-semibold leading-snug text-stone-900">
-                        <span className="mr-1.5 text-xs font-bold text-stone-400">{q.id}</span>
+                    <div key={q.id} className="rounded-xl border border-neutral-100 p-3">
+                      <p className="text-[15px] font-semibold leading-snug text-neutral-900">
+                        <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.id}</span>
                         {q.text}
                       </p>
-                      <p className="mt-1 flex gap-1.5 text-xs text-stone-500">
-                        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-600" />
+                      <p className="mt-1 flex gap-1.5 text-xs text-neutral-500">
+                        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-600" />
                         <span>
                           <b>Busca:</b> {q.lookFor}
                         </span>
@@ -629,7 +629,7 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
 
       <Card className="p-4 sm:p-5">
         <SectionTitle n="2." title="Pregunta basada en una historia" subtitle={STORY.howTo} />
-        <div className="mb-3 inline-flex rounded-lg bg-stone-100 p-1" role="radiogroup" aria-label="Pregunta de la historia">
+        <div className="mb-3 inline-flex rounded-lg bg-neutral-100 p-1" role="radiogroup" aria-label="Pregunta de la historia">
           {(['main', 'alternate'] as const).map((v) => (
             <button
               key={v}
@@ -639,18 +639,18 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
               onClick={() => update({ storyVariant: v })}
               className={cn(
                 'rounded-md px-3 py-1 text-xs font-semibold transition-colors',
-                ev.storyVariant === v ? 'bg-white text-brand-800 shadow-sm' : 'text-stone-500 hover:text-stone-800',
+                ev.storyVariant === v ? 'bg-white text-brand-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-800',
               )}
             >
               {v === 'main' ? 'Pregunta principal' : 'Pregunta alterna'}
             </button>
           ))}
         </div>
-        <p className="text-[15px] font-semibold leading-snug text-stone-900">"{storyText}"</p>
+        <p className="text-[15px] font-semibold leading-snug text-neutral-900">"{storyText}"</p>
         {ev.storyVariant === 'main' ? (
-          <p className="mt-1 text-xs text-stone-500">Si no tiene un ejemplo, usa la pregunta alterna.</p>
+          <p className="mt-1 text-xs text-neutral-500">Si no tiene un ejemplo, usa la pregunta alterna.</p>
         ) : (
-          <p className="mt-1 text-xs text-stone-500">{STORY.alternateWhen}</p>
+          <p className="mt-1 text-xs text-neutral-500">{STORY.alternateWhen}</p>
         )}
         <NotesBox value={ev.notes.story ?? ''} onChange={(v) => setNote('story', v)} readOnly={readOnly} placeholder="Qué buscaba el cliente, qué hizo el candidato, cómo terminó…" />
       </Card>
@@ -664,8 +664,8 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
         <div className="space-y-4">
           {choiceQuestionsFor(ev.role).map((q) => (
             <div key={q.id}>
-              <p className="text-sm font-semibold text-stone-900">
-                <span className="mr-1.5 text-xs font-bold text-stone-400">{q.n}.</span>
+              <p className="text-sm font-semibold text-neutral-900">
+                <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.n}.</span>
                 {q.prompt}
               </p>
               <div className="mt-2 space-y-1.5" role="radiogroup" aria-label={`Pregunta ${q.n}`}>
@@ -680,13 +680,13 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
                       onClick={() => setChoice(q.id, o.letter)}
                       className={cn(
                         'flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left text-sm transition-colors disabled:cursor-default',
-                        on ? 'border-brand-500 bg-brand-50 text-stone-900' : 'border-stone-200 text-stone-700 hover:border-brand-300',
+                        on ? 'border-brand-500 bg-brand-50 text-neutral-900' : 'border-neutral-200 text-neutral-700 hover:border-brand-300',
                       )}
                     >
                       <span
                         className={cn(
                           'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold',
-                          on ? 'border-brand-600 bg-brand-600 text-white' : 'border-stone-300 text-stone-500',
+                          on ? 'border-brand-600 bg-brand-600 text-white' : 'border-neutral-300 text-neutral-500',
                         )}
                       >
                         {o.letter}
@@ -744,36 +744,36 @@ function ScoreButtons({
             onClick={() => onChange(on ? undefined : s.score)}
             className={cn(
               'h-9 w-9 rounded-lg border text-sm font-bold transition-colors disabled:cursor-not-allowed',
-              on ? 'border-brand-600 bg-brand-600 text-white' : 'border-stone-300 bg-white text-stone-600 hover:border-brand-400 hover:text-brand-700',
+              on ? 'border-brand-600 bg-brand-600 text-white' : 'border-neutral-300 bg-white text-neutral-600 hover:border-brand-400 hover:text-brand-700',
               blocked && 'opacity-30',
-              disabled && !on && 'hover:border-stone-300 hover:text-stone-600',
+              disabled && !on && 'hover:border-neutral-300 hover:text-neutral-600',
             )}
           >
             {s.score}
           </button>
         );
       })}
-      <span className="ml-1 text-xs font-medium text-stone-500">{value != null ? SCALE[value - 1].level : 'Sin puntaje'}</span>
+      <span className="ml-1 text-xs font-medium text-neutral-500">{value != null ? SCALE[value - 1].level : 'Sin puntaje'}</span>
     </div>
   );
 }
 
 function Quote({ text }: { text?: string }) {
   return text?.trim() ? (
-    <p className="mt-1.5 whitespace-pre-line rounded-lg border-l-2 border-brand-300 bg-stone-50 px-3 py-1.5 text-sm italic text-stone-700">{text}</p>
+    <p className="mt-1.5 whitespace-pre-line rounded-lg border-l-2 border-brand-300 bg-neutral-50 px-3 py-1.5 text-sm italic text-neutral-700">{text}</p>
   ) : (
-    <p className="mt-1.5 text-xs text-stone-400">Sin notas.</p>
+    <p className="mt-1.5 text-xs text-neutral-400">Sin notas.</p>
   );
 }
 
 function ScoreChip({ score, weight }: { score: number | null; weight: number }) {
   return (
     <span className="ml-auto flex items-center gap-2">
-      <span className="text-[11px] text-stone-400">peso {Math.round(weight * 100)} %</span>
+      <span className="text-[11px] text-neutral-400">peso {Math.round(weight * 100)} %</span>
       <span
         className={cn(
           'rounded-lg px-2.5 py-1 font-display text-base font-semibold',
-          score == null ? 'bg-stone-100 text-stone-400' : score >= 4 ? 'bg-green-100 text-green-800' : score >= 3 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700',
+          score == null ? 'bg-neutral-100 text-neutral-400' : score >= 4 ? 'bg-green-100 text-green-800' : score >= 3 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700',
         )}
       >
         {score != null ? fmt1(score) : '—'}
@@ -822,19 +822,19 @@ function ScoreStep({
 
   return (
     <div className="space-y-4">
-      <details className="rounded-2xl border border-stone-200 bg-white p-4" open>
-        <summary className="cursor-pointer list-none text-sm font-bold text-stone-800">Escala de 1 a 5 · puntúa con la descripción, no con tu impresión general</summary>
+      <details className="rounded-2xl border border-neutral-200 bg-white p-4" open>
+        <summary className="cursor-pointer list-none text-sm font-bold text-neutral-800">Escala de 1 a 5 · puntúa con la descripción, no con tu impresión general</summary>
         <div className="mt-3 grid gap-2 sm:grid-cols-5">
           {SCALE.map((s) => (
-            <div key={s.score} className="rounded-lg bg-stone-50 p-2.5">
-              <p className="text-sm font-bold text-stone-800">
+            <div key={s.score} className="rounded-lg bg-neutral-50 p-2.5">
+              <p className="text-sm font-bold text-neutral-800">
                 {s.score} · {s.level}
               </p>
-              <p className="mt-0.5 text-[11px] leading-snug text-stone-500">{s.description}</p>
+              <p className="mt-0.5 text-[11px] leading-snug text-neutral-500">{s.description}</p>
             </div>
           ))}
         </div>
-        <p className="mt-2 text-xs text-stone-500">
+        <p className="mt-2 text-xs text-neutral-500">
           Si el candidato habló solo en plural ("hicimos", "logramos") y no describió acciones propias, marca la casilla: el puntaje máximo es {PLURAL_CAP}.
         </p>
       </details>
@@ -848,10 +848,10 @@ function ScoreStep({
             const text = c.competency === 'resultados' && ev.storyVariant === 'alternate' ? STORY.alternateResults : c.text;
             const label = result.competencies.find((x) => x.key === c.competency)?.label ?? '';
             return (
-              <div key={c.competency} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-stone-100 p-3">
+              <div key={c.competency} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-neutral-100 p-3">
                 <div className="min-w-0 flex-1 basis-64">
                   <p className="text-xs font-bold text-brand-700">{label}</p>
-                  <p className="text-sm text-stone-700">{text}</p>
+                  <p className="text-sm text-neutral-700">{text}</p>
                 </div>
                 <ScoreButtons value={ev.story[c.competency]} onChange={(v) => setStory(c.competency, v)} disabled={readOnly} label={`Historia · ${label}`} />
               </div>
@@ -871,14 +871,14 @@ function ScoreStep({
             </div>
             <div className="space-y-3">
               {qs.map((q) => (
-                <div key={q.id} className="rounded-xl border border-stone-100 p-3">
-                  <p className="text-sm font-semibold text-stone-900">
-                    <span className="mr-1.5 text-xs font-bold text-stone-400">{q.id}</span>
+                <div key={q.id} className="rounded-xl border border-neutral-100 p-3">
+                  <p className="text-sm font-semibold text-neutral-900">
+                    <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.id}</span>
                     {q.text}
                   </p>
                   <Quote text={ev.notes[q.id]} />
-                  <p className="mt-1.5 flex gap-1.5 text-xs text-stone-500">
-                    <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold-600" />
+                  <p className="mt-1.5 flex gap-1.5 text-xs text-neutral-500">
+                    <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-600" />
                     <span>
                       <b>Para 4 o 5 busca:</b> {q.lookFor}
                     </span>
@@ -891,20 +891,20 @@ function ScoreStep({
                       disabled={readOnly}
                       label={`Puntaje ${q.id}`}
                     />
-                    <label className="flex items-center gap-2 text-xs text-stone-600">
+                    <label className="flex items-center gap-2 text-xs text-neutral-600">
                       <input
                         type="checkbox"
                         checked={!!ev.pluralOnly[q.id]}
                         disabled={readOnly}
                         onChange={(e) => setPlural(q.id, e.target.checked)}
-                        className="h-4 w-4 rounded border-stone-300 accent-brand-600"
+                        className="h-4 w-4 rounded border-neutral-300 accent-brand-600"
                       />
                       Habló solo en plural (máx. {PLURAL_CAP})
                     </label>
                   </div>
                 </div>
               ))}
-              <div className="flex flex-wrap gap-x-6 gap-y-1 rounded-xl bg-stone-50 px-3 py-2 text-xs text-stone-600">
+              <div className="flex flex-wrap gap-x-6 gap-y-1 rounded-xl bg-neutral-50 px-3 py-2 text-xs text-neutral-600">
                 {c.storyApplies && (
                   <span>
                     Historia: <b>{c.story ?? '—'}</b>
@@ -927,7 +927,7 @@ function ScoreStep({
                 )}
               </div>
               <label className="block">
-                <span className="text-xs font-semibold text-stone-500">Observaciones de la competencia (van al reporte)</span>
+                <span className="text-xs font-semibold text-neutral-500">Observaciones de la competencia (van al reporte)</span>
                 <NotesBox
                   value={ev.observations[c.key] ?? ''}
                   onChange={(v) => update((p) => ({ observations: { ...p.observations, [c.key]: v } }))}
@@ -1012,10 +1012,10 @@ function ReportStep({
       <Card className="p-4 sm:p-6" dataTour="competencias:report">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand-600">Reporte de competencias del candidato</p>
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand-700">Reporte de competencias del candidato</p>
             <h3 className="mt-1 font-display text-xl font-semibold text-ink">{fullName(cand)}</h3>
           </div>
-          <FileText className="h-6 w-6 text-stone-300" />
+          <FileText className="h-6 w-6 text-neutral-300" />
         </div>
         <dl className="mt-3 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
           <Meta label="Puesto aplicado" value={guideNote(ctx.jobTitle, ev.role)} />
@@ -1028,7 +1028,7 @@ function ReportStep({
         <div className="mt-5 overflow-x-auto">
           <table className="w-full min-w-[520px] text-sm">
             <thead>
-              <tr className="border-b border-stone-200 text-left text-[11px] uppercase tracking-wide text-stone-400">
+              <tr className="border-b border-neutral-200 text-left text-[11px] uppercase tracking-wide text-neutral-400">
                 <th className="py-2 pr-3 font-semibold">Competencia</th>
                 <th className="px-2 py-2 text-center font-semibold">Conductuales</th>
                 <th className="px-2 py-2 text-center font-semibold">Historia</th>
@@ -1039,17 +1039,17 @@ function ReportStep({
             </thead>
             <tbody>
               {r.competencies.map((c) => (
-                <tr key={c.key} className="border-b border-stone-100">
-                  <td className="py-2 pr-3 font-medium text-stone-800">{c.label}</td>
-                  <td className="px-2 py-2 text-center text-stone-600">{behavioralCell(c)}</td>
-                  <td className="px-2 py-2 text-center text-stone-600">{c.storyApplies ? (c.story ?? '—') : <span className="text-stone-400">No aplica</span>}</td>
-                  <td className="px-2 py-2 text-center text-stone-600">{c.choice ?? '—'}</td>
-                  <td className="px-2 py-2 text-center text-stone-400">{Math.round(c.weight * 100)} %</td>
+                <tr key={c.key} className="border-b border-neutral-100">
+                  <td className="py-2 pr-3 font-medium text-neutral-800">{c.label}</td>
+                  <td className="px-2 py-2 text-center text-neutral-600">{behavioralCell(c)}</td>
+                  <td className="px-2 py-2 text-center text-neutral-600">{c.storyApplies ? (c.story ?? '—') : <span className="text-neutral-400">No aplica</span>}</td>
+                  <td className="px-2 py-2 text-center text-neutral-600">{c.choice ?? '—'}</td>
+                  <td className="px-2 py-2 text-center text-neutral-400">{Math.round(c.weight * 100)} %</td>
                   <td className="py-2 pl-2 text-right">
                     <span
                       className={cn(
                         'font-display text-base font-semibold',
-                        c.score == null ? 'text-stone-300' : c.score >= 4 ? 'text-green-700' : c.score >= 3 ? 'text-amber-700' : 'text-red-600',
+                        c.score == null ? 'text-neutral-300' : c.score >= 4 ? 'text-green-700' : c.score >= 3 ? 'text-amber-700' : 'text-red-600',
                       )}
                     >
                       {c.score != null ? fmt1(c.score) : '—'}
@@ -1060,38 +1060,38 @@ function ReportStep({
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-[11px] text-stone-400">
+        <p className="mt-2 text-[11px] text-neutral-400">
           Puntaje de la competencia = (promedio conductual × 0.8) + (opción múltiple × 0.2). El promedio conductual incluye el criterio de la historia cuando aplica.
         </p>
 
         {/* Índice y recomendación */}
         {r.index != null && r.level && (
-          <div className="mt-5 grid gap-4 rounded-2xl bg-stone-50 p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
+          <div className="mt-5 grid gap-4 rounded-2xl bg-neutral-50 p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
             <div className="text-center sm:pr-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-400">Índice General</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Índice General</p>
               <p className="font-display text-4xl font-semibold leading-none text-ink">{fmt1(r.index)}</p>
-              <p className="mt-1 text-xs text-stone-500">de 5 · {r.percent} %</p>
+              <p className="mt-1 text-xs text-neutral-500">de 5 · {r.percent} %</p>
             </div>
             <div className="min-w-0">
               <Badge variant={LEVEL_BADGE[r.level]} className="px-3 py-1 text-sm">
                 {RECOMMENDATION_LABEL[r.level]}
               </Badge>
-              <p className="mt-1.5 text-sm text-stone-700">{RECOMMENDATION_HINT[r.level]}</p>
-              <ul className="mt-1.5 space-y-0.5 text-xs text-stone-500">
+              <p className="mt-1.5 text-sm text-neutral-700">{RECOMMENDATION_HINT[r.level]}</p>
+              <ul className="mt-1.5 space-y-0.5 text-xs text-neutral-500">
                 {r.reasons.map((x) => (
                   <li key={x}>• {x}</li>
                 ))}
               </ul>
-              <p className="mt-1.5 break-words font-mono text-[10.5px] text-stone-400">{indexFormula(r)}</p>
+              <p className="mt-1.5 break-words font-mono text-[10.5px] text-neutral-400">{indexFormula(r)}</p>
             </div>
           </div>
         )}
 
         {asSeller?.index != null && asSeller.level && (
-          <p className="mt-3 rounded-xl border border-stone-200 px-4 py-2.5 text-sm text-stone-600">
-            <b className="text-stone-800">Leído como Vendedor</b> (mismos puntajes, pesos de Vendedor): Índice {fmt1(asSeller.index)} ({asSeller.percent} %) —{' '}
+          <p className="mt-3 rounded-xl border border-neutral-200 px-4 py-2.5 text-sm text-neutral-600">
+            <b className="text-neutral-800">Leído como Vendedor</b> (mismos puntajes, pesos de Vendedor): Índice {fmt1(asSeller.index)} ({asSeller.percent} %) —{' '}
             <Badge variant={LEVEL_BADGE[asSeller.level]}>{RECOMMENDATION_LABEL[asSeller.level]}</Badge>
-            <span className="mt-0.5 block text-xs text-stone-400">Útil si el candidato no queda para Jefe de Tienda pero podría servir en piso de ventas.</span>
+            <span className="mt-0.5 block text-xs text-neutral-400">Útil si el candidato no queda para Jefe de Tienda pero podría servir en piso de ventas.</span>
           </p>
         )}
 
@@ -1105,8 +1105,8 @@ function ReportStep({
 
         {r.competencies.some((c) => ev.observations[c.key]?.trim()) && (
           <div className="mt-5">
-            <p className="mb-1.5 text-sm font-bold text-stone-800">Observaciones por competencia</p>
-            <ul className="space-y-1 text-sm text-stone-700">
+            <p className="mb-1.5 text-sm font-bold text-neutral-800">Observaciones por competencia</p>
+            <ul className="space-y-1 text-sm text-neutral-700">
               {r.competencies
                 .filter((c) => ev.observations[c.key]?.trim())
                 .map((c) => (
@@ -1119,7 +1119,7 @@ function ReportStep({
         )}
 
         {/* Acciones del reporte */}
-        <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-4">
+        <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-neutral-100 pt-4">
           {ev.status === 'draft' && (
             <Button onClick={() => update({ status: 'done' })} disabled={!r.complete}>
               <ClipboardCheck className="h-4 w-4" /> Terminar evaluación
@@ -1142,8 +1142,8 @@ function ReportStep({
       {/* Decisión de RR.HH. */}
       {r.complete && (
         <Card className="p-4 sm:p-5">
-          <p className="text-sm font-bold text-stone-800">Decisión de RR.HH.</p>
-          <p className="mt-0.5 text-sm text-stone-500">La recomendación apoya la decisión; la decisión es tuya. El candidato se mueve de etapa en Candidatos.</p>
+          <p className="text-sm font-bold text-neutral-800">Decisión de RR.HH.</p>
+          <p className="mt-0.5 text-sm text-neutral-500">La recomendación apoya la decisión; la decisión es tuya. El candidato se mueve de etapa en Candidatos.</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {cand.stage === 'interview' ? (
               <>
@@ -1177,24 +1177,24 @@ function ReportStep({
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-2">
-      <dt className="shrink-0 text-stone-400">{label}:</dt>
-      <dd className="min-w-0 font-medium text-stone-800">{value}</dd>
+      <dt className="shrink-0 text-neutral-400">{label}:</dt>
+      <dd className="min-w-0 font-medium text-neutral-800">{value}</dd>
     </div>
   );
 }
 
 function SummaryList({ title, items, tone }: { title: string; items: string[]; tone: string }) {
   return (
-    <div className="rounded-xl border border-stone-100 p-3">
+    <div className="rounded-xl border border-neutral-100 p-3">
       <p className={cn('text-sm font-bold', tone)}>{title}</p>
       {items.length ? (
-        <ul className="mt-1 space-y-0.5 text-sm text-stone-700">
+        <ul className="mt-1 space-y-0.5 text-sm text-neutral-700">
           {items.map((x) => (
             <li key={x}>• {x}</li>
           ))}
         </ul>
       ) : (
-        <p className="mt-1 text-sm text-stone-400">—</p>
+        <p className="mt-1 text-sm text-neutral-400">—</p>
       )}
     </div>
   );

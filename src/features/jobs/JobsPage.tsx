@@ -42,7 +42,7 @@ export default function JobsPage() {
       />
 
       {jobs.length === 0 ? (
-        <Card className="p-12 text-center text-sm text-stone-400">Esta empresa aún no tiene vacantes.</Card>
+        <Card className="p-12 text-center text-sm text-neutral-400">Esta empresa aún no tiene vacantes.</Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {jobs.map((j, i) => (
@@ -62,8 +62,8 @@ function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
     <Card className="flex flex-col p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-base font-bold text-stone-900">{j.title}</h3>
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-500">
+          <h3 className="text-base font-bold text-neutral-900">{j.title}</h3>
+          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500">
             <Badge variant="gold">{j.brand}</Badge>
             <span>{j.department}</span>
             <span className="flex items-center gap-1">
@@ -74,7 +74,7 @@ function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
         <Badge variant={STATUS_VARIANT[j.status]}>{STATUS_LABEL[j.status]}</Badge>
       </div>
 
-      <p className="mt-3 line-clamp-2 text-sm text-stone-600">{j.description}</p>
+      <p className="mt-3 line-clamp-2 text-sm text-neutral-600">{j.description}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
         <Badge variant="stone">{fmtMoney(j.salaryMin, 'GTQ')}–{fmtMoney(j.salaryMax, 'GTQ')}</Badge>
@@ -95,9 +95,9 @@ function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
       </div>
 
       <div className="mt-4 flex items-center gap-2">
-        <div className="flex flex-1 items-center gap-1.5 rounded-lg bg-stone-50 px-3 py-2 text-xs text-stone-500">
+        <div className="flex flex-1 items-center gap-1.5 rounded-lg bg-neutral-50 px-3 py-2 text-xs text-neutral-500">
           <Link2 className="h-3.5 w-3.5" />
-          talentia.app/{j.applySlug}
+          talentialabs.app/{j.applySlug}
         </div>
         <Button
           variant="secondary"

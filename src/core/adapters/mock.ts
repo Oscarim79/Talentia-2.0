@@ -258,7 +258,7 @@ export const mockLlm: LlmPort = {
     if (asked === 0) {
       const first = script[0];
       const opener =
-        `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de TALENTIA, una inteligencia artificial, para la vacante de **${jobTitle}**. ` +
+        `¡Hola ${firstName}! Soy el asistente virtual de entrevistas de Talentia Labs, una inteligencia artificial, para la vacante de **${jobTitle}**. ` +
         `La entrevista se graba para que RR.HH. la evalúe. Seguiré la guía de entrevista de ${guideLabel}: ${script.length} preguntas; responde con ejemplos concretos de lo que tú hiciste.` +
         (first ? `\n\n${say(first)}` : '');
       return delay({ message: opener, done: false, questionId: first?.id }, 700);

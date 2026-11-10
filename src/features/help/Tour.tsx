@@ -126,34 +126,34 @@ export function Tour() {
       {/* Foco: el recorte se logra con una sombra enorme alrededor del elemento. */}
       {rect ? (
         <div
-          className="absolute rounded-xl ring-2 ring-gold-400 transition-all duration-300"
+          className="absolute rounded-xl ring-2 ring-brand-500 transition-all duration-300"
           style={{
             top: rect.top - PAD,
             left: rect.left - PAD,
             width: rect.width + PAD * 2,
             height: rect.height + PAD * 2,
-            boxShadow: '0 0 0 9999px rgba(5, 42, 32, 0.62)',
+            boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.62)',
           }}
         />
       ) : (
-        <div className="absolute inset-0 bg-brand-950/62" />
+        <div className="absolute inset-0 bg-ink/62" />
       )}
 
       <div ref={cardRef} className="absolute max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl" style={cardStyle}>
         <div className="mb-2 flex items-start justify-between gap-3">
-          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-600">
+          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">
             {tour !== 'main' && `${TOUR_LABELS[tour]} · `}Paso {tourStep + 1} de {steps.length}
           </p>
-          <button onClick={() => endTour()} aria-label="Salir del tour" className="rounded-lg p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
+          <button onClick={() => endTour()} aria-label="Salir del tour" className="rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700">
             <X className="h-4 w-4" />
           </button>
         </div>
         <h3 className="font-display text-lg font-semibold leading-tight text-ink">{step.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-stone-600">{step.body}</p>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600">{step.body}</p>
         <div className="mt-4 flex items-center justify-between gap-2">
           <div className="flex gap-1">
             {steps.map((_, i) => (
-              <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === tourStep ? 'bg-brand-600' : i < tourStep ? 'bg-brand-300' : 'bg-stone-200'}`} />
+              <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === tourStep ? 'bg-brand-600' : i < tourStep ? 'bg-brand-300' : 'bg-neutral-200'}`} />
             ))}
           </div>
           <div className="flex gap-2">

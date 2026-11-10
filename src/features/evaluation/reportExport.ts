@@ -89,7 +89,7 @@ export function reportText({ ev, result: r, asSeller, candidateName, jobTitle, i
     obs.forEach((c) => L.push(`  - ${c.label}: ${ev.observations[c.key]!.trim()}`));
   }
   L.push('');
-  L.push('— Guía de Entrevista por competencias · TALENTIA · RR.HH.');
+  L.push('— Guía de Entrevista por competencias · Talentia Labs · RR.HH.');
   return L.join('\n');
 }
 
@@ -98,15 +98,15 @@ export function reportText({ ev, result: r, asSeller, candidateName, jobTitle, i
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const PRINT_CSS = `
-  *{box-sizing:border-box} body{font-family:"Segoe UI",Arial,sans-serif;color:#1c1917;margin:32px;font-size:12.5px;line-height:1.45}
-  h1{font-size:20px;margin:0 0 2px} h2{font-size:14px;margin:20px 0 6px;color:#14532d;border-bottom:1px solid #d6d3d1;padding-bottom:3px}
-  h3{font-size:12.5px;margin:12px 0 4px} .muted{color:#78716c} .meta{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;margin:10px 0}
-  table{border-collapse:collapse;width:100%;margin:6px 0} th,td{border:1px solid #d6d3d1;padding:5px 7px;text-align:left;vertical-align:top} th{background:#f5f5f4;font-size:11.5px}
+  *{box-sizing:border-box} body{font-family:"Segoe UI",Arial,sans-serif;color:#000000;margin:32px;font-size:12.5px;line-height:1.45}
+  h1{font-size:20px;margin:0 0 2px} h2{font-size:14px;margin:20px 0 6px;color:#c93913;border-bottom:1px solid #d8d8d8;padding-bottom:3px}
+  h3{font-size:12.5px;margin:12px 0 4px} .muted{color:#737373} .meta{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;margin:10px 0}
+  table{border-collapse:collapse;width:100%;margin:6px 0} th,td{border:1px solid #d8d8d8;padding:5px 7px;text-align:left;vertical-align:top} th{background:#f5f5f5;font-size:11.5px}
   td.n{text-align:center;white-space:nowrap} .big{font-size:22px;font-weight:700} .pill{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:700}
   .recommended{background:#dcfce7;color:#166534} .reservations{background:#fef3c7;color:#92400e} .not{background:#fee2e2;color:#991b1b}
-  ul{margin:4px 0;padding-left:18px} li{margin:2px 0} .q{margin:8px 0 2px;font-weight:600} .look{color:#57534e;font-size:11.5px}
-  .lines{border-bottom:1px dotted #a8a29e;height:22px} .opt{margin:2px 0 2px 14px}
-  .foot{margin-top:24px;font-size:10.5px;color:#a8a29e} @media print{body{margin:14mm}}
+  ul{margin:4px 0;padding-left:18px} li{margin:2px 0} .q{margin:8px 0 2px;font-weight:600} .look{color:#525252;font-size:11.5px}
+  .lines{border-bottom:1px dotted #a3a3a3;height:22px} .opt{margin:2px 0 2px 14px}
+  .foot{margin-top:24px;font-size:10.5px;color:#a3a3a3} @media print{body{margin:14mm}}
 `;
 
 /** Abre una ventana con el documento y el diálogo de impresión (desde ahí se puede "Guardar como PDF"). */
@@ -152,7 +152,7 @@ export function reportHtml({ ev, result: r, asSeller, candidateName, jobTitle, i
     <h2>Resumen final</h2>
     <div class="meta"><div><h3>Fortalezas</h3>${list(r.strengths)}</div><div><h3>Áreas de mejora</h3>${list(r.improvements)}</div></div>
     ${obs.length ? `<h2>Observaciones por competencia</h2><ul>${obs.map((c) => `<li><b>${esc(c.label)}:</b> ${esc(ev.observations[c.key]!.trim())}</li>`).join('')}</ul>` : ''}
-    <p class="foot">Generado por TALENTIA · RR.HH. La recomendación apoya la decisión; la decisión es de RR.HH.</p>`;
+    <p class="foot">Generado por Talentia Labs · RR.HH. La recomendación apoya la decisión; la decisión es de RR.HH.</p>`;
 }
 
 /** Guía impresa en blanco: escala, preguntas con "Busca", historia y opción múltiple (sin puntajes), con espacio para notas. */
@@ -183,5 +183,5 @@ export function blankGuideHtml(role: GuideRole): string {
     <p class="q">${esc(STORY.main)}</p><p class="look">Alterna: ${esc(STORY.alternate)} ${esc(STORY.alternateWhen)}</p><div class="lines"></div><div class="lines"></div><div class="lines"></div>
     <ul>${STORY.criteria.map((c) => `<li>${esc(c.text)} &nbsp; 1 · 2 · 3 · 4 · 5</li>`).join('')}</ul>
     <h2>3. Opción múltiple (el candidato elige una; no mostrar puntajes)</h2>${choices}
-    <p class="foot">TALENTIA · Guía de Entrevista por competencias. Los puntajes se capturan en la app (Reclutamiento → Entrevistas), que calcula el reporte.</p>`;
+    <p class="foot">Talentia Labs · Guía de Entrevista por competencias. Los puntajes se capturan en la app (Reclutamiento → Entrevistas), que calcula el reporte.</p>`;
 }

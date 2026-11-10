@@ -17,7 +17,7 @@ let uidCounter = 0;
 const nextId = (prefix: string) => `${prefix}_${Date.now().toString(36)}_${++uidCounter}`;
 
 const inputCls =
-  'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
 /** Wizard paso a paso para crear una vacante con IA + export XML LinkedIn. */
 export default function JobWizard({ onClose, onCreate }: { onClose: () => void; onCreate: (job: Job) => void }) {
@@ -123,7 +123,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
       role="dialog"
       aria-modal="true"
       aria-label="Nueva vacante"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 p-4"
       onClick={safeClose}
     >
       <div
@@ -131,18 +131,18 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
         onClick={(e) => e.stopPropagation()}
       >
         {/* Cabecera + stepper */}
-        <div className="border-b border-stone-200 px-6 py-4">
+        <div className="border-b border-neutral-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="rounded-lg bg-brand-50 p-2 text-brand-600">
+              <div className="rounded-lg bg-brand-50 p-2 text-brand-700">
                 <Briefcase className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-stone-900">Nueva vacante</h2>
-                <p className="text-xs text-stone-500">Paso {step + 1} de {STEPS.length} · {STEPS[step]}</p>
+                <h2 className="text-base font-bold text-neutral-900">Nueva vacante</h2>
+                <p className="text-xs text-neutral-500">Paso {step + 1} de {STEPS.length} · {STEPS[step]}</p>
               </div>
             </div>
-            <button onClick={safeClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100">
+            <button onClick={safeClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -150,7 +150,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
             {STEPS.map((s, i) => (
               <div
                 key={s}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? 'bg-brand-600' : 'bg-stone-200'}`}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? 'bg-brand-600' : 'bg-neutral-200'}`}
               />
             ))}
           </div>
@@ -213,7 +213,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
           {step === 1 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-stone-600">Genera la descripción con IA y edítala a tu gusto.</p>
+                <p className="text-sm text-neutral-600">Genera la descripción con IA y edítala a tu gusto.</p>
                 <Button variant="secondary" onClick={generateDescription} disabled={genDesc}>
                   {genDesc ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   {genDesc ? 'Generando…' : description ? 'Regenerar' : 'Generar con IA'}
@@ -230,7 +230,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
 
           {step === 2 && (
             <div className="space-y-4">
-              <p className="text-sm text-stone-600">
+              <p className="text-sm text-neutral-600">
                 Define los criterios que el motor de screening usará para puntuar CVs.
                 Los <b className="text-green-700">positivos</b> suman; los <b className="text-red-600">negativos</b> son excluyentes.
               </p>
@@ -251,7 +251,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {filters.length === 0 && <p className="text-sm text-stone-400">Aún no hay filtros. Agrega al menos uno para un mejor scoring.</p>}
+                {filters.length === 0 && <p className="text-sm text-neutral-400">Aún no hay filtros. Agrega al menos uno para un mejor scoring.</p>}
                 {filters.map((f) => (
                   <span
                     key={f.id}
@@ -272,25 +272,25 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
           {step === 3 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-stone-600">Opcionales: preguntas extra para el entrevistador. La entrevista (con una persona o con el asistente de IA) siempre usa la guía de competencias de RR.HH.</p>
+                <p className="text-sm text-neutral-600">Opcionales: preguntas extra para el entrevistador. La entrevista (con una persona o con el asistente de IA) siempre usa la guía de competencias de RR.HH.</p>
                 <Button variant="secondary" onClick={generateQuestions} disabled={genQ}>
                   {genQ ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   {genQ ? 'Generando…' : questions.length ? 'Regenerar' : 'Generar con IA'}
                 </Button>
               </div>
               <div className="space-y-2">
-                {questions.length === 0 && <p className="text-sm text-stone-400">Sin preguntas todavía. Genera con IA o agrega manualmente.</p>}
+                {questions.length === 0 && <p className="text-sm text-neutral-400">Sin preguntas todavía. Genera con IA o agrega manualmente.</p>}
                 {questions.map((q, i) => (
-                  <div key={q.id} className="flex items-start gap-2 rounded-lg border border-stone-200 p-3">
-                    <span className="mt-1.5 text-xs font-bold text-stone-300">{i + 1}</span>
+                  <div key={q.id} className="flex items-start gap-2 rounded-lg border border-neutral-200 p-3">
+                    <span className="mt-1.5 text-xs font-bold text-neutral-300">{i + 1}</span>
                     <textarea
-                      className="min-h-[44px] flex-1 resize-none bg-transparent text-sm text-stone-700 focus:outline-none"
+                      className="min-h-[44px] flex-1 resize-none bg-transparent text-sm text-neutral-700 focus:outline-none"
                       value={q.text}
                       rows={1}
                       onChange={(e) => setQuestions((prev) => prev.map((x) => (x.id === q.id ? { ...x, text: e.target.value } : x)))}
                     />
                     {q.source === 'ai' && <Badge variant="blue">IA</Badge>}
-                    <button onClick={() => setQuestions((prev) => prev.filter((x) => x.id !== q.id))} className="mt-1 text-stone-300 hover:text-red-500">
+                    <button onClick={() => setQuestions((prev) => prev.filter((x) => x.id !== q.id))} className="mt-1 text-neutral-300 hover:text-red-500">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -307,9 +307,9 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
 
           {step === 4 && (
             <div className="space-y-4">
-              <div className="rounded-xl border border-stone-200 p-4">
-                <h3 className="text-base font-bold text-stone-900">{title || 'Sin título'}</h3>
-                <p className="mt-1 text-xs text-stone-500">{department} · {location} · {employmentType}</p>
+              <div className="rounded-xl border border-neutral-200 p-4">
+                <h3 className="text-base font-bold text-neutral-900">{title || 'Sin título'}</h3>
+                <p className="mt-1 text-xs text-neutral-500">{department} · {location} · {employmentType}</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
                   <Badge variant="stone">{fmtMoney(salaryMin, 'GTQ')}–{fmtMoney(salaryMax, 'GTQ')}</Badge>
                   <Badge variant="brand">{openings} plazas</Badge>
@@ -317,8 +317,8 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                   <Badge variant="red">{filters.filter((f) => f.polarity === 'negative').length} filtros −</Badge>
                   <Badge variant="blue">{questions.length} preguntas</Badge>
                 </div>
-                <div className="mt-3 rounded-lg bg-stone-50 px-3 py-2 text-xs text-stone-500">
-                  talentia.app/{tenant.slug}/{slugify(title) || 'vacante'}
+                <div className="mt-3 rounded-lg bg-neutral-50 px-3 py-2 text-xs text-neutral-500">
+                  talentialabs.app/{tenant.slug}/{slugify(title) || 'vacante'}
                 </div>
               </div>
 
@@ -336,7 +336,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
         </div>
 
         {/* Pie: navegación */}
-        <div className="flex items-center justify-between border-t border-stone-200 px-6 py-4">
+        <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-4">
           <Button variant="ghost" onClick={() => (step === 0 ? safeClose() : setStep((s) => s - 1))}>
             <ChevronLeft className="h-4 w-4" /> {step === 0 ? 'Cancelar' : 'Atrás'}
           </Button>
@@ -358,7 +358,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-stone-400">{label}</span>
+      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
       {children}
     </label>
   );

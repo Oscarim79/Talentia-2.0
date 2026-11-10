@@ -50,7 +50,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
       );
     });
     lines.push('');
-    lines.push('— Generado por TALENTIA · RR.HH.');
+    lines.push('— Generado por Talentia Labs · RR.HH.');
     return lines.join('\n');
   })();
 
@@ -73,20 +73,20 @@ export function ManagerReportModal({ department, onClose }: { department: string
       role="dialog"
       aria-modal="true"
       aria-label={`Reporte de equipo · ${department}`}
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/50 p-4 sm:p-8"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-neutral-900/50 p-4 sm:p-8"
       onClick={onClose}
     >
       <div className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Encabezado */}
-        <div className="flex items-start justify-between border-b border-stone-100 p-6">
+        <div className="flex items-start justify-between border-b border-neutral-100 p-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-brand-600">Reporte de equipo · RR.HH.</p>
-            <h2 className="mt-0.5 text-lg font-bold text-stone-900">{department}</h2>
-            <p className="text-sm text-stone-500">Para {manager.name} · gerente del área</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-brand-700">Reporte de equipo · RR.HH.</p>
+            <h2 className="mt-0.5 text-lg font-bold text-neutral-900">{department}</h2>
+            <p className="text-sm text-neutral-500">Para {manager.name} · gerente del área</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-600"
+            className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
             aria-label="Cerrar"
           >
             <X className="h-5 w-5" />
@@ -111,21 +111,21 @@ export function ManagerReportModal({ department, onClose }: { department: string
             return (
               <div key={b}>
                 <h3 className={`mb-2 flex items-center gap-2 text-sm font-bold ${M.accent}`}>
-                  <Icon className="h-4 w-4" /> {M.title} <span className="text-stone-400">· {list.length}</span>
+                  <Icon className="h-4 w-4" /> {M.title} <span className="text-neutral-400">· {list.length}</span>
                 </h3>
                 <div className="space-y-2">
                   {list.map((it) => (
-                    <div key={it.person.id} className="flex items-start gap-3 rounded-lg border border-stone-100 p-3">
+                    <div key={it.person.id} className="flex items-start gap-3 rounded-lg border border-neutral-100 p-3">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                         {it.person.initials}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-sm font-bold text-stone-900">{it.person.name}</p>
+                          <p className="text-sm font-bold text-neutral-900">{it.person.name}</p>
                           <Badge variant={toneBadge(it.decision.tone)}>{it.decision.label}</Badge>
                         </div>
-                        <p className="text-xs text-stone-500">{it.person.role}</p>
-                        <p className="mt-0.5 text-xs text-stone-400">Base: {it.decision.rationale}</p>
+                        <p className="text-xs text-neutral-500">{it.person.role}</p>
+                        <p className="mt-0.5 text-xs text-neutral-400">Base: {it.decision.rationale}</p>
                       </div>
                     </div>
                   ))}
@@ -135,7 +135,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
           })}
 
           {/* Acciones de envío */}
-          <div className="flex flex-wrap items-center gap-2 border-t border-stone-100 pt-4">
+          <div className="flex flex-wrap items-center gap-2 border-t border-neutral-100 pt-4">
             <a
               href={wa}
               target="_blank"
@@ -160,9 +160,9 @@ export function ManagerReportModal({ department, onClose }: { department: string
 
 function Summary({ value, label, tone }: { value: number; label: string; tone?: string }) {
   return (
-    <div className="rounded-lg border border-stone-100 p-3 text-center">
-      <p className={`text-2xl font-black ${tone ?? 'text-stone-900'}`}>{value}</p>
-      <p className="mt-0.5 text-xs text-stone-500">{label}</p>
+    <div className="rounded-lg border border-neutral-100 p-3 text-center">
+      <p className={`text-2xl font-black ${tone ?? 'text-neutral-900'}`}>{value}</p>
+      <p className="mt-0.5 text-xs text-neutral-500">{label}</p>
     </div>
   );
 }

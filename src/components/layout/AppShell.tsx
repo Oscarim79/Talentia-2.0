@@ -23,7 +23,7 @@ export function AppShell() {
       {menuOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div
-            className="absolute inset-0 bg-brand-950/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
           />
           <div className="relative z-10 h-full">

@@ -56,7 +56,7 @@ export function ModuleIntroModal() {
   const eyebrow = !isModule ? 'Sección de la app' : activatedNow ? 'Módulo activado' : on ? 'Módulo opcional · activo' : 'Módulo opcional · desactivado';
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-950/60 p-4 backdrop-blur-sm" onClick={closeModuleIntro}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm" onClick={closeModuleIntro}>
       <div
         ref={dialogRef}
         tabIndex={-1}
@@ -66,22 +66,22 @@ export function ModuleIntroModal() {
         onClick={(e) => e.stopPropagation()}
         className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl outline-none"
       >
-        <div className="shrink-0 bg-brand-950 px-5 py-5 text-white sm:px-6">
+        <div className="shrink-0 bg-ink px-5 py-5 text-white sm:px-6">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gold-500 text-brand-950">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white">
                 <Video className="h-5 w-5" />
               </div>
-              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-gold-300">{eyebrow}</p>
+              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-400">{eyebrow}</p>
             </div>
-            <button onClick={closeModuleIntro} aria-label="Cerrar" className="rounded-lg p-1.5 text-brand-300 hover:bg-white/10 hover:text-white">
+            <button onClick={closeModuleIntro} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-white/10 hover:text-white">
               <X className="h-4 w-4" />
             </button>
           </div>
           <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">
             {activatedNow ? `Activaste ${guide.title}` : guide.title}
           </h2>
-          <p className="mt-1 text-sm text-brand-200">{guide.summary}</p>
+          <p className="mt-1 text-sm text-neutral-300">{guide.summary}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 sm:p-6">
@@ -93,29 +93,29 @@ export function ModuleIntroModal() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <section>
-              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-600">Cómo funciona</h3>
+              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">Cómo funciona</h3>
               <ol className="space-y-3">
                 {guide.howItWorks.map((s, i) => (
                   <li key={s.title} className="flex gap-3">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">{i + 1}</span>
                     <span>
-                      <span className="block text-sm font-semibold text-stone-800">{s.title}</span>
-                      <span className="block text-xs leading-relaxed text-stone-500">{s.body}</span>
+                      <span className="block text-sm font-semibold text-neutral-800">{s.title}</span>
+                      <span className="block text-xs leading-relaxed text-neutral-500">{s.body}</span>
                     </span>
                   </li>
                 ))}
               </ol>
             </section>
             <section>
-              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-600">Qué debes hacer</h3>
+              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">Qué debes hacer</h3>
               <ul className="space-y-3">
                 {guide.todo.map((t) => (
                   <li key={t.text} className="flex gap-2.5">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
-                    <span className="text-xs leading-relaxed text-stone-600">
+                    <span className="text-xs leading-relaxed text-neutral-600">
                       {t.text}
                       {t.route && on && (
-                        <button onClick={() => go(t.route!)} className="ml-1 inline-flex items-center gap-0.5 font-semibold text-brand-600 hover:underline">
+                        <button onClick={() => go(t.route!)} className="ml-1 inline-flex items-center gap-0.5 font-semibold text-brand-700 hover:underline">
                           {t.routeLabel ?? 'Ir'} <ArrowRight className="h-3 w-3" />
                         </button>
                       )}
@@ -127,7 +127,7 @@ export function ModuleIntroModal() {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-stone-100 bg-stone-50/60 px-5 py-4 sm:px-6">
+        <div className="shrink-0 border-t border-neutral-100 bg-neutral-50/60 px-5 py-4 sm:px-6">
           <div className="flex flex-wrap items-center gap-2">
             {on ? (
               <Button onClick={() => startTour(guide.tour)}>
@@ -160,7 +160,7 @@ export function ModuleIntroModal() {
               Lo veo después
             </Button>
           </div>
-          <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-400">
+          <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-neutral-400">
             {isTourDone(guide.tour) && (
               <Badge variant="green" className="shrink-0 whitespace-nowrap">
                 <Check className="h-3 w-3" /> Recorrido visto

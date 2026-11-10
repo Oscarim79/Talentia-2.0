@@ -16,7 +16,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     route: '/',
     target: 'nav:/',
-    title: 'Bienvenido a TALENTIA',
+    title: 'Bienvenido a Talentia Labs',
     body: 'El menú de la izquierda sigue el orden real del trabajo: Reclutamiento (vacante → CVs → respuestas → entrevista → candidatos), Talento (la gente ya contratada) y Gestión (métricas y configuración). Este tour te lleva por cada paso.',
   },
   {
@@ -205,7 +205,7 @@ export const MANAGEMENT_TOUR_STEPS: TourStep[] = [
     route: '/configuracion',
     target: 'settings:reset',
     title: 'Restablecer la demo',
-    body: 'TALENTIA es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, este botón (solo lo ve quien administra) borra, para toda la empresa, lo guardado en la nube (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo y módulos); las preguntas al chat se conservan.',
+    body: 'Talentia Labs es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, este botón (solo lo ve quien administra) borra, para toda la empresa, lo guardado en la nube (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo y módulos); las preguntas al chat se conservan.',
   },
 ];
 
@@ -309,7 +309,7 @@ const asset = (file: string) => `${import.meta.env.BASE_URL}ayuda/${file}`;
 
 /** Capítulos del video de recorrido (segundos aproximados). */
 export const VIDEO_CHAPTERS: { t: number; label: string }[] = [
-  { t: 0, label: 'Qué es TALENTIA y el orden del trabajo' },
+  { t: 0, label: 'Qué es Talentia Labs y el orden del trabajo' },
   { t: 30, label: 'Crear la vacante con IA (5 pasos)' },
   { t: 82, label: 'Subir CVs y ver el ranking' },
   { t: 112, label: 'Responder: Zoom y un horario por candidato' },
@@ -366,8 +366,8 @@ export const HELP_VIDEOS: HelpVideo[] = [
   {
     id: 'tour',
     tab: 'Recorrido',
-    title: 'Recorrido completo de TALENTIA',
-    description: 'Recorrido completo de TALENTIA (4 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
+    title: 'Recorrido completo de Talentia Labs',
+    description: 'Recorrido completo de Talentia Labs (4 min), narrado y con subtítulos. Toca un capítulo para ir directo.',
     mp4: asset('tour-talentia.mp4'),
     webm: asset('tour-talentia.webm'),
     chapters: VIDEO_CHAPTERS,

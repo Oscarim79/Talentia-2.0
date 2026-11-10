@@ -6,31 +6,27 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Marca — verde bosque (el producto lleva a la gente "hacia el verde") */
-  --color-brand-50: #ecf7f1;
-  --color-brand-100: #d6eee2;
-  --color-brand-200: #addcc6;
-  --color-brand-300: #7cc4a6;
-  --color-brand-400: #47a683;
-  --color-brand-500: #1f8a66;
-  --color-brand-600: #0f7355;
-  --color-brand-700: #0c5b44;
-  --color-brand-800: #0a4936;
-  --color-brand-900: #07362a;
-  --color-brand-950: #052a20;
+  /*
+   * Paleta de Talentia Labs (4 colores): rojo-naranja #E94823, blanco #FFFFFF,
+   * gris #D8D8D8 y negro #000000. La escala "brand" sale del rojo-naranja
+   * (600 = el color exacto de la marca; 700 = texto y hover, con contraste AA).
+   */
+  --color-brand-50: #fff3ef;
+  --color-brand-100: #ffe3da;
+  --color-brand-200: #ffc5b3;
+  --color-brand-300: #fb9f84;
+  --color-brand-400: #f57a57;
+  --color-brand-500: #f05c37;
+  --color-brand-600: #e94823;
+  --color-brand-700: #c93913;
+  --color-brand-800: #a02f12;
+  --color-brand-900: #7a2611;
+  --color-brand-950: #4a1608;
 
-  /* Acento dorado — reconocimiento, premium */
-  --color-gold-100: #f7ebd3;
-  --color-gold-200: #efdaae;
-  --color-gold-300: #e8c888;
-  --color-gold-400: #d9ac60;
-  --color-gold-500: #c99043;
-  --color-gold-600: #a9742e;
-  --color-gold-700: #8a5d24;
-
-  /* Lienzo marfil y tinta */
-  --color-canvas: #f6f4ee;
-  --color-ink: #21312b;
+  /* Lienzo blanco y tinta negra; el gris de la marca es el neutral-300 */
+  --color-canvas: #ffffff;
+  --color-ink: #000000;
+  --color-neutral-300: #d8d8d8;
 
   --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Bricolage Grotesque Variable', 'Instrument Sans Variable', ui-sans-serif, sans-serif;

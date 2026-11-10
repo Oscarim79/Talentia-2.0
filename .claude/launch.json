@@ -4,8 +4,22 @@
     {
       "name": "talentia-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "talentia-dev-3100",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--port=3100",
+        "--strictPort",
+        "--host=127.0.0.1"
+      ],
+      "port": 3100
     }
   ]
 }

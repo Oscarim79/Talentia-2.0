@@ -37,13 +37,13 @@ function descriptionToHtml(md: string): string {
 export function jobToLinkedInXml(job: Job, tenant: Tenant): string {
   const now = new Date().toUTCString();
   const html = descriptionToHtml(job.description);
-  const applyUrl = `https://talentia.app/${job.applySlug}`;
+  const applyUrl = `https://talentialabs.app/${job.applySlug}`;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <source>
   <lastBuildDate>${now}</lastBuildDate>
-  <publisher>Talentia 2.0</publisher>
-  <publisherUrl>https://talentia.app</publisherUrl>
+  <publisher>Talentia Labs</publisher>
+  <publisherUrl>https://talentialabs.app</publisherUrl>
   <job>
     <partnerJobId>${cdata(job.id)}</partnerJobId>
     <company>${cdata(job.brand || tenant.name)}</company>

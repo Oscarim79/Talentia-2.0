@@ -1,4 +1,4 @@
-# TALENTIA 2.0
+# Talentia Labs (antes TALENTIA 2.0 · repo `Talentia-2.0`)
 
 SaaS B2B **multi-tenant** de automatización de reclutamiento con IA.
 Tesis: *una sola persona gestiona cientos de candidatos* — la IA hace el screening y la entrevista inicial.
