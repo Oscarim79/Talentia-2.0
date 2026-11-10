@@ -131,7 +131,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       <div className="px-3 py-4">
         <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-brand-200">
           <p className="font-semibold text-gold-300">Modo demostración</p>
-          <p className="mt-0.5 text-brand-300">Sin proveedores conectados. IA simulada.</p>
+          <p className="mt-0.5 text-brand-300">Screening con IA real · entrevistas y ayuda simuladas.</p>
         </div>
       </div>
     </aside>
