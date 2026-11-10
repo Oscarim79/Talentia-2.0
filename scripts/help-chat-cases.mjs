@@ -466,4 +466,13 @@ export const CASES = [
   ["¿cómo ingreso los CVs?","subir-cv","/"],
   ["¿cuáles son las competencias clave?","competencias","/"],
   ["¿dónde veo el teléfono del candidato?","(sin respuesta)","/"],
+  // --- Entrega B: IA real para CVs ---
+  ['¿la IA lee el CV de verdad?', 'ia-cv', '/screening'],
+  ['¿qué formatos de CV acepta?', 'ia-cv', '/screening'],
+  ['¿puedo subir un cv en word?', 'ia-cv', '/screening'],
+  ['¿dónde queda guardado el archivo del cv?', 'ia-cv', '/screening'],
+  ['¿cómo veo el cv original?', 'ia-cv', '/candidatos'],
+  ['dice que la ia no está configurada', 'errores-cv', '/screening'],
+  ['¿cómo reintento un cv con error?', 'errores-cv', '/screening'],
+  ['¿cuánto cuesta cada cv?', 'ia-cv', '/'],
 ];

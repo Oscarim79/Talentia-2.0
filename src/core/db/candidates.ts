@@ -18,6 +18,7 @@ export interface CandidateRow {
   applied_at: string | null; // date
   hired_at: string | null; // date
   cv_file_name: string | null;
+  cv_path: string | null;
   screening_status: string | null;
   screening_score: number | null;
   match_percent: number | null;
@@ -29,7 +30,52 @@ export interface CandidateRow {
   inserted_at?: string; // lo pone la base de datos
 }
 
-export type CandidatePatch = Partial<Pick<Candidate, 'stage' | 'timeline' | 'hiredAt' | 'ownerId'>>;
+/** Campos que la app actualiza después de crear el candidato (etapa, fechas, dueño y el resultado del screening). */
+export type CandidatePatch = Partial<
+  Pick<
+    Candidate,
+    | 'stage'
+    | 'timeline'
+    | 'hiredAt'
+    | 'ownerId'
+    | 'screeningStatus'
+    | 'screeningScore'
+    | 'matchPercent'
+    | 'justification'
+    | 'evidence'
+    | 'flags'
+    | 'errorReason'
+    | 'parsed'
+    | 'firstName'
+    | 'lastName'
+    | 'email'
+    | 'phone'
+    | 'cvPath'
+  >
+>;
+
+const PATCH_COLUMNS: { [K in keyof CandidatePatch]-?: keyof CandidateRow } = {
+  stage: 'stage',
+  timeline: 'timeline',
+  hiredAt: 'hired_at',
+  ownerId: 'owner_id',
+  screeningStatus: 'screening_status',
+  screeningScore: 'screening_score',
+  matchPercent: 'match_percent',
+  justification: 'justification',
+  evidence: 'evidence',
+  flags: 'flags',
+  errorReason: 'error_reason',
+  parsed: 'parsed',
+  firstName: 'first_name',
+  lastName: 'last_name',
+  email: 'email',
+  phone: 'phone',
+  cvPath: 'cv_path',
+};
+
+/** Campos que en el tipo de dominio son obligatorios: si vienen sin valor no se tocan (nunca se mandan como null). */
+const NEVER_NULL: ReadonlySet<keyof CandidatePatch> = new Set(['stage', 'screeningStatus', 'firstName', 'lastName', 'email', 'phone']);
 
 export function rowToCandidate(r: CandidateRow): Candidate {
   return stripUndefined({
@@ -47,6 +93,7 @@ export function rowToCandidate(r: CandidateRow): Candidate {
     appliedAt: r.applied_at ?? '',
     hiredAt: nullToUndefined(r.hired_at),
     cvFileName: r.cv_file_name ?? '',
+    cvPath: nullToUndefined(r.cv_path),
     screeningStatus: (r.screening_status ?? 'pending') as Candidate['screeningStatus'],
     screeningScore: nullToUndefined(r.screening_score),
     matchPercent: nullToUndefined(r.match_percent),
@@ -74,6 +121,7 @@ export function candidateToRow(c: Candidate): CandidateRow {
     applied_at: c.appliedAt,
     hired_at: c.hiredAt ?? null,
     cv_file_name: c.cvFileName,
+    cv_path: c.cvPath ?? null,
     screening_status: c.screeningStatus,
     screening_score: c.screeningScore ?? null,
     match_percent: c.matchPercent ?? null,
@@ -87,12 +135,13 @@ export function candidateToRow(c: Candidate): CandidateRow {
 
 /** Solo las claves presentes en el parche; una clave presente con `undefined` se envía como null. */
 export function candidatePatchToRow(patch: CandidatePatch): Partial<CandidateRow> {
-  const row: Partial<CandidateRow> = {};
-  if (patch.stage !== undefined) row.stage = patch.stage;
-  if ('timeline' in patch) row.timeline = patch.timeline ?? null;
-  if ('hiredAt' in patch) row.hired_at = patch.hiredAt ?? null;
-  if ('ownerId' in patch) row.owner_id = patch.ownerId ?? null;
-  return row;
+  const row: Record<string, unknown> = {};
+  for (const key of Object.keys(patch) as (keyof CandidatePatch)[]) {
+    const value = patch[key];
+    if (value === undefined && NEVER_NULL.has(key)) continue;
+    row[PATCH_COLUMNS[key]] = value ?? null;
+  }
+  return row as Partial<CandidateRow>;
 }
 
 export async function listCandidates(tenantId: string): Promise<Candidate[]> {

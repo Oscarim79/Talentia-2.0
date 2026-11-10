@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, type ReactNode } from 'react';
-import { insertCandidate, listCandidates, updateCandidate } from '../core/db/candidates';
+import { insertCandidate, listCandidates, updateCandidate, type CandidatePatch } from '../core/db/candidates';
+import { stripUndefined } from '../core/db/rows';
 import { applyReplied, applyStage } from '../core/stages';
 import { todayISO } from '../lib/dates';
 import { notifyError } from '../lib/notify';
@@ -15,14 +16,16 @@ import { useTenantData } from './useTenantData';
 interface CandidatesCtxValue {
   /** Candidatos de la empresa actual, con su etapa vigente. */
   candidates: Candidate[];
-  /** Agrega un CV procesado en Screening IA. */
-  addCandidate: (c: Candidate) => void;
+  /** Agrega un candidato (CV cargado o de ejemplo). Resuelve `true` cuando ya quedó guardado en la base; `false` si falló (se avisa y se quita de la lista). */
+  addCandidate: (c: Candidate) => Promise<boolean>;
   /** Al confirmar la entrevista, el candidato pasa a la etapa Entrevista (si aún no avanzó más). */
   markInterviewScheduled: (candidateId: string) => void;
   /** RR.HH. mueve al candidato de etapa (ej. después de evaluar la entrevista: Oferta o Descartado). */
   setStage: (candidateId: string, stage: CandidateStage) => void;
   /** Se le envió la respuesta al candidato: queda la fecha de la primera respuesta. */
   markReplied: (candidateId: string) => void;
+  /** Guarda el resultado de la lectura del CV (o cualquier otro campo) de un candidato ya creado. */
+  updateCandidateFields: (candidateId: string, patch: CandidatePatch) => void;
   ready: boolean;
   error: string | null;
   reload: () => void;
@@ -78,10 +81,14 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
         ...(c.screeningStatus === 'scored' ? { timeline: { screened: today } } : {}),
       };
       set((list) => [...list, final]);
-      insertCandidate(final).catch(() => {
-        set((list) => list.filter((x) => x.id !== final.id));
-        notifyError(SAVE_ERROR);
-      });
+      return insertCandidate(final).then(
+        () => true,
+        () => {
+          set((list) => list.filter((x) => x.id !== final.id));
+          notifyError(SAVE_ERROR);
+          return false;
+        },
+      );
     },
     [member.id, set],
   );
@@ -115,9 +122,23 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
     [change],
   );
 
+  const updateCandidateFields = useCallback(
+    (candidateId: string, patch: CandidatePatch) => {
+      const before = ref.current.find((c) => c.id === candidateId);
+      if (!before) return;
+      const next = stripUndefined({ ...before, ...patch }) as Candidate;
+      set((list) => list.map((c) => (c.id === candidateId ? next : c)));
+      updateCandidate(candidateId, patch).catch(() => {
+        set((list) => list.map((c) => (c.id === candidateId ? before : c)));
+        notifyError(SAVE_ERROR);
+      });
+    },
+    [set],
+  );
+
   const value = useMemo<CandidatesCtxValue>(
-    () => ({ candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload }),
-    [candidates, addCandidate, markInterviewScheduled, setStage, markReplied, ready, error, reload],
+    () => ({ candidates, addCandidate, markInterviewScheduled, setStage, markReplied, updateCandidateFields, ready, error, reload }),
+    [candidates, addCandidate, markInterviewScheduled, setStage, markReplied, updateCandidateFields, ready, error, reload],
   );
 
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;

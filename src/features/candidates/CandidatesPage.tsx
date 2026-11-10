@@ -3,6 +3,7 @@ import { NotebookPen } from 'lucide-react';
 import { useCandidates } from '../../context/CandidatesContext';
 import { useEvaluations } from '../../context/EvaluationsContext';
 import { Card, PageHeader, Badge, scoreVariant } from '../../components/ui/primitives';
+import { CvLink } from '../../components/CvLink';
 import { RECOMMENDATION_LABEL, fmt1, scoreEvaluation, type RecommendationLevel } from '../../core/interviewGuide';
 import type { Candidate, CandidateStage } from '../../types';
 
@@ -85,6 +86,11 @@ export default function CandidatesPage() {
                           <Badge variant={scoreVariant(c.screeningScore)}>{c.screeningScore}</Badge>
                         )}
                       </div>
+                      {c.cvPath && (
+                        <div className="mt-2">
+                          <CvLink cvPath={c.cvPath} />
+                        </div>
+                      )}
                       {interviewLine(c)}
                     </Card>
                   ))}

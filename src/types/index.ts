@@ -156,6 +156,8 @@ export interface Candidate {
   appliedAt: string;
   hiredAt?: string; // fecha de contratación (alimenta time-to-fill)
   cvFileName: string;
+  /** Ruta del archivo original en Storage (bucket `cvs`); ausente en el seed y en los ejemplos simulados. */
+  cvPath?: string;
   screeningStatus: ScreeningStatus;
   screeningScore?: number; // 0-100
   matchPercent?: number; // match semántico 0-100

@@ -53,16 +53,32 @@ export const HELP_FAQ: FaqEntry[] = [
       'cargo los', 'donde cargo',
     ],
     answer:
-      'En Screening IA elige la vacante y arrastra los archivos (PDF, Word o imagen) a la zona punteada, o pulsa para elegirlos. La IA lee cada CV, lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la evidencia textual de cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Errores".',
+      'En Screening IA elige la vacante y arrastra los archivos a la zona punteada, o pulsa para elegirlos: PDF o Word (.docx) de hasta 10 MB, o imágenes JPG/PNG de hasta 7 MB. Cada candidato aparece de inmediato como "Leyendo el CV…" y se completa solo cuando la IA termina: lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la frase del CV que respalda cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Cola de errores".',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
   {
     id: 'errores-cv',
     question: 'Un CV salió en la cola de errores, ¿qué hago?',
-    keywords: ['error', 'errores', 'cola de errores', 'con error', 'ilegible', 'escaneado', 'contraseña', 'password', 'no se pudo leer', 'corrupto'],
+    keywords: [
+      'error', 'errores', 'cola de errores', 'con error', 'ilegible', 'escaneado', 'contraseña', 'password', 'no se pudo leer', 'corrupto',
+      'reintentar', 'reintento', 'configurada', 'no esta configurada', 'limite diario', 'límite diario', 'muy grande', 'no parece un cv',
+    ],
     answer:
-      'Significa que el archivo no se pudo leer: suele ser un PDF escaneado como imagen, protegido con contraseña o dañado. Pídele al candidato una versión legible (PDF exportado de Word, no foto). En Métricas aparece como pendiente "CV ilegible: pedir versión legible".',
+      'La cola de errores dice el motivo en cada fila: archivo ilegible (escaneo borroso o foto), protegido con contraseña, dañado, de un formato que no se admite (Word antiguo .doc: conviértelo a PDF), demasiado grande (PDF hasta 10 MB, imágenes hasta 7 MB), que no parece un CV, o que la IA no pudo leer en ese momento. Si el motivo lo permite, el botón "Reintentar" vuelve a pedir la lectura con el archivo ya guardado, sin subirlo otra vez. "La IA aún no está configurada" o "límite diario" no dependen de ti: avísale a Oscar. Para los ilegibles, pídele al candidato una versión legible (PDF exportado de Word, no foto); en Métricas aparece como pendiente "CV ilegible: pedir versión legible".',
+    route: '/screening',
+    routeLabel: 'Ir a Screening IA',
+  },
+  {
+    id: 'ia-cv',
+    question: '¿Qué hace la IA con cada CV?',
+    keywords: [
+      'ia', 'ia lee', 'lee el cv', 'hace la ia', 'con cada cv', 'claude', 'leer', 'lectura', 'formato', 'formatos', 'acepta', 'word', 'docx', 'en word',
+      'imagen', 'foto', 'archivo', 'guardado', 'queda guardado', 'original', 'ver cv', 'veo el cv', 'costo', 'cuesta',
+      'cuanto cuesta', 'privado', 'tope diario',
+    ],
+    answer:
+      'Claude (la IA) lee el archivo completo: PDF, foto o Word convertido a texto. Saca el nombre, correo y teléfono del candidato, su experiencia, años y educación, y lo puntúa de 0 a 100 contra los filtros de la vacante citando la frase exacta del CV que respalda cada requisito; si un criterio excluyente aparece, lo marca con una alerta. El archivo original queda guardado de forma privada para tu empresa y se abre con el botón "Ver CV" en Screening y en Candidatos. Cada lectura cuesta centavos de dólar y hay un tope diario por empresa; los "CVs de ejemplo" no cuestan nada porque son simulados.',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
@@ -646,7 +662,7 @@ export const HELP_FAQ: FaqEntry[] = [
     question: '¿Los datos son reales?',
     keywords: ['demo', 'datos', 'real', 'reales', 'prueba', 'simulado', 'mock', 'guardar', 'guarda', 'persistencia'],
     answer:
-      'Ahora la app corre en modo demostración: los datos son de ejemplo y la IA está simulada. Lo que haces (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) se guarda en la nube, para toda la empresa. La conexión a datos reales y a la IA de verdad se activa después de la aprobación.',
+      'Los datos iniciales son de ejemplo, pero la lectura de CVs ya es real: Claude lee cada archivo que subes en Screening IA. Las entrevistas por IA, el chat de ayuda y los mensajes a candidatos siguen simulados (no se envía nada real a nadie). Lo que haces (vacantes creadas, CVs cargados, mensajes, metas, equipo, módulos) se guarda en la nube, para toda la empresa.',
   },
   {
     id: 'comentarios',
