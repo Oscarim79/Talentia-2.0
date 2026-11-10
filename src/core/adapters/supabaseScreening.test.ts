@@ -13,6 +13,12 @@ describe('supabaseScreening (funciones puras)', () => {
     expect(validateFile({ name: 'cv.pdf', size: 10 * 1024 * 1024 })).toBeNull();
     expect(validateFile({ name: 'cv.pdf', size: 10 * 1024 * 1024 + 1 })).toBe('too_large');
   });
+  it('imágenes hasta 7 MB (el API cuenta el base64, que infla un tercio)', () => {
+    expect(validateFile({ name: 'foto.jpg', size: 7 * 1024 * 1024 })).toBeNull();
+    expect(validateFile({ name: 'foto.jpg', size: 7 * 1024 * 1024 + 1 })).toBe('too_large');
+    expect(validateFile({ name: 'foto.PNG', size: 8 * 1024 * 1024 })).toBe('too_large');
+    expect(validateFile({ name: 'cv.pdf', size: 8 * 1024 * 1024 })).toBeNull();
+  });
   it('safeFileName y cvPathFor', () => {
     expect(safeFileName('Currículum José (final).PDF')).toBe('curriculum-jose-final.pdf');
     expect(safeFileName('')).toBe('cv');

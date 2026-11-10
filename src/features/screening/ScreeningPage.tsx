@@ -5,7 +5,7 @@ import { useJobs } from '../../context/JobsContext';
 import { useCandidates } from '../../context/CandidatesContext';
 import { providers } from '../../core/providers';
 import { AI_SCREENING_LABEL } from '../../core/config';
-import { MAX_FILE_MB, cvPathFor } from '../../core/adapters/supabaseScreening';
+import { MAX_FILE_MB, MAX_IMAGE_MB, cvPathFor, validateFile } from '../../core/adapters/supabaseScreening';
 import { canRetry, screeningErrorLabel } from '../../core/screeningErrors';
 import type { ScreenOutcome } from '../../core/ports';
 import { todayISO } from '../../lib/dates';
@@ -13,7 +13,7 @@ import { newId } from '../../lib/utils';
 import { runPool } from '../../lib/runPool';
 import { CvLink } from '../../components/CvLink';
 import type { Candidate, Job } from '../../types';
-import { makePendingCandidate, nameFromFile, outcomeToPatch, pendingState } from './screeningResult';
+import { makeInvalidCandidate, makePendingCandidate, nameFromFile, outcomeToPatch, pendingState } from './screeningResult';
 import {
   Card,
   PageHeader,
@@ -99,11 +99,28 @@ export default function ScreeningPage() {
     let done = 0;
     setBatch({ total: files.length, done, current: files[0].name });
 
+    const finishOne = (name: string) => {
+      done += 1;
+      if (runRef.current === run) setBatch({ total: files.length, done, current: done < files.length ? name : '' });
+    };
+
     await runPool(files, CONCURRENCY, async (file) => {
       const id = newId('cand');
+      // Formato o tamaño inválidos: directo a la cola de errores, sin subir nada.
+      const invalid = validateFile(file);
+      if (invalid) {
+        await addCandidate(makeInvalidCandidate(file, currentJob, id, invalid, todayISO()));
+        finishOne(file.name);
+        return;
+      }
       const cvPath = cvPathFor(tenant.id, id, file.name);
       const provisional = makePendingCandidate(file, currentJob, id, cvPath, todayISO());
-      addCandidate(provisional);
+      // Se espera a que el candidato exista en la base: la función lo lee por id.
+      const saved = await addCandidate(provisional);
+      if (!saved) {
+        finishOne(file.name);
+        return;
+      }
       track(id, true);
       if (runRef.current === run) setBatch({ total: files.length, done, current: file.name });
 
@@ -112,8 +129,7 @@ export default function ScreeningPage() {
       track(id, false);
       // El resultado se guarda aunque el usuario haya cambiado de vacante (el candidato ya existe en la base).
       updateCandidateFields(id, outcomeToPatch(outcome, provisional, todayISO()));
-      done += 1;
-      if (runRef.current === run) setBatch({ total: files.length, done, current: done < files.length ? file.name : '' });
+      finishOne(file.name);
     });
 
     if (runRef.current !== run) return;
@@ -302,7 +318,7 @@ export default function ScreeningPage() {
               Arrastra y suelta los CVs aquí
             </p>
             <p className="mt-1 text-xs text-stone-400">
-              o <span className="font-medium text-brand-600">selecciona archivos</span> · PDF, Word (.docx) o imágenes · máximo {MAX_FILE_MB} MB · carga por lote
+              o <span className="font-medium text-brand-600">selecciona archivos</span> · PDF o Word (.docx) hasta {MAX_FILE_MB} MB · imágenes hasta {MAX_IMAGE_MB} MB · carga por lote
             </p>
             <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-stone-400">
               <Upload className="h-3 w-3" /> Los escaneos ilegibles caen automáticamente en la cola de errores

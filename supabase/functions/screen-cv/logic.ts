@@ -8,7 +8,11 @@
 
 export const MODEL = 'claude-sonnet-5-5';
 export const EFFORT = 'medium';
-export const MAX_TOKENS = 4096;
+/** Tope duro de pensamiento + respuesta: holgado para que el pensamiento adaptativo no corte el JSON (el costo real lo marca lo generado, no el tope). */
+export const MAX_TOKENS = 16000;
+/** Espera por llamada y reintentos del SDK: el total (timeout × (reintentos+1)) debe quedar bajo los 150 s del plan gratis de Supabase. */
+export const API_TIMEOUT_MS = 60_000;
+export const API_MAX_RETRIES = 1;
 /** Lecturas por empresa y por día; la siguiente recibe `daily_limit`. */
 export const DAILY_LIMIT = 300;
 export const MAX_FILE_BYTES = 10_485_760;
@@ -295,6 +299,7 @@ export function mapApiError(err: { status?: number; message?: string; name?: str
   if (status === 413) return 'too_large';
   if (status === 400) {
     const msg = err.message ?? '';
+    if (/too large|exceeds|maximum size|size limit/i.test(msg)) return 'too_large';
     if (/password|encrypt|protected/i.test(msg)) return 'password_protected';
     if (/pdf|document|image|could not process|decode/i.test(msg)) return 'corrupt';
   }

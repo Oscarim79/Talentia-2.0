@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  API_MAX_RETRIES,
+  API_TIMEOUT_MS,
+  MAX_TOKENS,
   OUTPUT_SCHEMA,
   buildUserText,
   criteriaFromFilters,
@@ -113,8 +116,22 @@ describe('mapApiError', () => {
     expect(mapApiError({ status: 400, message: 'Could not process PDF' })).toBe('corrupt');
     expect(mapApiError({ status: 400, message: 'invalid request' })).toBe('ai_error');
   });
+  it('400 por tamaño → too_large (antes que corrupt)', () => {
+    expect(mapApiError({ status: 400, message: 'image exceeds 10 MB maximum' })).toBe('too_large');
+    expect(mapApiError({ status: 400, message: 'Request too large for pdf document' })).toBe('too_large');
+  });
   it('sin status (red / timeout) → ai_error', () => {
     expect(mapApiError({ name: 'APIConnectionTimeoutError' })).toBe('ai_error');
+  });
+});
+
+describe('límites de la función (plan gratis: 150 s de pared)', () => {
+  it('max_tokens deja sitio al pensamiento adaptativo', () => {
+    expect(MAX_TOKENS).toBeGreaterThanOrEqual(8000);
+  });
+  it('tiempo total con reintentos < 150 s', () => {
+    expect(API_TIMEOUT_MS).toBeGreaterThanOrEqual(30_000);
+    expect(API_TIMEOUT_MS * (API_MAX_RETRIES + 1)).toBeLessThanOrEqual(130_000);
   });
 });
 

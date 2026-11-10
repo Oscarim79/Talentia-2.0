@@ -5,6 +5,7 @@
 // ============================================================
 import type { CandidatePatch } from '../../core/db/candidates';
 import type { ScreenOutcome } from '../../core/ports';
+import type { ScreeningErrorCode } from '../../core/screeningErrors';
 import type { Candidate, Job } from '../../types';
 
 const NAME_NOISE = /\b(cv|curriculum|curriculo|hoja|de|vida|resume|resumen|scan|foto|imagen|final|v\d+)\b/gi;
@@ -32,7 +33,7 @@ export function makePendingCandidate(
   file: { name: string },
   job: Job,
   candidateId: string,
-  cvPath: string,
+  cvPath: string | undefined,
   today: string,
 ): Candidate {
   const { firstName, lastName } = nameFromFile(file.name);
@@ -48,10 +49,29 @@ export function makePendingCandidate(
     stage: 'screening',
     appliedAt: today,
     cvFileName: file.name,
-    cvPath,
+    ...(cvPath ? { cvPath } : {}),
     screeningStatus: 'pending',
   };
 }
+
+/** Archivo rechazado antes de subirlo (formato o tamaño): candidato directo en la cola de errores, sin archivo guardado. */
+export function makeInvalidCandidate(
+  file: { name: string },
+  job: Job,
+  candidateId: string,
+  reason: ScreeningErrorCode,
+  today: string,
+): Candidate {
+  return {
+    ...makePendingCandidate(file, job, candidateId, undefined, today),
+    screeningStatus: 'error',
+    stage: 'applied',
+    errorReason: reason,
+  };
+}
+
+/** Errores en los que no quedó archivo en Storage: se quita `cvPath` para que no aparezca un "Ver CV" que no abre nada. */
+const FILE_ERRORS: ReadonlySet<ScreeningErrorCode> = new Set(['unsupported_format', 'too_large', 'upload_failed']);
 
 /** Parche del candidato a partir del resultado de la IA (o del error). */
 export function outcomeToPatch(
@@ -59,7 +79,14 @@ export function outcomeToPatch(
   provisional: { firstName: string; lastName: string },
   today: string,
 ): CandidatePatch {
-  if (!outcome.ok) return { screeningStatus: 'error', stage: 'applied', errorReason: outcome.errorReason };
+  if (!outcome.ok) {
+    return {
+      screeningStatus: 'error',
+      stage: 'applied',
+      errorReason: outcome.errorReason,
+      ...(FILE_ERRORS.has(outcome.errorReason) ? { cvPath: undefined } : {}),
+    };
+  }
   const { person, parsed, score } = outcome;
   const first = person.firstName.trim();
   const last = person.lastName.trim();

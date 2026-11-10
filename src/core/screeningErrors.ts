@@ -7,7 +7,7 @@
 
 export const SCREENING_ERRORS = {
   unsupported_format: { label: 'Formato no admitido: PDF, JPG, PNG o Word (.docx)', retry: false },
-  too_large: { label: 'El archivo pasa de 10 MB', retry: false },
+  too_large: { label: 'El archivo es demasiado grande (PDF hasta 10 MB, imágenes hasta 7 MB)', retry: false },
   upload_failed: { label: 'No se pudo guardar el archivo; revisa tu conexión y vuelve a subirlo', retry: false },
   illegible_pdf: { label: 'Ilegible (escaneo borroso o foto)', retry: false },
   not_a_cv: { label: 'El documento no parece un CV', retry: false },

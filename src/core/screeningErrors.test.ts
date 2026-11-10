@@ -17,6 +17,6 @@ describe('screeningErrors', () => {
   it('catálogo completo', () => {
     expect(Object.keys(SCREENING_ERRORS)).toHaveLength(12);
     expect(SCREENING_ERRORS.unsupported_format.label).toBe('Formato no admitido: PDF, JPG, PNG o Word (.docx)');
-    expect(SCREENING_ERRORS.too_large.label).toBe('El archivo pasa de 10 MB');
+    expect(SCREENING_ERRORS.too_large.label).toBe('El archivo es demasiado grande (PDF hasta 10 MB, imágenes hasta 7 MB)');
   });
 });

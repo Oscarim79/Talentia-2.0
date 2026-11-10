@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CANDIDATES, JOBS } from '../../data/seed';
 import type { ParsedCv } from '../../types';
 import type { ScoreResult } from '../../core/ports';
-import { makePendingCandidate, outcomeToPatch, pendingState } from './screeningResult';
+import { makeInvalidCandidate, makePendingCandidate, outcomeToPatch, pendingState } from './screeningResult';
 
 const job = JOBS[0];
 const PARSED: ParsedCv = { skills: ['ventas'], experience: [{ company: 'Max', role: 'Vendedora', years: 2 }], totalYears: 2, education: 'Diversificado' };
@@ -65,6 +65,19 @@ describe('screeningResult', () => {
       stage: 'applied',
       errorReason: 'ai_not_configured',
     });
+  });
+  it('errores de archivo quitan cvPath (no hay archivo que abrir); los demás lo conservan', () => {
+    for (const code of ['unsupported_format', 'too_large', 'upload_failed'] as const) {
+      const p = outcomeToPatch({ ok: false, errorReason: code }, { firstName: 'a', lastName: 'b' }, 'd');
+      expect('cvPath' in p && p.cvPath === undefined).toBe(true);
+    }
+    const p = outcomeToPatch({ ok: false, errorReason: 'ai_not_configured' }, { firstName: 'a', lastName: 'b' }, 'd');
+    expect('cvPath' in p).toBe(false);
+  });
+  it('archivo inválido → candidato en error sin cvPath', () => {
+    const c = makeInvalidCandidate({ name: 'viejo.doc' }, job, 'cand_y', 'unsupported_format', '2026-11-10');
+    expect(c).toMatchObject({ id: 'cand_y', screeningStatus: 'error', stage: 'applied', errorReason: 'unsupported_format', cvFileName: 'viejo.doc' });
+    expect(c.cvPath).toBeUndefined();
   });
   it('pendingState', () => {
     const c = { ...CANDIDATES[0], screeningStatus: 'pending' as const };

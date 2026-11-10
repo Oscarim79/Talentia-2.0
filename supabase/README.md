@@ -40,5 +40,5 @@ Las tablas usan `create table if not exists` y las políticas y funciones `drop 
 
 **Cómo desplegar la función.** Con Claude: herramienta de Supabase `deploy_edge_function` (nombre `screen-cv`, `verify_jwt` activado, archivos `index.ts`, `logic.ts` y `deno.json`). O con la CLI: `supabase functions deploy screen-cv`. Hay que volver a desplegarla cada vez que cambie su código.
 
-**Límites.** Archivo de 10 MB como máximo; 300 lecturas por empresa y por día (`DAILY_LIMIT` en `logic.ts`); la función debe responder en menos de 150 s (límite del plan gratis), por eso llama a Claude con 120 s de espera y un reintento.
+**Límites.** Archivo de 10 MB como máximo; 300 lecturas por empresa y por día (`DAILY_LIMIT` en `logic.ts`); la función debe responder en menos de 150 s (límite del plan gratis), por eso llama a Claude con 60 s de espera y un solo reintento (máximo ~2 minutos en total); las imágenes se limitan a 7 MB porque el API las cuenta ya codificadas en base64.
 

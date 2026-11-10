@@ -10,7 +10,10 @@ import type { CvScreeningPort, ScreenOutcome } from '../ports';
 import { SCREENING_ERRORS, type ScreeningErrorCode } from '../screeningErrors';
 
 export const MAX_FILE_MB = 10;
+/** Las imágenes viajan en base64 (un tercio más grandes) y el API las limita a 10 MB ya codificadas. */
+export const MAX_IMAGE_MB = 7;
 const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
 const BUCKET = 'cvs';
 const TEXT_FILE = 'texto.txt';
 
@@ -29,8 +32,10 @@ function ext(name: string): string {
 
 /** Código de error si el archivo no se puede procesar; null si es válido. */
 export function validateFile(f: { name: string; size: number }): ScreeningErrorCode | null {
-  if (!MIME[ext(f.name)]) return 'unsupported_format';
-  if (f.size > MAX_FILE_BYTES) return 'too_large';
+  const e = ext(f.name);
+  if (!MIME[e]) return 'unsupported_format';
+  const limit = MIME[e].startsWith('image/') ? MAX_IMAGE_BYTES : MAX_FILE_BYTES;
+  if (f.size > limit) return 'too_large';
   return null;
 }
 

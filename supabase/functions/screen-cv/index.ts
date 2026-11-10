@@ -14,6 +14,8 @@
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 import {
+  API_MAX_RETRIES,
+  API_TIMEOUT_MS,
   EFFORT,
   MAX_FILE_BYTES,
   MAX_TOKENS,
@@ -143,7 +145,7 @@ async function handle(req: Request): Promise<Response> {
   let result: ScreenResult;
   let usage: Usage = NO_USAGE;
   try {
-    const client = new Anthropic({ apiKey, timeout: 120_000, maxRetries: 1 });
+    const client = new Anthropic({ apiKey, timeout: API_TIMEOUT_MS, maxRetries: API_MAX_RETRIES });
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,

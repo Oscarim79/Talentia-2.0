@@ -53,7 +53,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'cargo los', 'donde cargo',
     ],
     answer:
-      'En Screening IA elige la vacante y arrastra los archivos a la zona punteada, o pulsa para elegirlos: PDF, Word (.docx) o imágenes JPG/PNG, de hasta 10 MB cada uno. Cada candidato aparece de inmediato como "Leyendo el CV…" y se completa solo cuando la IA termina: lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la frase del CV que respalda cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Cola de errores".',
+      'En Screening IA elige la vacante y arrastra los archivos a la zona punteada, o pulsa para elegirlos: PDF o Word (.docx) de hasta 10 MB, o imágenes JPG/PNG de hasta 7 MB. Cada candidato aparece de inmediato como "Leyendo el CV…" y se completa solo cuando la IA termina: lo puntúa contra los filtros de la vacante y los ordena de mejor a peor, con la frase del CV que respalda cada requisito. Los CVs quedan guardados en la nube para toda la empresa: siguen ahí cuando vuelves y aparecen en Respuestas a CVs y en Candidatos. Los que no se pudieron leer quedan en la pestaña "Cola de errores".',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
@@ -65,7 +65,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'reintentar', 'reintento', 'configurada', 'no esta configurada', 'limite diario', 'límite diario', 'muy grande', 'no parece un cv',
     ],
     answer:
-      'La cola de errores dice el motivo en cada fila: archivo ilegible (escaneo borroso o foto), protegido con contraseña, dañado, de un formato que no se admite (Word antiguo .doc: conviértelo a PDF), de más de 10 MB, que no parece un CV, o que la IA no pudo leer en ese momento. Si el motivo lo permite, el botón "Reintentar" vuelve a pedir la lectura con el archivo ya guardado, sin subirlo otra vez. "La IA aún no está configurada" o "límite diario" no dependen de ti: avísale a Oscar. Para los ilegibles, pídele al candidato una versión legible (PDF exportado de Word, no foto); en Métricas aparece como pendiente "CV ilegible: pedir versión legible".',
+      'La cola de errores dice el motivo en cada fila: archivo ilegible (escaneo borroso o foto), protegido con contraseña, dañado, de un formato que no se admite (Word antiguo .doc: conviértelo a PDF), demasiado grande (PDF hasta 10 MB, imágenes hasta 7 MB), que no parece un CV, o que la IA no pudo leer en ese momento. Si el motivo lo permite, el botón "Reintentar" vuelve a pedir la lectura con el archivo ya guardado, sin subirlo otra vez. "La IA aún no está configurada" o "límite diario" no dependen de ti: avísale a Oscar. Para los ilegibles, pídele al candidato una versión legible (PDF exportado de Word, no foto); en Métricas aparece como pendiente "CV ilegible: pedir versión legible".',
     route: '/screening',
     routeLabel: 'Ir a Screening IA',
   },
