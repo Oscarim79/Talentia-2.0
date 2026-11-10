@@ -4,6 +4,7 @@
 //  Demo => adaptadores mock.  Producción => adaptadores reales.
 // ============================================================
 import type { ParsedCv, EvidenceMatch, InterviewTurn } from '../types';
+import type { ScreeningErrorCode } from './screeningErrors';
 
 // ---- Parser de CV (LlamaParse / Document AI en producción) ----
 export interface CvParseResult {
@@ -131,3 +132,26 @@ export interface VoicePort {
 export interface BillingPort {
   checkout(input: { tenantId: string; planId: string }): Promise<{ url: string }>;
 }
+
+// ---- Lectura real de CVs (Entrega B): Storage privado + Edge Function `screen-cv` + Claude ----
+export interface ScreenPerson {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
+/** Resultado de leer y puntuar un CV; los códigos de error viven en core/screeningErrors.ts. */
+export type ScreenOutcome =
+  | { ok: true; person: ScreenPerson; parsed: ParsedCv; score: ScoreResult }
+  | { ok: false; errorReason: ScreeningErrorCode };
+
+export interface CvScreeningPort {
+  /** Sube el archivo (ya validado o no), lo convierte si es Word y pide la lectura. El candidato ya existe con `cvPath`. */
+  screen(input: { file: File; candidateId: string; cvPath: string }): Promise<ScreenOutcome>;
+  /** Vuelve a pedir la lectura con el archivo ya guardado. */
+  retry(candidateId: string): Promise<ScreenOutcome>;
+  /** Enlace temporal para abrir el CV original; null si no se pudo generar. */
+  cvUrl(cvPath: string): Promise<string | null>;
+}
+
