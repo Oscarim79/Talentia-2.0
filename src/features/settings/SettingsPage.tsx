@@ -6,6 +6,7 @@ import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
 import { downloadTextFile } from '../../lib/utils';
 import { resetDemo } from '../../core/db/demo';
 import { notifyError } from '../../lib/notify';
+import { useConfirm } from '../../components/ui/ConfirmDialog';
 import { useTenant } from '../../context/TenantContext';
 import { useSettings } from '../../context/SettingsContext';
 import { MODULES } from '../../core/modules';
@@ -42,8 +43,16 @@ export default function SettingsPage() {
       downloadTextFile('preguntas-talentia.txt', questionsText());
     }
   }
+  const confirm = useConfirm();
   async function handleResetDemo() {
-    if (!window.confirm('Se borrarán, para TODA la empresa, las vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, metas, módulos y personas agregadas al equipo, y volverán los datos de ejemplo. Las preguntas al chat se conservan. ¿Restablecer la demo?')) return;
+    const ok = await confirm({
+      title: 'Restablecer la demo de la empresa',
+      message:
+        'Se borrarán, para TODA la empresa, las vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, metas, módulos y personas agregadas al equipo, y volverán los datos de ejemplo. Las preguntas al chat se conservan.',
+      confirmLabel: 'Sí, restablecer',
+      tone: 'danger',
+    });
+    if (!ok) return;
     try {
       await resetDemo(tenant.id);
       window.location.href = import.meta.env.BASE_URL;
