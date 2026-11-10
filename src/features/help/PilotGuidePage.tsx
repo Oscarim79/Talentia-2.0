@@ -85,7 +85,7 @@ export const PILOT_RULES = [
   'Los CVs los lee de verdad la IA (Claude). Las entrevistas por IA, el chat de ayuda y los mensajes a candidatos siguen simulados: no se envía nada real a nadie.',
   'Entra con tu usuario desde cualquier computadora: lo que hagas (vacantes creadas, CVs cargados, mensajes enviados, metas, equipo, módulos) y tus preguntas quedan guardados en la nube, para toda la empresa.',
   'Entra con tu correo y la contraseña que te dio Oscar; si la olvidas, pídele que la restablezca.',
-  'Si algo se rompe o quieres empezar de cero: Configuración → "Restablecer la demo de la empresa" (solo lo ve quien administra).',
+  'Si algo se rompe o quieres empezar de cero: Configuración → "Volver a los datos de ejemplo" (solo lo ve quien administra).',
 ];
 
 export default function PilotGuidePage() {

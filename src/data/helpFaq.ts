@@ -709,15 +709,15 @@ export const HELP_FAQ: FaqEntry[] = [
   },
   {
     id: 'restablecer',
-    question: '¿Cómo restablezco la demo o empiezo de cero?',
+    question: '¿Cómo vuelvo a los datos de ejemplo (restablecer la demo) o empiezo de cero?',
     keywords: [
-      'restablecer', 'restablezco', 'restablecer la demo', 'reiniciar la demo', 'reinicio la demo', 'empezar de cero', 'de cero', 'borrar todo',
+      'restablecer', 'restablezco', 'restablecer la demo', 'volver a los datos de ejemplo', 'volver al ejemplo', 'reiniciar la demo', 'reinicio la demo', 'empezar de cero', 'de cero', 'borrar todo',
       'borro todo', 'limpiar', 'limpiar todo', 'resetear', 'reset', 'se rompio', 'se rompió', 'volver al inicio', 'datos originales',
       'como estaba', 'como estaba al principio', 'deshacer todo', 'quitar lo que hice', 'borrar lo que hice', 'dejar como estaba',
       'volver a empezar', 'se me descompuso', 'algo se descompuso', 'se trabo', 'se trabó', 'no carga', 'pantalla en blanco',
     ],
     answer:
-      'En Configuración, al pie, "Restablecer la demo de la empresa" (solo la ve quien administra) borra, para toda la empresa, todo lo que se guardó aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, personas agregadas al equipo, y vuelve a cargar la app con los datos de ejemplo. Las preguntas al chat se conservan. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
+      'En Configuración, al pie, "Volver a los datos de ejemplo" (solo lo ve quien administra) borra, para toda la empresa, todo lo que se guardó aquí: metas, equipo agregado, módulos, vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, personas agregadas al equipo, y vuelve a cargar la app con las vacantes y candidatos de muestra (no deja la empresa vacía: siempre hay datos con qué probar). Al terminar aparece un aviso de "Listo". Las preguntas al chat se conservan. Si solo quieres volver a las metas de fábrica, usa "Restablecer" en Metas de servicio.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
     topic: 'management',
@@ -782,7 +782,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'se me borro', 'se me borró', 'desaparecio', 'desapareció', 'en la nube', 'nube',
     ],
     answer:
-      'Sí: todo lo que ingresas se guarda en la nube y todo el equipo lo ve al recargar la página, también desde el celular (basta con entrar con tu cuenta). Si algo parece haber desaparecido, es posible que alguien haya usado "Restablecer la demo de la empresa", que devuelve todo a los datos de ejemplo para toda la empresa y solo lo puede hacer un jefe u Oscar; las preguntas al chat se conservan.',
+      'Sí: todo lo que ingresas se guarda en la nube y todo el equipo lo ve al recargar la página, también desde el celular (basta con entrar con tu cuenta). Si algo parece haber desaparecido, es posible que alguien haya usado "Volver a los datos de ejemplo", que devuelve todo a los datos de ejemplo para toda la empresa y solo lo puede hacer un jefe u Oscar; las preguntas al chat se conservan.',
     route: '/configuracion',
     routeLabel: 'Ir a Configuración',
   },

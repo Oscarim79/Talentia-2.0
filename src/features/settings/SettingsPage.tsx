@@ -5,7 +5,7 @@ import { useHelp } from '../help/HelpContext';
 import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
 import { downloadTextFile } from '../../lib/utils';
 import { resetDemo } from '../../core/db/demo';
-import { notifyError } from '../../lib/notify';
+import { notifyAfterReload, notifyError } from '../../lib/notify';
 import { useConfirm } from '../../components/ui/ConfirmDialog';
 import { useTenant } from '../../context/TenantContext';
 import { useSettings } from '../../context/SettingsContext';
@@ -46,18 +46,19 @@ export default function SettingsPage() {
   const confirm = useConfirm();
   async function handleResetDemo() {
     const ok = await confirm({
-      title: 'Restablecer la demo de la empresa',
+      title: 'Volver a los datos de ejemplo',
       message:
-        'Se borrarán, para TODA la empresa, las vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, metas, módulos y personas agregadas al equipo, y volverán los datos de ejemplo. Las preguntas al chat se conservan.',
-      confirmLabel: 'Sí, restablecer',
+        'Se borrará, para TODA la empresa, lo que hizo el equipo (vacantes creadas, CVs cargados, mensajes enviados, evaluaciones de entrevista, metas, módulos y personas agregadas) y la demo volverá a las vacantes y candidatos de muestra. Las preguntas al chat se conservan.',
+      confirmLabel: 'Sí, volver a los datos de ejemplo',
       tone: 'danger',
     });
     if (!ok) return;
     try {
       await resetDemo(tenant.id);
+      notifyAfterReload('Listo: la demo volvió a los datos de ejemplo. Se borró lo que hizo el equipo y volvieron las vacantes y candidatos de muestra.');
       window.location.href = import.meta.env.BASE_URL;
     } catch (err) {
-      notifyError('No se pudo restablecer la demo. ' + (err instanceof Error ? err.message : ''));
+      notifyError('No se pudo volver a los datos de ejemplo. ' + (err instanceof Error ? err.message : ''));
     }
   }
   const slaIsDefault = (Object.keys(DEFAULT_SLA) as (keyof SlaGoals)[]).every((k) => settings.sla[k] === DEFAULT_SLA[k]);
@@ -272,7 +273,7 @@ export default function SettingsPage() {
             </p>
             {canManage && (
               <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={handleResetDemo}>
-                <RotateCcw className="h-4 w-4" /> Restablecer la demo de la empresa
+                <RotateCcw className="h-4 w-4" /> Volver a los datos de ejemplo
               </Button>
             )}
           </div>

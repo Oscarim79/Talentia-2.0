@@ -189,7 +189,7 @@ export const SECTION_GUIDES: Record<SectionId, ModuleGuide> = {
         text: 'Al terminar la semana, envía tus preguntas y comentarios desde "Preguntas al chat de ayuda" → "Enviar a Oscar".',
       },
       {
-        text: 'Si quieres empezar de cero, "Restablecer la demo" borra, para toda la empresa, lo guardado en la nube.',
+        text: 'Si quieres empezar de cero, "Volver a los datos de ejemplo" borra, para toda la empresa, lo guardado en la nube y vuelve a cargar las vacantes y candidatos de muestra.',
       },
     ],
     demoNote:
