@@ -204,8 +204,8 @@ export const MANAGEMENT_TOUR_STEPS: TourStep[] = [
   {
     route: '/configuracion',
     target: 'settings:reset',
-    title: 'Restablecer la demo',
-    body: 'Talentia Labs es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, este botón (solo lo ve quien administra) borra, para toda la empresa, lo guardado en la nube (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo y módulos); las preguntas al chat se conservan.',
+    title: 'Volver a los datos de ejemplo',
+    body: 'Talentia Labs es software opinado: el proceso ya viene definido y aquí solo se decide quién está en el equipo, qué tan rápido se atiende cada etapa y qué módulos están encendidos. Si quieres empezar de cero, el botón "Volver a los datos de ejemplo" (solo lo ve quien administra) borra, para toda la empresa, lo guardado en la nube (vacantes creadas, CVs cargados, mensajes, evaluaciones, metas, equipo y módulos) y vuelve a cargar las vacantes y candidatos de muestra; las preguntas al chat se conservan.',
   },
 ];
 
@@ -358,7 +358,7 @@ export const MANAGEMENT_VIDEO_CHAPTERS: { t: number; label: string }[] = [
   { t: 85, label: 'Metas de servicio' },
   { t: 95, label: 'Módulos opcionales' },
   { t: 105, label: 'Preguntas al chat de ayuda' },
-  { t: 113, label: 'Restablecer la demo' },
+  { t: 113, label: 'Volver a los datos de ejemplo' },
   { t: 129, label: 'Dónde pedir ayuda' },
 ];
 
