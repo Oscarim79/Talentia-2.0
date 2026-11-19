@@ -85,7 +85,7 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'responder',
     question: '¿Cómo respondo a los candidatos para agendar entrevista?',
-    keywords: ['responder', 'respondo', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'agendo', 'entrevista', 'citar', 'plantilla', 'meet'],
+    keywords: ['responder', 'respondo', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'agendo', 'entrevista', 'citar', 'plantilla', 'meet', 'zoom'], // 'zoom' sigue como sinónimo: el equipo entrevistó por Zoom hasta el 2026-11-19
     answer:
       'En Respuestas a CVs filtra por vacante y score mínimo, marca a los candidatos y pulsa "Responder a N seleccionados". El mensaje es la plantilla estándar: tú eliges canal (WhatsApp o correo), modalidad (Virtual por Google Meet viene por defecto), la primera entrevista y cuánto dura cada una, indicaciones y firma. Cada candidato recibe su propia fecha y hora, y el nombre, la vacante y la marca se completan solos. Mira la vista previa con el ojito antes de enviar.',
     route: '/respuestas',
@@ -136,7 +136,7 @@ export const HELP_FAQ: FaqEntry[] = [
     keywords: [
       'guia de competencias', 'guia de entrevista', 'guia de la entrevista', 'entrevista por competencias', 'entrevistas por competencias',
       'competencias', 'hago la entrevista', 'hacer la entrevista', 'hacer una entrevista', 'hago una entrevista', 'durante la entrevista',
-      'entrevista por meet', 'entrevista por google meet', 'evaluar la entrevista', 'evaluo la entrevista', 'evaluar una entrevista', 'evaluo una entrevista',
+      'entrevista por meet', 'entrevista por google meet', 'entrevista por zoom', 'evaluar la entrevista', 'evaluo la entrevista', 'evaluar una entrevista', 'evaluo una entrevista',
       'evaluar al candidato', 'evaluo al candidato', 'evaluar entrevista', 'tomar notas', 'tomo notas', 'anotar', 'anoto', 'notas',
       'preguntas conductuales', 'pregunta conductual', 'conductuales', 'conductual', 'historia', 'opcion multiple',
       'repreguntas', 'repregunta', 'busca', 'empezar la entrevista', 'entrevistar al candidato', 'entrevisto al candidato',
@@ -394,7 +394,7 @@ export const HELP_FAQ: FaqEntry[] = [
     id: 'entrevista-ia-como',
     question: '¿Cómo funciona la entrevista por videollamada con IA?',
     keywords: [
-      'videollamada', 'video llamada', 'meet', 'videollamada de meet', 'videollamada de google meet', 'como funciona', 'como funcionan',
+      'videollamada', 'video llamada', 'meet', 'videollamada de meet', 'videollamada de google meet', 'videollamada de zoom', 'como funciona', 'como funcionan',
       'como funciona la entrevista', 'como funcionan las entrevistas', 'funciona la entrevista', 'funcionan las entrevistas',
       'funciona la videollamada', 'asistente de ia', 'asistente ia', 'asistente virtual', 'entrevistador', 'entra a la llamada',
       'entra a la videollamada', 'a la llamada', 'entra el asistente', 'transcribe', 'transcripcion', 'es una persona',
