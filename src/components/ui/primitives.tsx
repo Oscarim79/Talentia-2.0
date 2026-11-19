@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import { Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Tooltip } from './Tooltip';
 
 export function Card({ className, children, dataTour }: { className?: string; children: ReactNode; dataTour?: string }) {
   return (
@@ -29,11 +31,7 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
-        {eyebrow && (
-          <p className="mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-brand-700">
-            {eyebrow}
-          </p>
-        )}
+        {eyebrow && <p className="eyebrow mb-1.5 text-brand-700">{eyebrow}</p>}
         <h1 className="font-display text-[28px] font-semibold leading-tight tracking-tight text-ink">
           {title}
         </h1>
@@ -64,12 +62,11 @@ export function Badge({
   variant?: BadgeVariant;
   className?: string;
   children: ReactNode;
-  /** Texto al pasar el cursor. */
+  /** Explicación corta: se muestra como tooltip accesible (cursor, teclado y toque), no como `title` del navegador. */
   title?: string;
 }) {
-  return (
+  const badge = (
     <span
-      title={title}
       className={cn(
         'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold',
         badgeStyles[variant],
@@ -79,6 +76,7 @@ export function Badge({
       {children}
     </span>
   );
+  return title ? <Tooltip text={title}>{badge}</Tooltip> : badge;
 }
 
 export function Button({
@@ -87,19 +85,25 @@ export function Button({
   children,
   onClick,
   disabled,
+  loading,
   dataTour,
   autoFocus,
   type,
+  'aria-label': ariaLabel,
 }: {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   className?: string;
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  /** Mientras se guarda o espera: deshabilita el botón, avisa con aria-busy y muestra un giro. */
+  loading?: boolean;
   dataTour?: string;
   /** Dónde empieza el foco al abrir un diálogo. */
   autoFocus?: boolean;
   type?: 'button' | 'submit';
+  /** Nombre accesible para botones que solo llevan un icono. */
+  'aria-label'?: string;
 }) {
   const variants = {
     primary:
@@ -113,7 +117,9 @@ export function Button({
       type={type}
       autoFocus={autoFocus}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      aria-label={ariaLabel}
       data-tour={dataTour}
       className={cn(
         'inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
@@ -121,6 +127,7 @@ export function Button({
         className,
       )}
     >
+      {loading && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
       {children}
     </button>
   );

@@ -17,6 +17,14 @@ export function initials(first: string, last: string) {
   return `${first[0] ?? ''}${last[0] ?? ''}`.toUpperCase();
 }
 
+/** Monograma de un nombre ("Americana 2000" → "A2", "NovaPay" → "NO"): sustituye a los emojis como icono. */
+export function nameInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return '?';
+  const raw = words.length === 1 ? words[0].slice(0, 2) : words[0][0] + words[1][0];
+  return raw.toUpperCase();
+}
+
 /** Hash determinista para generar datos de demo estables (sin Math.random). */
 export function hashString(s: string): number {
   let h = 0;

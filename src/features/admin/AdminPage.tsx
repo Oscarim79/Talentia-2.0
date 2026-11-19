@@ -36,9 +36,10 @@ export default function AdminPage() {
         <h2 className="border-b border-neutral-100 px-6 py-4 text-sm font-bold text-neutral-700">
           Empresas (tenants)
         </h2>
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-neutral-100 text-left text-xs uppercase tracking-wide text-neutral-400">
+            <tr className="border-b border-neutral-100 text-left text-xs uppercase tracking-wide text-neutral-500">
               <th className="px-6 py-3 font-semibold">Empresa</th>
               <th className="px-6 py-3 font-semibold">Industria</th>
               <th className="px-6 py-3 font-semibold">Plan</th>
@@ -53,7 +54,7 @@ export default function AdminPage() {
               return (
                 <tr key={t.id} className="border-b border-neutral-50 last:border-0">
                   <td className="px-6 py-3 font-semibold text-neutral-800">
-                    {t.logoEmoji} {t.name}
+                    {t.name}
                   </td>
                   <td className="px-6 py-3 text-neutral-500">{t.industry}</td>
                   <td className="px-6 py-3">
@@ -70,6 +71,7 @@ export default function AdminPage() {
             })}
           </tbody>
         </table>
+      </div>
       </Card>
 
       {/* Planes */}
@@ -80,7 +82,7 @@ export default function AdminPage() {
             <p className="text-sm font-bold text-neutral-800">{p.name}</p>
             <p className="mt-1 font-display text-2xl font-semibold text-neutral-900">
               {fmtMoney(p.monthlyPriceUsd)}
-              <span className="text-sm font-medium text-neutral-400">/mes</span>
+              <span className="text-sm font-medium text-neutral-500">/mes</span>
             </p>
             <ul className="mt-3 space-y-1 text-xs text-neutral-500">
               <li>{p.limits.maxJobs} vacantes</li>
@@ -102,7 +104,7 @@ function UsageMeter({ label, used, limit }: { label: string; used: number; limit
     <div>
       <div className="mb-1 flex items-center justify-between text-xs">
         <span className="font-medium text-neutral-600">{label}</span>
-        <span className="text-neutral-400">
+        <span className="text-neutral-500">
           {used.toLocaleString()} / {limit.toLocaleString()}
         </span>
       </div>

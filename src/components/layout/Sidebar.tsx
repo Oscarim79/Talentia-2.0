@@ -76,7 +76,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         <LogoMark className="h-10 w-10 shrink-0" />
         <div className="min-w-0 flex-1">
           <Wordmark className="h-[15px] w-auto text-white" accentClassName="text-brand-500" />
-          <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.22em] text-neutral-400">
+  <p className="mt-1 eyebrow text-neutral-400">
             Reclutamiento con IA
           </p>
         </div>
@@ -95,7 +95,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {visibleGroups.map((g) => (
           <div key={g.label ?? 'main'} className="mb-1">
             {g.label && (
-              <p className="mb-1 mt-4 px-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.22em] text-neutral-500">
+  <p className="mb-1 mt-4 px-3 eyebrow text-neutral-500">
                 {g.label}
               </p>
             )}
@@ -126,7 +126,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       <div className="px-3 py-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-neutral-300">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs leading-relaxed text-neutral-300">
           <p className="font-semibold text-brand-400">Modo demostración</p>
           <p className="mt-0.5 text-neutral-400">Screening con IA real · entrevistas y ayuda simuladas.</p>
         </div>

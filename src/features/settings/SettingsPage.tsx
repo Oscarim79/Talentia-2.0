@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList, Compass } from 'lucide-react';
 import { useHelp } from '../help/HelpContext';
@@ -12,18 +12,22 @@ import { useSettings } from '../../context/SettingsContext';
 import { MODULES } from '../../core/modules';
 import { DEFAULT_SLA, SLA_LABELS, type SlaGoals } from '../metrics/hrMetrics';
 import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
+import { Field } from '../../components/ui/Field';
 import { cn } from '../../lib/utils';
 
 const inputCls =
-  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-300';
 
 export default function SettingsPage() {
   const { tenant, canManage } = useTenant();
   const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
   const [newName, setNewName] = useState('');
   const [newTitle, setNewTitle] = useState('');
+  const [memberAttempted, setMemberAttempted] = useState(false);
+  const nameRef = useRef<HTMLInputElement>(null);
   const { questions, clearQuestions, openModuleIntro } = useHelp();
   const [copied, setCopied] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const questionsText = () => {
     const lines = questions
@@ -53,21 +57,30 @@ export default function SettingsPage() {
       tone: 'danger',
     });
     if (!ok) return;
+    setResetting(true);
     try {
       await resetDemo(tenant.id);
       notifyAfterReload('Listo: la demo volvió a los datos de ejemplo. Se borró lo que hizo el equipo y volvieron las vacantes y candidatos de muestra.');
       window.location.href = import.meta.env.BASE_URL;
     } catch (err) {
+      setResetting(false);
       notifyError('No se pudo volver a los datos de ejemplo. ' + (err instanceof Error ? err.message : ''));
     }
   }
   const slaIsDefault = (Object.keys(DEFAULT_SLA) as (keyof SlaGoals)[]).every((k) => settings.sla[k] === DEFAULT_SLA[k]);
 
+  const nameMissing = !newName.trim();
   function submitMember() {
-    if (!newName.trim()) return;
+    if (nameMissing) {
+      // El error se muestra junto al campo y el foco vuelve a él.
+      setMemberAttempted(true);
+      nameRef.current?.focus();
+      return;
+    }
     addTeamMember(newName, newTitle || 'Reclutador/a');
     setNewName('');
     setNewTitle('');
+    setMemberAttempted(false);
   }
 
   return (
@@ -83,14 +96,14 @@ export default function SettingsPage() {
         <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
           <Users className="h-4 w-4 text-brand-700" />
           <h2 className="text-sm font-bold text-neutral-700">Equipo de RR.HH.</h2>
-          <span className="ml-auto text-xs text-neutral-400">Las personas que aparecen en "Cada quien" de Métricas</span>
+          <span className="ml-auto text-xs text-neutral-500">Las personas que aparecen en "Cada quien" de Métricas</span>
         </div>
         <ul className="divide-y divide-neutral-100">
           {hrTeam.map((u) => {
             const added = !u.email;
             return (
               <li key={u.id} className="flex items-center gap-3 px-6 py-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                   {u.name.split(' ').map((p) => p[0]).slice(0, 2).join('')}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -98,7 +111,7 @@ export default function SettingsPage() {
                   <p className="text-xs text-neutral-500">{u.title ?? (u.role === 'admin' ? 'Jefe de RR.HH.' : 'Reclutador/a')}{u.email ? ` · ${u.email}` : ''}</p>
                 </div>
                 {added ? (
-                  <button onClick={() => removeTeamMember(u.id)} aria-label={`Quitar a ${u.name}`} className="rounded-lg p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600">
+                  <button onClick={() => removeTeamMember(u.id)} aria-label={`Quitar a ${u.name}`} className="rounded-lg p-2 text-neutral-500 hover:bg-red-50 hover:text-red-600">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 ) : (
@@ -108,16 +121,14 @@ export default function SettingsPage() {
             );
           })}
         </ul>
-        <div className="flex flex-wrap items-end gap-2 border-t border-neutral-100 bg-neutral-50/60 px-6 py-4">
-          <label className="min-w-[200px] flex-1">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Nombre</span>
-            <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Nombre y apellido" className={inputCls} />
-          </label>
-          <label className="min-w-[180px] flex-1">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Cargo</span>
+        <div className="flex flex-wrap items-start gap-2 border-t border-neutral-100 bg-neutral-50/60 px-6 py-4">
+          <Field label="Nombre" className="min-w-[200px] flex-1" error={memberAttempted && nameMissing ? 'Escribe el nombre de la persona.' : undefined}>
+            <input ref={nameRef} value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Nombre y apellido" className={inputCls} />
+          </Field>
+          <Field label="Cargo" className="min-w-[180px] flex-1" help="Si lo dejas vacío: Reclutador/a.">
             <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submitMember()} placeholder="Reclutador/a" className={inputCls} />
-          </label>
-          <Button onClick={submitMember} disabled={!newName.trim()}>
+          </Field>
+          <Button onClick={submitMember} className="mt-[22px]">
             <Plus className="h-4 w-4" /> Agregar
           </Button>
         </div>
@@ -137,25 +148,19 @@ export default function SettingsPage() {
         </div>
         <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2 lg:grid-cols-5">
           {(Object.keys(SLA_LABELS) as (keyof SlaGoals)[]).map((k) => (
-            <label key={k} className="block">
-              <span className="block text-sm font-semibold text-neutral-800">{SLA_LABELS[k].label}</span>
-              <span className="mb-2 block text-[11px] text-neutral-400">{SLA_LABELS[k].help}</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={1}
-                  max={60}
-                  value={settings.sla[k]}
-                  onChange={(e) => setSla({ ...settings.sla, [k]: Math.max(1, Math.min(60, Math.round(Number(e.target.value) || 1))) })}
-                  aria-label={`Meta: ${SLA_LABELS[k].label}`}
-                  className={cn(inputCls, 'w-20')}
-                />
-                <span className="text-xs text-neutral-500">días</span>
-              </div>
-            </label>
+            <Field key={k} label={SLA_LABELS[k].label} help={`${SLA_LABELS[k].help} Entre 1 y 60 días.`}>
+              <input
+                type="number"
+                min={1}
+                max={60}
+                value={settings.sla[k]}
+                onChange={(e) => setSla({ ...settings.sla, [k]: Math.max(1, Math.min(60, Math.round(Number(e.target.value) || 1))) })}
+                className={cn(inputCls, 'w-24')}
+              />
+            </Field>
           ))}
         </div>
-        <p className="border-t border-neutral-100 px-6 py-3 text-[11px] text-neutral-400">
+        <p className="border-t border-neutral-100 px-6 py-3 text-xs text-neutral-500">
           Las metas definen el semáforo y los "pendientes fuera de meta" en Métricas RR.HH. y en el Dashboard. Se aplican al instante.
         </p>
       </Card>
@@ -176,7 +181,7 @@ export default function SettingsPage() {
                     <Badge variant={on ? 'green' : 'stone'}>{on ? 'Activo' : 'Desactivado'}</Badge>
                   </div>
                   <p className="mt-1 max-w-2xl text-sm text-neutral-500">{m.description}</p>
-                  <p className="mt-2 text-xs text-neutral-400">Al activarlo: {m.unlocks}</p>
+                  <p className="mt-2 text-xs text-neutral-500">Al activarlo: {m.unlocks}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
                     <button
                       onClick={() => openModuleIntro(m.id)}
@@ -220,6 +225,7 @@ export default function SettingsPage() {
           <span className="ml-auto flex flex-wrap items-center gap-1.5">
             <a
               href={mailto()}
+              aria-disabled={questions.length === 0 || undefined}
               className={cn('inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-700', questions.length === 0 && 'pointer-events-none opacity-40')}
             >
               <Send className="h-4 w-4" /> Enviar a Oscar
@@ -227,7 +233,12 @@ export default function SettingsPage() {
             <Button variant="secondary" onClick={copyQuestions} disabled={questions.length === 0}>
               <Copy className="h-4 w-4" /> {copied ? 'Copiado' : 'Copiar'}
             </Button>
-            <Button variant="secondary" onClick={() => downloadTextFile('preguntas-talentia.txt', questionsText())} disabled={questions.length === 0}>
+            <Button
+              variant="secondary"
+              aria-label="Descargar las preguntas como archivo de texto"
+              onClick={() => downloadTextFile('preguntas-talentia.txt', questionsText())}
+              disabled={questions.length === 0}
+            >
               <Download className="h-4 w-4" />
             </Button>
             {canManage && (
@@ -238,20 +249,20 @@ export default function SettingsPage() {
           </span>
         </div>
         {questions.length === 0 ? (
-          <p className="px-6 py-6 text-sm text-neutral-400">Aún no has hecho preguntas. Todo lo que preguntes en el botón Ayuda aparecerá aquí para mejorar la guía.</p>
+          <p className="px-6 py-6 text-sm text-neutral-500">Aún no has hecho preguntas. Todo lo que preguntes en el botón Ayuda aparecerá aquí para mejorar la guía.</p>
         ) : (
           <ul className="max-h-72 divide-y divide-neutral-100 overflow-y-auto">
             {questions.map((q) => (
               <li key={q.id} className="flex flex-wrap items-center gap-3 px-6 py-2.5 text-sm">
                 <Badge variant={q.answered ? 'green' : 'red'}>{q.answered ? 'Respondida' : 'Sin respuesta'}</Badge>
                 <span className="text-neutral-800">{q.question}</span>
-                <span className="ml-auto text-[11px] text-neutral-400">{q.route} · {new Date(q.at).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="ml-auto text-xs text-neutral-500">{q.route} · {new Date(q.at).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </li>
             ))}
           </ul>
         )}
         {TEAM_PILOT && (
-          <p className="border-t border-neutral-100 px-6 py-3 text-[11px] text-neutral-400">
+          <p className="border-t border-neutral-100 px-6 py-3 text-xs text-neutral-500">
             Al terminar la ronda de prueba, "Enviar a Oscar" abre un correo con estas preguntas y espacio para tus respuestas.{' '}
             <Link to="/ronda-de-prueba" className="inline-flex items-center gap-1 font-semibold text-brand-700 hover:underline"><ClipboardList className="h-3 w-3" /> Ver el guion</Link>
           </p>
@@ -272,8 +283,9 @@ export default function SettingsPage() {
               debe atender cada etapa y qué módulos opcionales están encendidos.
             </p>
             {canManage && (
-              <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={handleResetDemo}>
-                <RotateCcw className="h-4 w-4" /> Volver a los datos de ejemplo
+              <Button variant="ghost" className="mt-3 text-red-700 hover:bg-red-50" onClick={handleResetDemo} loading={resetting}>
+                {!resetting && <RotateCcw className="h-4 w-4" />}
+                {resetting ? 'Restableciendo…' : 'Volver a los datos de ejemplo'}
               </Button>
             )}
           </div>

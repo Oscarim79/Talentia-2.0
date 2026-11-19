@@ -1,3 +1,4 @@
+import { Tooltip } from '../../components/ui/Tooltip';
 import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { Upload, CheckCircle2, XCircle, AlertTriangle, Loader2, FileText, UploadCloud, Sparkles, RotateCcw } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
@@ -230,12 +231,11 @@ export default function ScreeningPage() {
       <Card className="mb-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Vacante</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Vacante</span>
             <select
               value={jobId}
               onChange={(e) => setJobId(e.target.value)}
               disabled={busy}
-              title={busy ? 'Espera a que termine el lote en proceso' : undefined}
               className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {jobs.map((j) => (
@@ -244,6 +244,7 @@ export default function ScreeningPage() {
                 </option>
               ))}
             </select>
+            {busy && <span className="text-xs text-neutral-500">Espera a que termine el lote en proceso.</span>}
           </div>
           <div className="text-sm text-neutral-500">
             {ranked.length} puntuados
@@ -317,10 +318,10 @@ export default function ScreeningPage() {
             <p className="text-sm font-semibold text-neutral-700">
               Arrastra y suelta los CVs aquí
             </p>
-            <p className="mt-1 text-xs text-neutral-400">
+            <p className="mt-1 text-xs text-neutral-500">
               o <span className="font-medium text-brand-700">selecciona archivos</span> · PDF o Word (.docx) hasta {MAX_FILE_MB} MB · imágenes hasta {MAX_IMAGE_MB} MB · carga por lote
             </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-neutral-400">
+            <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-neutral-500">
               <Upload className="h-3 w-3" /> Los escaneos ilegibles caen automáticamente en la cola de errores
             </div>
           </>
@@ -343,7 +344,7 @@ export default function ScreeningPage() {
             <PendingRow key={c.id} candidate={c} state={pendingState(c, inFlight) ?? 'stale'} onRetry={() => retry(c)} busy={busy} />
           ))}
           {ranked.length === 0 && pending.length === 0 && (
-            <Card className="p-10 text-center text-sm text-neutral-400">
+            <Card className="p-10 text-center text-sm text-neutral-500">
               No hay candidatos puntuados. Suelta CVs arriba o pulsa <b>CVs de ejemplo</b> para ver el flujo.
             </Card>
           )}
@@ -354,7 +355,7 @@ export default function ScreeningPage() {
       ) : (
         <div className="space-y-3">
           {errors.length === 0 && (
-            <Card className="p-10 text-center text-sm text-neutral-400">Sin errores de lectura. 🎉</Card>
+            <Card className="p-10 text-center text-sm text-neutral-500">Sin errores de lectura. 🎉</Card>
           )}
           {errors.map((c) => (
             <ErrorRow key={c.id} candidate={c} onRetry={() => retry(c)} busy={busy} />
@@ -371,7 +372,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
     <Card className="p-4">
       <div className="flex items-start gap-4">
         <div className="flex w-8 shrink-0 flex-col items-center pt-1">
-          <span className="text-lg font-black text-neutral-300">#{rank}</span>
+          <span className="text-lg font-black text-neutral-500">#{rank}</span>
         </div>
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
           {candidate.firstName[0]}
@@ -396,18 +397,28 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
           {/* Evidencia anclada al CV (anti-alucinación) */}
           {candidate.evidence && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {candidate.evidence.map((e) => (
-                <span
-                  key={e.criterion}
-                  className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${
-                    e.matched ? 'bg-green-50 text-green-700' : 'bg-neutral-100 text-neutral-400'
-                  }`}
-                  title={e.quote}
-                >
-                  {e.matched ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                  {e.criterion}
-                </span>
-              ))}
+              {candidate.evidence.map((e) => {
+                const chip = (
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium ${
+                      e.matched ? 'bg-green-50 text-green-700' : 'bg-neutral-100 text-neutral-600'
+                    }`}
+                  >
+                    {e.matched ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                    {e.criterion}
+                  </span>
+                );
+                // La cita del CV que respalda el criterio: visible con cursor, teclado o un toque.
+                return e.quote ? (
+                  <Tooltip key={e.criterion} text={e.quote}>
+                    {chip}
+                  </Tooltip>
+                ) : (
+                  <span key={e.criterion} className="inline-flex">
+                    {chip}
+                  </span>
+                );
+              })}
             </div>
           )}
         </div>
@@ -418,7 +429,7 @@ function CandidateRow({ rank, candidate }: { rank: number; candidate: Candidate 
               {score}
             </Badge>
           </div>
-          <p className="mt-1 text-[11px] text-neutral-400">match {candidate.matchPercent}%</p>
+          <p className="mt-1 text-xs text-neutral-500">match {candidate.matchPercent}%</p>
           <ProgressBar value={score} className="mt-2" />
           <div className="mt-2 flex justify-end">
             <CvLink cvPath={candidate.cvPath} />
@@ -448,7 +459,7 @@ function PendingRow({
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-neutral-800">
           {candidate.firstName} {candidate.lastName}
-          <span className="ml-2 text-xs font-normal text-neutral-400">{candidate.cvFileName}</span>
+          <span className="ml-2 text-xs font-normal text-neutral-500">{candidate.cvFileName}</span>
         </p>
         <p className="text-xs text-neutral-500">
           {state === 'processing' ? 'Leyendo el CV…' : 'Quedó pendiente (la lectura no terminó). Puedes reintentar.'}

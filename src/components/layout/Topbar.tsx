@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTenant } from '../../context/TenantContext';
 import { Badge, Button } from '../ui/primitives';
 import { TEAM_PILOT } from '../../core/config';
+import { nameInitials } from '../../lib/utils';
 
 export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { tenant, plan, tenants, setTenantId, member } = useTenant();
@@ -20,30 +21,33 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
             <Menu className="h-4.5 w-4.5" />
           </button>
         )}
-        <span className="hidden font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-neutral-400 sm:inline">
-          Empresa
-        </span>
+        <span className="eyebrow hidden text-neutral-500 sm:inline">Empresa</span>
         {TEAM_PILOT ? (
-          <span className="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-800">
-            {tenant.logoEmoji} {tenant.name}
+          <span className="inline-flex items-center gap-2 rounded-lg border border-neutral-200 bg-white py-1.5 pl-1.5 pr-3 text-sm font-semibold text-neutral-800">
+            <TenantMark name={tenant.name} />
+            {tenant.name}
           </span>
         ) : (
-        <div className="relative">
-          <select
-            value={tenant.id}
-            onChange={(e) => setTenantId(e.target.value)}
-            className="appearance-none rounded-lg border border-neutral-300 bg-white py-2 pl-3 pr-9 text-sm font-semibold text-neutral-800 hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
-          >
-            {tenants.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.logoEmoji}  {t.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-        </div>
+          <div className="relative flex items-center">
+            <span className="pointer-events-none absolute left-1.5">
+              <TenantMark name={tenant.name} />
+            </span>
+            <select
+              aria-label="Empresa"
+              value={tenant.id}
+              onChange={(e) => setTenantId(e.target.value)}
+              className="appearance-none rounded-lg border border-neutral-300 bg-white py-2 pl-10 pr-9 text-sm font-semibold text-neutral-800 hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              {tenants.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+          </div>
         )}
-        <span className="hidden truncate text-xs text-neutral-400 md:inline">{tenant.industry}</span>
+        <span className="hidden truncate text-xs text-neutral-500 md:inline">{tenant.industry}</span>
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -57,10 +61,23 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
         <Button variant="secondary" onClick={() => void signOut()} className="!px-2.5 !py-1.5 text-xs">
           <LogOut className="h-3.5 w-3.5" /> Cerrar sesión
         </Button>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-bold text-neutral-600">
-          {tenant.logoEmoji}
+        <div
+          role="img"
+          aria-label={member.name}
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-bold text-neutral-700"
+        >
+          {nameInitials(member.name)}
         </div>
       </div>
     </header>
+  );
+}
+
+/** Monograma de la empresa (en lugar de un emoji como icono). */
+function TenantMark({ name }: { name: string }) {
+  return (
+    <span aria-hidden="true" className="flex h-7 w-7 items-center justify-center rounded-md bg-ink text-xs font-bold text-white">
+      {nameInitials(name)}
+    </span>
   );
 }

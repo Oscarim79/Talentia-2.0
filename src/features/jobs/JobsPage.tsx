@@ -43,7 +43,7 @@ export default function JobsPage() {
       />
 
       {jobs.length === 0 ? (
-        <Card className="p-12 text-center text-sm text-neutral-400">Esta empresa aún no tiene vacantes.</Card>
+        <Card className="p-12 text-center text-sm text-neutral-500">Esta empresa aún no tiene vacantes.</Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {jobs.map((j, i) => (
@@ -84,8 +84,8 @@ function JobCard({ job: j, tourTarget, onEdit }: { job: Job; tourTarget?: boolea
           <Users2 className="h-3 w-3" /> {j.openings} plazas
         </Badge>
         {/* La guía de competencias que usará la entrevista (humana o con el asistente de IA); la ayuda de Entrevistas IA la resalta. */}
-        <span data-tour={tourTarget ? 'jobs:guide' : undefined} className="inline-flex" title="Guía de entrevista por competencias de RR.HH. que aplica a esta vacante (se deduce del título)">
-          <Badge variant="blue">
+        <span data-tour={tourTarget ? 'jobs:guide' : undefined} className="inline-flex">
+          <Badge variant="blue" title="Guía de entrevista por competencias de RR.HH. que aplica a esta vacante (se deduce del título)">
             <NotebookPen className="h-3 w-3" /> Guía: {GUIDES[guideRoleForJob(j)].label}
           </Badge>
         </span>

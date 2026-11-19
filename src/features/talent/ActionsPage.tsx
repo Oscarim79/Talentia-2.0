@@ -82,7 +82,7 @@ export default function ActionsPage() {
     return (
       <div>
         <PageHeader eyebrow="Talento" title="Acciones pendientes · RR.HH." subtitle="Decisiones de gestión derivadas del desempeño del equipo." />
-        <Card className="p-12 text-center text-sm text-neutral-400">
+        <Card className="p-12 text-center text-sm text-neutral-500">
           El tablero de acciones se activa cuando hay colaboradores evaluados.
           <br />
           (Datos de demostración disponibles en la empresa <b>Americana 2000</b>.)
@@ -122,17 +122,17 @@ export default function ActionsPage() {
         <div className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1">
           <FileText className="h-4 w-4 text-brand-700" />
           <h2 className="text-sm font-bold text-neutral-700">Reportes a gerentes</h2>
-          <span className="text-xs text-neutral-400">— envía a cada gerente el estado de su equipo</span>
+          <span className="text-xs text-neutral-500">— envía a cada gerente el estado de su equipo</span>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {reportCards.map((c) => (
             <div key={c.department} className="rounded-lg border border-neutral-200 p-4">
               <p className="text-sm font-bold text-neutral-900">{c.manager}</p>
               <p className="text-xs text-neutral-500">Gerente · {c.department}</p>
-              <div className="mt-2 flex items-center gap-3 text-xs font-semibold">
-                <span className="text-green-600" title="A reconocer / premiar">● {c.reward}</span>
-                <span className="text-amber-600" title="En seguimiento">● {c.followup}</span>
-                <span className="text-red-600" title="En riesgo">● {c.risk}</span>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold">
+                <span className="text-green-700">● {c.reward} a reconocer</span>
+                <span className="text-amber-700">● {c.followup} en seguimiento</span>
+                <span className="text-red-700">● {c.risk} en riesgo</span>
               </div>
               <Button variant="secondary" className="mt-3 w-full justify-center" onClick={() => setReportDept(c.department)}>
                 <Send className="h-4 w-4" /> Ver / enviar reporte
@@ -152,7 +152,7 @@ export default function ActionsPage() {
             <div key={bucket.key}>
               <h2 className={`mb-3 flex items-center gap-2 text-sm font-bold ${bucket.accent}`}>
                 <Icon className="h-4 w-4" /> {bucket.title}
-                <span className="text-neutral-400">· {list.length}</span>
+                <span className="text-neutral-500">· {list.length}</span>
               </h2>
               <div className="space-y-3">
                 {list.map((item) => (
@@ -170,7 +170,7 @@ export default function ActionsPage() {
         })}
 
         {pending.length === 0 && (
-          <Card className="p-10 text-center text-sm text-neutral-400">
+          <Card className="p-10 text-center text-sm text-neutral-500">
             🎉 No hay acciones pendientes para esta selección.
           </Card>
         )}
@@ -179,7 +179,7 @@ export default function ActionsPage() {
         {completed.length > 0 && (
           <div>
             <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-neutral-500">
-              <ClipboardCheck className="h-4 w-4" /> Completadas <span className="text-neutral-400">· {completed.length}</span>
+              <ClipboardCheck className="h-4 w-4" /> Completadas <span className="text-neutral-500">· {completed.length}</span>
             </h2>
             <div className="space-y-3">
               {completed.map((item) => (
@@ -232,7 +232,7 @@ function ActionRow({
           </div>
           <p className="text-xs text-neutral-500">{person.role} · {person.department}</p>
           <p className="mt-1.5 text-sm text-neutral-600">{decision.detail}</p>
-          <p className="mt-0.5 text-xs text-neutral-400">Base: {decision.rationale}</p>
+          <p className="mt-0.5 text-xs text-neutral-500">Base: {decision.rationale}</p>
         </div>
 
         <div className="flex shrink-0 flex-col gap-1.5">

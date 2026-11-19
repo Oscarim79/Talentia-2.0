@@ -123,7 +123,7 @@ export default function PilotGuidePage() {
           <Card key={d.day} className="p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">{d.day}</p>
+  <p className="eyebrow text-brand-700">{d.day}</p>
                 <h3 className="font-display text-lg font-semibold text-ink">{d.title}</h3>
                 <p className="mt-0.5 text-sm text-neutral-500">{d.goal}</p>
               </div>
@@ -150,7 +150,7 @@ export default function PilotGuidePage() {
         <ol className="space-y-2 text-sm text-neutral-700">
           {PILOT_QUESTIONS.map((q, i) => (
             <li key={i} className="flex gap-3">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-700">{i + 1}</span>
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-700">{i + 1}</span>
               {q}
             </li>
           ))}

@@ -26,8 +26,7 @@ export function CvLink({ cvPath, className = '' }: { cvPath?: string; className?
     <button
       type="button"
       onClick={open}
-      title="Abrir el CV original"
-      className={`inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1 text-[11px] font-semibold text-neutral-600 transition-colors hover:border-brand-400 hover:text-brand-700 ${className}`}
+      className={`inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1 text-xs font-semibold text-neutral-600 transition-colors hover:border-brand-400 hover:text-brand-700 ${className}`}
     >
       <FileText className="h-3 w-3" /> Ver CV
     </button>

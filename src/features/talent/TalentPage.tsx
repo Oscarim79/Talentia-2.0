@@ -59,7 +59,7 @@ export default function TalentPage() {
           title="Matriz 9-Box"
           subtitle="Del candidato al colaborador: desempeño vs. cultura/potencial (escala 1–5)."
         />
-        <Card className="p-12 text-center text-sm text-neutral-400">
+        <Card className="p-12 text-center text-sm text-neutral-500">
           El módulo de Talento se activa cuando hay colaboradores contratados y evaluados.
           <br />
           (Datos de demostración disponibles en la empresa <b>Americana 2000</b>.)
@@ -80,7 +80,7 @@ export default function TalentPage() {
       {/* Filtro por departamento */}
       <Card className="mb-5 flex flex-wrap items-center justify-between gap-3 p-4" dataTour="talent:filter">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Departamento</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Departamento</span>
           <select
             value={dept}
             onChange={(e) => setDept(e.target.value)}
@@ -98,7 +98,7 @@ export default function TalentPage() {
         {/* Matriz */}
         <Card className="p-6 xl:col-span-2" dataTour="talent:matrix">
           <NineBoxMatrix dataPoints={people} onPointClick={setSelectedId} />
-          <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] font-medium text-neutral-500">
+          <div className="mt-4 grid grid-cols-3 gap-2 text-xs font-medium text-neutral-500">
             <Legend color="bg-green-300/60" label="Ideal / Superestrella" />
             <Legend color="bg-yellow-200/60" label="Desarrollo / Futuro Líder" />
             <Legend color="bg-red-300/60" label="Riesgo / Crítico" />
@@ -108,7 +108,7 @@ export default function TalentPage() {
         {/* Lista de colaboradores (nombres clicables → perfil) */}
         <Card className="p-5" dataTour="talent:list">
           <h2 className="mb-3 text-sm font-bold text-neutral-700">
-            Colaboradores {dept !== 'Todos' && <span className="text-neutral-400">· {dept}</span>}
+            Colaboradores {dept !== 'Todos' && <span className="text-neutral-500">· {dept}</span>}
           </h2>
           <ul className="space-y-1">
             {people.map((p) => (
@@ -123,14 +123,14 @@ export default function TalentPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
                       <p className="text-sm font-semibold leading-snug text-neutral-800">{p.name}</p>
-                      <span className="shrink-0 text-[11px] font-medium text-neutral-400">
+                      <span className="shrink-0 text-xs font-medium text-neutral-500">
                         {(p.refinedPerformanceScore || p.performanceScore).toFixed(1)} ·{' '}
                         {(p.refinedCultureScore || p.cultureScore).toFixed(1)}
                       </span>
                     </div>
                     <div className="mt-0.5 flex items-center justify-between gap-2">
                       <p className="truncate text-xs text-neutral-500">{p.role}</p>
-                      <Badge variant={quadrantVariant(p.quadrant)} className="shrink-0 whitespace-nowrap text-[10px]">
+                      <Badge variant={quadrantVariant(p.quadrant)} className="shrink-0 whitespace-nowrap text-xs">
                         {p.quadrant}
                       </Badge>
                     </div>
@@ -145,7 +145,7 @@ export default function TalentPage() {
       {/* Cultura 360° del equipo (promedio, responde al filtro) */}
       <Card className="mt-6 p-6" dataTour="talent:culture">
         <h2 className="mb-4 text-sm font-bold text-neutral-700">
-          Cultura 360° del equipo · 10 dimensiones {dept !== 'Todos' && <span className="text-neutral-400">· {dept}</span>}
+          Cultura 360° del equipo · 10 dimensiones {dept !== 'Todos' && <span className="text-neutral-500">· {dept}</span>}
         </h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {teamGroups.map(({ group, dims, avg }) => (

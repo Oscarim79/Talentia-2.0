@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useDialogFocus } from '../../lib/dialogFocus';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import {
   Filter,
   MessageCircle,
@@ -285,7 +286,7 @@ export default function CvReplyPage() {
 
       {/* Filtros */}
       <Card className="mb-5 p-5" dataTour="reply:filters">
-        <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+        <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
           <Filter className="h-3.5 w-3.5" /> Filtro de CVs
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -359,7 +360,7 @@ export default function CvReplyPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="p-10 text-center text-sm text-neutral-400">
+            <div className="p-10 text-center text-sm text-neutral-500">
               {tenantCands.length === 0
                 ? 'Sin CVs puntuados para esta empresa. Puntúa CVs en Screening IA primero.'
                 : 'Ningún CV cumple el filtro. Baja el score mínimo o cambia los criterios.'}
@@ -379,15 +380,15 @@ export default function CvReplyPage() {
                       aria-label={`Seleccionar a ${c.firstName} ${c.lastName}`}
                       className="h-4 w-4 accent-brand-600"
                     />
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                       {c.firstName[0]}{c.lastName[0]}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-neutral-800">
                         {c.firstName} {c.lastName}
-                        <span className="ml-2 text-xs font-normal text-neutral-400">{j?.title}{j?.brand ? ` · ${j.brand}` : ''}</span>
+                        <span className="ml-2 text-xs font-normal text-neutral-500">{j?.title}{j?.brand ? ` · ${j.brand}` : ''}</span>
                       </p>
-                      <p className="truncate text-[11px] text-neutral-400">
+                      <p className="truncate text-xs text-neutral-500">
                         {c.phone} · {c.email} · {(c.parsed?.skills ?? []).slice(0, 3).join(', ')}
                       </p>
                     </div>
@@ -402,7 +403,7 @@ export default function CvReplyPage() {
                       <button
                         onClick={() => setPreview(c)}
                         aria-label="Vista previa del mensaje"
-                        className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700"
+                        className="rounded-lg p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
@@ -410,7 +411,7 @@ export default function CvReplyPage() {
                     {selected.has(c.id) && canReply(c) && (
                       <div className="flex w-full flex-wrap items-center gap-2 pl-7 sm:pl-[64px]" data-tour={c.id === queue[0]?.id ? 'reply:slot' : undefined}>
                         <CalendarClock className="h-3.5 w-3.5 text-brand-700" />
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Entrevista</span>
+                        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Entrevista</span>
                         <input
                           type="datetime-local"
                           value={toInput(queueSlots.get(c.id)!)}
@@ -418,16 +419,16 @@ export default function CvReplyPage() {
                           aria-label={`Horario de la entrevista de ${c.firstName} ${c.lastName}`}
                           className="rounded-lg border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
                         />
-                        <span className="text-[11px] text-neutral-500">{formatSlot(queueSlots.get(c.id)!)}</span>
+                        <span className="text-xs text-neutral-500">{formatSlot(queueSlots.get(c.id)!)}</span>
                         {overrides[c.id] ? (
                           <button
                             onClick={() => setOverrides((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => id !== c.id)))}
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-700 hover:underline"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
                           >
                             <RotateCcw className="h-3 w-3" /> Usar el de la agenda
                           </button>
                         ) : (
-                          <span className="text-[11px] text-neutral-400">(de la agenda)</span>
+                          <span className="text-xs text-neutral-500">(de la agenda)</span>
                         )}
                       </div>
                     )}
@@ -469,7 +470,7 @@ export default function CvReplyPage() {
                     ))}
                   </select>
                 </Field>
-                <p className="text-[11px] text-neutral-400">
+                <p className="text-xs text-neutral-500">
                   Cada seleccionado recibe su propio horario, uno seguido del otro (después de las 5:00 p.m. pasa al siguiente día hábil). Cámbialo en su fila si tu agenda lo pide.
                 </p>
               </div>
@@ -489,7 +490,7 @@ export default function CvReplyPage() {
                 <input value={contact} onChange={(e) => setContact(e.target.value)} className={inputCls} />
               </Field>
             </div>
-            <p className="mt-3 text-[11px] text-neutral-400">
+            <p className="mt-3 text-xs text-neutral-500">
               Plantilla estándar de Talentia Labs: el nombre, la vacante, la marca y el horario se completan solos por cada candidato.
             </p>
           </Card>
@@ -537,12 +538,12 @@ export default function CvReplyPage() {
           <Badge variant="stone">{tenantMessages.length}</Badge>
         </div>
         {tenantMessages.length === 0 ? (
-          <p className="p-8 text-center text-sm text-neutral-400">Aún no se ha enviado ninguna respuesta.</p>
+          <p className="p-8 text-center text-sm text-neutral-500">Aún no se ha enviado ninguna respuesta.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-neutral-100 text-left text-xs uppercase tracking-wide text-neutral-400">
+                <tr className="border-b border-neutral-100 text-left text-xs uppercase tracking-wide text-neutral-500">
                   <th className="px-5 py-3 font-semibold">Hora</th>
                   <th className="px-5 py-3 font-semibold">Candidato</th>
                   <th className="px-5 py-3 font-semibold">Canal</th>
@@ -558,12 +559,12 @@ export default function CvReplyPage() {
                     </td>
                     <td className="px-5 py-3 font-semibold text-neutral-800">
                       {m.candidateName}
-                      <span className="ml-2 text-xs font-normal text-neutral-400">{m.to}</span>
+                      <span className="ml-2 text-xs font-normal text-neutral-500">{m.to}</span>
                     </td>
                     <td className="px-5 py-3 text-neutral-600">{m.channel === 'whatsapp' ? 'WhatsApp' : 'Correo'}</td>
                     <td className="px-5 py-3"><StatusBadge msg={m} /></td>
                     <td className="px-5 py-3 text-neutral-600">
-                      {m.confirmedSlot ?? (m.slot ? <span className="text-neutral-400">{m.slot} (propuesto)</span> : '—')}
+                      {m.confirmedSlot ?? (m.slot ? <span className="text-neutral-500">{m.slot} (propuesto)</span> : '—')}
                     </td>
                   </tr>
                 ))}
@@ -595,7 +596,7 @@ const inputCls =
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
       {children}
     </label>
   );
@@ -656,23 +657,27 @@ function PreviewModal({
   resend?: boolean;
 }) {
   useEscape(onClose);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         aria-label={`Mensaje para ${candidate.firstName} ${candidate.lastName}`}
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-2xl bg-white shadow-xl"
+        className="w-full max-w-lg rounded-2xl bg-white shadow-xl outline-none"
       >
         <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
           <div>
             <p className="text-sm font-bold text-neutral-800">{candidate.firstName} {candidate.lastName}</p>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-500">
               {channel === 'whatsapp' ? `WhatsApp · ${candidate.phone}` : `Correo · ${candidate.email}`}
             </p>
           </div>
-          <button onClick={onClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100">
+          <button onClick={onClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-500 hover:bg-neutral-100">
             <X className="h-4 w-4" />
           </button>
         </div>

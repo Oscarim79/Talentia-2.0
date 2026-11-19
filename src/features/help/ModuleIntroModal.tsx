@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../lib/dialogFocus';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, Compass, PlayCircle, MessageCircleQuestion, X, CheckCircle2, ArrowRight, Info, Settings, Check } from 'lucide-react';
@@ -19,6 +20,7 @@ export function ModuleIntroModal() {
   const navigate = useNavigate();
   const dialogRef = useRef<HTMLDivElement>(null);
   const open = moduleIntro !== null;
+  useDialogFocus(dialogRef, open);
 
   useEffect(() => {
     if (!open) return;
@@ -72,7 +74,7 @@ export function ModuleIntroModal() {
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white">
                 <Video className="h-5 w-5" />
               </div>
-              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-400">{eyebrow}</p>
+  <p className="eyebrow text-brand-400">{eyebrow}</p>
             </div>
             <button onClick={closeModuleIntro} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-white/10 hover:text-white">
               <X className="h-4 w-4" />
@@ -93,11 +95,11 @@ export function ModuleIntroModal() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <section>
-              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">Cómo funciona</h3>
+  <h3 className="mb-3 eyebrow text-brand-700">Cómo funciona</h3>
               <ol className="space-y-3">
                 {guide.howItWorks.map((s, i) => (
                   <li key={s.title} className="flex gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">{i + 1}</span>
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">{i + 1}</span>
                     <span>
                       <span className="block text-sm font-semibold text-neutral-800">{s.title}</span>
                       <span className="block text-xs leading-relaxed text-neutral-500">{s.body}</span>
@@ -107,7 +109,7 @@ export function ModuleIntroModal() {
               </ol>
             </section>
             <section>
-              <h3 className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">Qué debes hacer</h3>
+  <h3 className="mb-3 eyebrow text-brand-700">Qué debes hacer</h3>
               <ul className="space-y-3">
                 {guide.todo.map((t) => (
                   <li key={t.text} className="flex gap-2.5">
@@ -160,7 +162,7 @@ export function ModuleIntroModal() {
               Lo veo después
             </Button>
           </div>
-          <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-neutral-400">
+          <p className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs text-neutral-400">
             {isTourDone(guide.tour) && (
               <Badge variant="green" className="shrink-0 whitespace-nowrap">
                 <Check className="h-3 w-3" /> Recorrido visto

@@ -203,7 +203,7 @@ export default function InterviewsPage() {
       <Card className="mb-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Candidato</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Candidato</span>
             <select
               value={candId}
               onChange={(e) => setCandId(e.target.value)}
@@ -229,7 +229,7 @@ export default function InterviewsPage() {
       </Card>
 
       {candidates.length === 0 ? (
-        <Card className="p-10 text-center text-sm text-neutral-400">
+        <Card className="p-10 text-center text-sm text-neutral-500">
           No hay candidatos en etapa de entrevista para esta empresa. Puntúa CVs en <b>Screening IA</b> primero.
         </Card>
       ) : (
@@ -278,14 +278,14 @@ export default function InterviewsPage() {
                   disabled={thinking}
                   className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:bg-neutral-50"
                 />
-                <Button onClick={send} disabled={thinking || !input.trim()}>
+                <Button onClick={send} disabled={thinking || !input.trim()} aria-label="Enviar mensaje">
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
             )}
 
             {done && (
-              <div className="border-t border-neutral-100 p-3 text-center text-xs text-neutral-400">
+              <div className="border-t border-neutral-100 p-3 text-center text-xs text-neutral-500">
                 Entrevista finalizada · {evaluation?.answersCount} respuestas registradas
               </div>
             )}
@@ -322,7 +322,7 @@ export default function InterviewsPage() {
 
                 <Card className="p-5">
                   <h3 className="mb-1 text-sm font-bold text-neutral-700">Sugerencia preliminar de la IA</h3>
-                  <p className="mb-3 text-xs text-neutral-400">
+                  <p className="mb-3 text-xs text-neutral-500">
                     Orientativa, de 1 a 5 según la escala de la guía: sube con ejemplos concretos, acciones propias y resultados medibles; baja si solo habla en plural. La puntuación válida la da RR.HH.
                   </p>
                   <div className="space-y-2.5">
@@ -369,7 +369,7 @@ export default function InterviewsPage() {
                   )}
                 </Card>
                 {saved === 'draft' && (
-                  <p className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                  <p className="flex items-center gap-1.5 text-xs text-neutral-500">
                     <Check className="h-3 w-3 text-green-600" /> El candidato está en la etapa Entrevista y aparece en Entrevistas y en Candidatos.
                   </p>
                 )}

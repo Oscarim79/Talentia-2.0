@@ -1,4 +1,4 @@
-import { Briefcase, Users, ScanSearch, Timer } from 'lucide-react';
+import { Briefcase, Users, ScanSearch, Timer, TrendingDown } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Cell,
+  LabelList,
 } from 'recharts';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
@@ -18,14 +19,9 @@ import { useSettings } from '../../context/SettingsContext';
 import { Card, PageHeader, StatCard, Badge, ProgressBar } from '../../components/ui/primitives';
 import { teamKpis } from '../metrics/hrMetrics';
 import { scoreVariant } from '../../components/ui/primitives';
-
-const STAGES: { key: string; label: string; color: string }[] = [
-  { key: 'applied', label: 'Aplicados', color: '#d8d8d8' },
-  { key: 'screening', label: 'Screening', color: '#ffc5b3' },
-  { key: 'interview', label: 'Entrevista', color: '#f57a57' },
-  { key: 'offer', label: 'Oferta', color: '#e94823' },
-  { key: 'hired', label: 'Contratado', color: '#000000' },
-];
+import { chartTooltipStyle, useChartColors } from '../../lib/chartTheme';
+import { buildFunnel } from './funnel';
+import type { CandidateStage } from '../../types';
 
 export default function DashboardPage() {
   const { tenant } = useTenant();
@@ -35,15 +31,20 @@ export default function DashboardPage() {
   const { candidates: cands } = useCandidates();
   const today = todayISO();
   const usage = USAGE_EVENTS.filter((u) => u.tenantId === tenant.id);
+  const colors = useChartColors();
 
   const openJobs = jobs.filter((j) => j.status === 'open').length;
   const screeningUsed = usage.filter((u) => u.type === 'screening').reduce((s, u) => s + u.amount, 0);
   const kpis = teamKpis(cands, jobs, hrTeam, today, settings.sla);
 
-  const funnel = STAGES.map((s) => ({
-    label: s.label,
-    color: s.color,
-    value: cands.filter((c) => c.stage === s.key).length,
+  const counts: Partial<Record<CandidateStage, number>> = {};
+  for (const c of cands) counts[c.stage] = (counts[c.stage] ?? 0) + 1;
+  const { stages, biggestDrop } = buildFunnel(counts);
+  const funnel = stages.map((s, i) => ({
+    ...s,
+    color: colors.funnel[i],
+    // Encima de cada barra: cuántos llegaron y qué % de la etapa anterior.
+    mark: s.pct == null ? String(s.reached) : `${s.reached} · ${s.pct} %`,
   }));
 
   const topCandidates = [...cands]
@@ -74,25 +75,49 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-2">
-          <h2 className="mb-4 text-sm font-bold text-neutral-700">Funnel de reclutamiento</h2>
+          <h2 className="text-sm font-bold text-neutral-700">Embudo de reclutamiento</h2>
+          <p className="mb-4 mt-0.5 text-xs text-neutral-500">
+            Cada barra cuenta a quienes llegaron a esa etapa o más allá; el porcentaje es respecto a la etapa anterior.
+          </p>
           {cands.length === 0 ? (
             <EmptyState text="Aún no hay candidatos para esta empresa. Ve a Screening IA para cargar CVs." />
           ) : (
-            <div style={{ height: 280 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={funnel} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5e5" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#737373' }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#737373' }} axisLine={false} tickLine={false} />
-                  <Tooltip cursor={{ fill: '#f5f5f5' }} contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 13 }} />
-                  <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                    {funnel.map((f) => (
-                      <Cell key={f.label} fill={f.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <>
+              <div style={{ height: 280 }} aria-hidden="true">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={funnel} margin={{ top: 24, right: 8, left: -16, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={colors.grid} />
+                    <XAxis dataKey="label" tick={{ fontSize: 12, fill: colors.tick }} axisLine={false} tickLine={false} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: colors.tick }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      cursor={{ fill: colors.cursor }}
+                      contentStyle={chartTooltipStyle(colors)}
+                      formatter={(v) => [`${v} candidatos`, 'Llegaron']}
+                    />
+                    <Bar dataKey="reached" radius={[6, 6, 0, 0]}>
+                      {funnel.map((f) => (
+                        <Cell key={f.key} fill={f.color} />
+                      ))}
+                      <LabelList dataKey="mark" position="top" style={{ fontSize: 12, fontWeight: 600, fill: colors.label }} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              {/* La misma información en texto, para lectores de pantalla y para copiar. */}
+              <ul className="sr-only">
+                {funnel.map((f) => (
+                  <li key={f.key}>
+                    {f.label}: {f.reached} candidatos{f.pct != null ? ` (${f.pct} % de la etapa anterior)` : ''}
+                  </li>
+                ))}
+              </ul>
+              {biggestDrop && (
+                <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-amber-800">
+                  <TrendingDown className="h-3.5 w-3.5" aria-hidden="true" />
+                  Mayor caída: {biggestDrop.from} → {biggestDrop.to} (se pierde el {biggestDrop.lossPct} %).
+                </p>
+              )}
+            </>
           )}
         </Card>
 
@@ -127,7 +152,7 @@ export default function DashboardPage() {
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-200 px-6 text-center text-sm text-neutral-400">
+    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-200 px-6 text-center text-sm text-neutral-500">
       {text}
     </div>
   );
