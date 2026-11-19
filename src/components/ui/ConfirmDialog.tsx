@@ -3,6 +3,7 @@ import { TriangleAlert } from 'lucide-react';
 import { Button } from './primitives';
 import { cn } from '../../lib/utils';
 import { useEscape } from '../../lib/useEscape';
+import { useDialogFocus } from '../../lib/dialogFocus';
 
 /**
  * Confirmación propia de la app, en lugar de `window.confirm` (que bloquea la página y no
@@ -75,16 +76,21 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmOptions & { onConfirm: () => void; onCancel: () => void }) {
   useEscape(onCancel);
+  // El foco entra a la ventana (en Cancelar, la opción segura), no se escapa con Tab y vuelve al cerrar.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
   const danger = tone === 'danger';
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm" onClick={onCancel}>
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
         aria-describedby="confirm-dialog-message"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl outline-none"
       >
         <div className="flex gap-4 p-6">
           <div className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-xl', danger ? 'bg-red-50 text-red-600' : 'bg-brand-50 text-brand-700')}>

@@ -141,7 +141,7 @@ export function Tour() {
 
       <div ref={cardRef} className="absolute max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl" style={cardStyle}>
         <div className="mb-2 flex items-start justify-between gap-3">
-          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-brand-700">
+  <p className="eyebrow text-brand-700">
             {tour !== 'main' && `${TOUR_LABELS[tour]} · `}Paso {tourStep + 1} de {steps.length}
           </p>
           <button onClick={() => endTour()} aria-label="Salir del tour" className="rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700">

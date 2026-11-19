@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useDialogFocus } from '../../lib/dialogFocus';
+import { useRef, useState } from 'react';
 import { X, MessageCircle, Copy, Download, Check, AlertTriangle, Award, Eye } from 'lucide-react';
 import { NINE_BOX } from '../../data/seed';
 import { downloadTextFile, slugify } from '../../lib/utils';
@@ -20,6 +21,8 @@ interface Item {
 }
 
 export function ManagerReportModal({ department, onClose }: { department: string; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
   const [copied, setCopied] = useState(false);
 
   const people = NINE_BOX.filter((p) => p.department === department);
@@ -76,7 +79,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-neutral-900/50 p-4 sm:p-8"
       onClick={onClose}
     >
-      <div className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div ref={dialogRef} tabIndex={-1} className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl outline-none" onClick={(e) => e.stopPropagation()}>
         {/* Encabezado */}
         <div className="flex items-start justify-between border-b border-neutral-100 p-6">
           <div>
@@ -86,7 +89,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
+            className="rounded-lg p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-600"
             aria-label="Cerrar"
           >
             <X className="h-5 w-5" />
@@ -111,7 +114,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
             return (
               <div key={b}>
                 <h3 className={`mb-2 flex items-center gap-2 text-sm font-bold ${M.accent}`}>
-                  <Icon className="h-4 w-4" /> {M.title} <span className="text-neutral-400">· {list.length}</span>
+                  <Icon className="h-4 w-4" /> {M.title} <span className="text-neutral-500">· {list.length}</span>
                 </h3>
                 <div className="space-y-2">
                   {list.map((it) => (
@@ -125,7 +128,7 @@ export function ManagerReportModal({ department, onClose }: { department: string
                           <Badge variant={toneBadge(it.decision.tone)}>{it.decision.label}</Badge>
                         </div>
                         <p className="text-xs text-neutral-500">{it.person.role}</p>
-                        <p className="mt-0.5 text-xs text-neutral-400">Base: {it.decision.rationale}</p>
+                        <p className="mt-0.5 text-xs text-neutral-500">Base: {it.decision.rationale}</p>
                       </div>
                     </div>
                   ))}

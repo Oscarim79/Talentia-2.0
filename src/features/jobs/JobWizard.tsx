@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
-  X, ChevronLeft, ChevronRight, Sparkles, Loader2, Check, Plus, Trash2, Download, Briefcase,
+  X, ChevronLeft, ChevronRight, Sparkles, Check, Plus, Trash2, Download, Briefcase, TriangleAlert,
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { providers } from '../../core/providers';
 import { Button, Badge } from '../../components/ui/primitives';
+import { Field } from '../../components/ui/Field';
 import { slugify, downloadTextFile, fmtMoney } from '../../lib/utils';
 import { useEscape } from '../../lib/useEscape';
+import { useDialogFocus } from '../../lib/dialogFocus';
 import { useConfirm } from '../../components/ui/ConfirmDialog';
 import { jobToLinkedInXml } from '../../lib/linkedin';
+import { validateJobBasics, type JobBasicsField } from './jobValidation';
 import type { Job, ScreeningFilter, InterviewQuestion } from '../../types';
 
 const STEPS = ['Básicos', 'Descripción IA', 'Filtros de screening', 'Preguntas extra', 'Revisar'] as const;
@@ -18,7 +21,13 @@ let uidCounter = 0;
 const nextId = (prefix: string) => `${prefix}_${Date.now().toString(36)}_${++uidCounter}`;
 
 const inputCls =
-  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-300';
+
+const FIELD_LABEL: Record<JobBasicsField, string> = {
+  title: 'Título del puesto',
+  department: 'Departamento',
+  salaryMax: 'Salario máximo',
+};
 
 /**
  * Wizard paso a paso para crear una vacante con IA + export XML LinkedIn.
@@ -62,14 +71,24 @@ export default function JobWizard({
   const [questions, setQuestions] = useState<InterviewQuestion[]>(editing?.questions ?? []);
   const [genQ, setGenQ] = useState(false);
 
-  const salaryInvalid = salaryMin > salaryMax;
-  const canNext =
-    step === 0
-      ? title.trim().length > 1 && department.trim().length > 1 && !salaryInvalid
-      : true;
+  // ---- Validación del paso 1: los errores se muestran junto a cada campo tras intentar avanzar ----
+  const errors = validateJobBasics({ title, department, salaryMin, salaryMax });
+  const valid = Object.keys(errors).length === 0;
+  const [attempted, setAttempted] = useState(false);
+  const errorOf = (field: JobBasicsField) => (attempted ? errors[field] : undefined);
+  const fieldRefs = {
+    title: useRef<HTMLInputElement>(null),
+    department: useRef<HTMLInputElement>(null),
+    salaryMax: useRef<HTMLInputElement>(null),
+  };
+  const summaryRef = useRef<HTMLDivElement>(null);
 
-  // Guardar desde cualquier paso (modo edición): exige lo mismo que el paso 1 para no dejar la vacante rota.
-  const canSave = title.trim().length > 1 && department.trim().length > 1 && !salaryInvalid;
+  /** Muestra los errores del paso 1 y lleva el foco al resumen (o al campo pedido). */
+  function reportErrors(focusField?: JobBasicsField) {
+    setAttempted(true);
+    setStep(0);
+    setTimeout(() => (focusField ? fieldRefs[focusField].current : summaryRef.current)?.focus(), 0);
+  }
 
   async function generateDescription() {
     setGenDesc(true);
@@ -102,6 +121,11 @@ export default function JobWizard({
 
   /** Si dejaron un criterio escrito sin pulsar «Agregar», se agrega al avanzar en vez de perderlo. */
   function goTo(target: number) {
+    // Para salir del paso 1 hacia adelante, los datos básicos deben estar bien.
+    if (step === 0 && target > 0 && !valid) {
+      reportErrors();
+      return;
+    }
     if (step === 2 && filterText.trim()) addFilter();
     setStep(target);
   }
@@ -135,7 +159,12 @@ export default function JobWizard({
     downloadTextFile(`linkedin_${slugify(title) || 'vacante'}.xml`, jobToLinkedInXml(job, tenant), 'application/xml');
   }
 
+  /** Guardar exige lo mismo que el paso 1 para no dejar la vacante rota. */
   function finish() {
+    if (!valid) {
+      reportErrors();
+      return;
+    }
     const job = buildJob(step === 2 && filterText.trim() ? addFilter() : undefined);
     if (isEdit) onSave?.(job);
     else onCreate?.(job);
@@ -159,17 +188,24 @@ export default function JobWizard({
       onClose();
   }
   useEscape(safeClose);
+  // El foco entra al wizard, no se escapa con Tab y vuelve al botón que lo abrió al cerrar.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
+
+  const shownErrors = attempted ? (Object.keys(errors) as JobBasicsField[]) : [];
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={isEdit ? 'Editar vacante' : 'Nueva vacante'}
       className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 p-4"
       onClick={safeClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label={isEdit ? 'Editar vacante' : 'Nueva vacante'}
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Cabecera + stepper */}
@@ -184,7 +220,7 @@ export default function JobWizard({
                 <p className="text-xs text-neutral-500">Paso {step + 1} de {STEPS.length} · {STEPS[step]}</p>
               </div>
             </div>
-            <button onClick={safeClose} aria-label="Cerrar" className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100">
+            <button type="button" onClick={safeClose} aria-label="Cerrar" className="rounded-lg p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -196,11 +232,10 @@ export default function JobWizard({
                 <button
                   key={s}
                   type="button"
-                  title={s}
                   aria-label={`Ir al paso ${i + 1}: ${s}`}
-                  disabled={i > 0 && step === 0 && !canNext}
+                  aria-current={i === step ? 'step' : undefined}
                   onClick={() => goTo(i)}
-                  className="group flex-1 py-1.5 disabled:cursor-not-allowed"
+                  className="group flex-1 py-1.5"
                 >
                   <div className={`${bar} group-hover:bg-brand-400`} />
                 </button>
@@ -215,12 +250,33 @@ export default function JobWizard({
         <div className="flex-1 overflow-y-auto px-6 py-5">
           {step === 0 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2">
-                  <Field label="Título del puesto *">
-                    <input className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej. Asesor de Ventas" />
-                  </Field>
+              {shownErrors.length > 0 && (
+                <div
+                  ref={summaryRef}
+                  tabIndex={-1}
+                  role="alert"
+                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+                >
+                  <p className="flex items-center gap-2 font-semibold">
+                    <TriangleAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Revisa {shownErrors.length === 1 ? 'este campo' : `estos ${shownErrors.length} campos`} antes de continuar:
+                  </p>
+                  <ul className="mt-1.5 list-inside list-disc space-y-0.5">
+                    {shownErrors.map((f) => (
+                      <li key={f}>
+                        <button type="button" className="font-medium underline underline-offset-2 hover:text-red-950" onClick={() => reportErrors(f)}>
+                          {FIELD_LABEL[f]}
+                        </button>
+                        : {errors[f]}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+              )}
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Título del puesto *" error={errorOf('title')} className="col-span-2">
+                  <input ref={fieldRefs.title} className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ej. Asesor de Ventas" />
+                </Field>
                 <Field label="Marca *">
                   <select className={inputCls} value={brand} onChange={(e) => setBrand(e.target.value)}>
                     {(tenant.brands.length ? tenant.brands : [tenant.name]).map((b) => (
@@ -230,8 +286,8 @@ export default function JobWizard({
                 </Field>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Departamento *">
-                  <input className={inputCls} value={department} onChange={(e) => setDepartment(e.target.value)} placeholder="Ventas" />
+                <Field label="Departamento *" error={errorOf('department')}>
+                  <input ref={fieldRefs.department} className={inputCls} value={department} onChange={(e) => setDepartment(e.target.value)} placeholder="Ventas" />
                 </Field>
                 <Field label="Ubicación">
                   <input className={inputCls} value={location} onChange={(e) => setLocation(e.target.value)} />
@@ -253,15 +309,10 @@ export default function JobWizard({
                 <Field label="Salario mínimo (GTQ)">
                   <input type="number" min={0} className={inputCls} value={salaryMin} onChange={(e) => setSalaryMin(Number(e.target.value))} />
                 </Field>
-                <Field label="Salario máximo (GTQ)">
-                  <input type="number" min={0} className={inputCls} value={salaryMax} onChange={(e) => setSalaryMax(Number(e.target.value))} />
+                <Field label="Salario máximo (GTQ)" error={errorOf('salaryMax')}>
+                  <input ref={fieldRefs.salaryMax} type="number" min={0} className={inputCls} value={salaryMax} onChange={(e) => setSalaryMax(Number(e.target.value))} />
                 </Field>
               </div>
-              {salaryInvalid && (
-                <p className="text-xs font-medium text-red-600">
-                  El salario mínimo no puede ser mayor que el máximo.
-                </p>
-              )}
             </div>
           )}
 
@@ -269,17 +320,19 @@ export default function JobWizard({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-neutral-600">Genera la descripción con IA y edítala a tu gusto.</p>
-                <Button variant="secondary" onClick={generateDescription} disabled={genDesc}>
-                  {genDesc ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                <Button variant="secondary" onClick={generateDescription} loading={genDesc}>
+                  {!genDesc && <Sparkles className="h-4 w-4" />}
                   {genDesc ? 'Generando…' : description ? 'Regenerar' : 'Generar con IA'}
                 </Button>
               </div>
-              <textarea
-                className={`${inputCls} min-h-[280px] leading-relaxed`}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Pulsa «Generar con IA» o escribe la descripción aquí…"
-              />
+              <Field label="Descripción de la vacante">
+                <textarea
+                  className={`${inputCls} min-h-[280px] leading-relaxed`}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Pulsa «Generar con IA» o escribe la descripción aquí…"
+                />
+              </Field>
             </div>
           )}
 
@@ -322,14 +375,14 @@ export default function JobWizard({
                   />
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs text-neutral-400">Enter agrega el criterio · Shift+Enter hace salto de línea</p>
+                  <p className="text-xs text-neutral-500">Enter agrega el criterio · Shift+Enter hace salto de línea</p>
                   <Button onClick={addFilter} disabled={!filterText.trim()}>
                     <Plus className="h-4 w-4" /> Agregar
                   </Button>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {filters.length === 0 && <p className="text-sm text-neutral-400">Aún no hay filtros. Agrega al menos uno para un mejor scoring.</p>}
+                {filters.length === 0 && <p className="text-sm text-neutral-500">Aún no hay filtros. Agrega al menos uno para un mejor scoring.</p>}
                 {filters.map((f) => (
                   <span
                     key={f.id}
@@ -339,9 +392,10 @@ export default function JobWizard({
                   >
                     <span className="min-w-0 whitespace-pre-wrap break-words">{f.polarity === 'positive' ? '+' : '−'} {f.criterion}</span>
                     <button
+                      type="button"
                       onClick={() => setFilters((prev) => prev.filter((x) => x.id !== f.id))}
                       aria-label={`Quitar criterio: ${f.criterion}`}
-                      className="mt-0.5 shrink-0 hover:opacity-60"
+                      className="mt-0.5 shrink-0 rounded hover:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-500"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -355,24 +409,30 @@ export default function JobWizard({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-neutral-600">Opcionales: preguntas extra para el entrevistador. La entrevista (con una persona o con el asistente de IA) siempre usa la guía de competencias de RR.HH.</p>
-                <Button variant="secondary" onClick={generateQuestions} disabled={genQ}>
-                  {genQ ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                <Button variant="secondary" onClick={generateQuestions} loading={genQ}>
+                  {!genQ && <Sparkles className="h-4 w-4" />}
                   {genQ ? 'Generando…' : questions.length ? 'Regenerar' : 'Generar con IA'}
                 </Button>
               </div>
               <div className="space-y-2">
-                {questions.length === 0 && <p className="text-sm text-neutral-400">Sin preguntas todavía. Genera con IA o agrega manualmente.</p>}
+                {questions.length === 0 && <p className="text-sm text-neutral-500">Sin preguntas todavía. Genera con IA o agrega manualmente.</p>}
                 {questions.map((q, i) => (
                   <div key={q.id} className="flex items-start gap-2 rounded-lg border border-neutral-200 p-3">
-                    <span className="mt-1.5 text-xs font-bold text-neutral-300">{i + 1}</span>
+                    <span className="mt-1.5 text-xs font-bold text-neutral-500">{i + 1}</span>
                     <textarea
+                      aria-label={`Pregunta ${i + 1}`}
                       className="min-h-[44px] flex-1 resize-none bg-transparent text-sm text-neutral-700 focus:outline-none"
                       value={q.text}
                       rows={1}
                       onChange={(e) => setQuestions((prev) => prev.map((x) => (x.id === q.id ? { ...x, text: e.target.value } : x)))}
                     />
                     {q.source === 'ai' && <Badge variant="blue">IA</Badge>}
-                    <button onClick={() => setQuestions((prev) => prev.filter((x) => x.id !== q.id))} className="mt-1 text-neutral-300 hover:text-red-500">
+                    <button
+                      type="button"
+                      onClick={() => setQuestions((prev) => prev.filter((x) => x.id !== q.id))}
+                      aria-label={`Quitar pregunta ${i + 1}`}
+                      className="mt-0.5 rounded-md p-1 text-neutral-500 hover:bg-red-50 hover:text-red-600"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -399,7 +459,7 @@ export default function JobWizard({
                   <Badge variant="red">{filters.filter((f) => f.polarity === 'negative').length} filtros −</Badge>
                   <Badge variant="blue">{questions.length} preguntas</Badge>
                 </div>
-                <div className="mt-3 rounded-lg bg-neutral-50 px-3 py-2 text-xs text-neutral-500">
+                <div className="mt-3 rounded-lg bg-neutral-50 px-3 py-2 text-xs text-neutral-600">
                   talentialabs.app/{tenant.slug}/{slugify(title) || 'vacante'}
                 </div>
               </div>
@@ -425,30 +485,21 @@ export default function JobWizard({
           {step < STEPS.length - 1 ? (
             <div className="flex items-center gap-2">
               {isEdit && (
-                <Button variant="secondary" onClick={finish} disabled={!canSave}>
+                <Button variant="secondary" onClick={finish}>
                   <Check className="h-4 w-4" /> Guardar cambios
                 </Button>
               )}
-              <Button onClick={() => goTo(step + 1)} disabled={!canNext}>
+              <Button onClick={() => goTo(step + 1)}>
                 Siguiente <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           ) : (
-            <Button onClick={finish} disabled={!canSave}>
+            <Button onClick={finish}>
               <Check className="h-4 w-4" /> {isEdit ? 'Guardar cambios' : 'Crear vacante'}
             </Button>
           )}
         </div>
       </div>
     </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
-      {children}
-    </label>
   );
 }

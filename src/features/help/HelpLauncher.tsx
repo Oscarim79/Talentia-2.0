@@ -141,7 +141,7 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
               {m.related && m.related.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {m.related.map((r) => (
-                    <button key={r} onClick={() => ask(r)} className="rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[11px] text-neutral-600 hover:border-brand-300 hover:text-brand-700">
+                    <button key={r} onClick={() => ask(r)} className="rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs text-neutral-600 hover:border-brand-300 hover:text-brand-700">
                       {r}
                     </button>
                   ))}
@@ -165,7 +165,7 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
         {msgs.length === 1 && (
           <div className="flex flex-wrap gap-1.5 pl-9">
             {chips.map((c) => (
-              <button key={c} onClick={() => ask(c)} className="rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[11px] font-medium text-brand-700 hover:bg-brand-100">
+              <button key={c} onClick={() => ask(c)} className="rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100">
                 {c}
               </button>
             ))}
@@ -185,7 +185,7 @@ function ChatTab({ route, topic }: { route: string; topic: GuideId | null }) {
           <Send className="h-4 w-4" />
         </Button>
       </div>
-      <p className="border-t border-neutral-100 px-4 py-2 text-[10px] text-neutral-400">Tus preguntas se guardan en Configuración → Preguntas al chat, para mejorar la ayuda. Demo: responde desde la guía de uso; en producción, la IA con la guía como contexto.</p>
+      <p className="border-t border-neutral-100 px-4 py-2 text-xs text-neutral-400">Tus preguntas se guardan en Configuración → Preguntas al chat, para mejorar la ayuda. Demo: responde desde la guía de uso; en producción, la IA con la guía como contexto.</p>
     </>
   );
 }
@@ -227,7 +227,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           </span>
         </button>
       )}
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Secciones de la app</p>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">Secciones de la app</p>
       <div className="mb-4 space-y-2">
         {SECTION_IDS.map((id) => {
           const guide = SECTION_GUIDES[id];
@@ -263,7 +263,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           );
         })}
       </div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Módulos opcionales</p>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">Módulos opcionales</p>
       <div className="mb-4 space-y-2">
         {MODULES.map((m) => {
           const guide = GUIDES[m.id];
@@ -285,7 +285,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
                     )}
                   </div>
                   <p className="mt-1 text-xs text-neutral-500">{guide.summary}</p>
-                  {!on && <p className="mt-1 text-[11px] text-neutral-400">Se activa en Configuración → Módulos opcionales. Al activarlo se abre esta ayuda guiada.</p>}
+                  {!on && <p className="mt-1 text-xs text-neutral-400">Se activa en Configuración → Módulos opcionales. Al activarlo se abre esta ayuda guiada.</p>}
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {on && (
                       <Button onClick={() => startTour(m.id)}>
@@ -302,7 +302,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
           );
         })}
       </div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Los pasos del tour de Reclutamiento</p>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">Los pasos del tour de Reclutamiento</p>
       <ol className="space-y-1">
         {TOUR_STEPS.map((s, i) => (
           <li key={i}>
@@ -313,7 +313,7 @@ function GuideTab({ onStart, done }: { onStart: () => void; done: boolean }) {
               }}
               className="flex w-full items-start gap-3 rounded-lg px-2 py-2 text-left hover:bg-neutral-50"
             >
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-[10px] font-bold text-neutral-600">{i + 1}</span>
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-xs font-bold text-neutral-600">{i + 1}</span>
               <span>
                 <span className="block text-sm font-semibold text-neutral-800">{s.title}</span>
                 <span className="block text-xs text-neutral-500 line-clamp-2">{s.body}</span>
@@ -348,7 +348,7 @@ function VideoTab() {
             aria-selected={v.id === video.id}
             onClick={() => openPanel('video', { video: v.id })}
             className={cn(
-              'min-w-[calc(50%-2px)] flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-colors',
+              'min-w-[calc(50%-2px)] flex-1 rounded-md px-2 py-1.5 text-xs font-semibold transition-colors',
               v.id === video.id ? 'bg-white text-brand-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-800',
             )}
           >
@@ -367,7 +367,7 @@ function VideoTab() {
         {video.chapters.map((c) => (
           <li key={c.t}>
             <button onClick={() => seek(c.t)} className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-neutral-50">
-              <span className="w-10 shrink-0 font-mono text-[11px] text-neutral-400">{Math.floor(c.t / 60)}:{String(c.t % 60).padStart(2, '0')}</span>
+              <span className="w-10 shrink-0 font-mono text-xs text-neutral-400">{Math.floor(c.t / 60)}:{String(c.t % 60).padStart(2, '0')}</span>
               <span className="text-neutral-700">{c.label}</span>
             </button>
           </li>

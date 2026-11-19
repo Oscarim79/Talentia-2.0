@@ -116,7 +116,7 @@ export default function CompetencyInterviewPage() {
 
       {pool.length === 0 ? (
         <Card className="p-10 text-center">
-          <NotebookPen className="mx-auto h-8 w-8 text-neutral-300" />
+          <NotebookPen className="mx-auto h-8 w-8 text-neutral-500" />
           <p className="mt-3 text-sm font-semibold text-neutral-700">Nadie en la etapa Entrevista todavía.</p>
           <p className="mt-1 text-sm text-neutral-500">Quien confirma su entrevista en Respuestas a CVs aparece aquí para entrevistarlo con la guía.</p>
           <Link to="/respuestas" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:underline">
@@ -172,13 +172,13 @@ export default function CompetencyInterviewPage() {
                 {pending.map((c) => (
                   <CandidateRow key={c.id} cand={c} job={jobs.find((j) => j.id === c.jobId)} ev={evaluations[c.id]} active={c.id === selected?.id} onClick={() => select(c.id)} />
                 ))}
-                {pending.length === 0 && <p className="px-2 py-3 text-xs text-neutral-400">Nadie pendiente.</p>}
+                {pending.length === 0 && <p className="px-2 py-3 text-xs text-neutral-500">Nadie pendiente.</p>}
               </ListGroup>
               <ListGroup title="Evaluadas" count={finished.length}>
                 {finished.map((c) => (
                   <CandidateRow key={c.id} cand={c} job={jobs.find((j) => j.id === c.jobId)} ev={evaluations[c.id]} active={c.id === selected?.id} onClick={() => select(c.id)} />
                 ))}
-                {finished.length === 0 && <p className="px-2 py-3 text-xs text-neutral-400">Todavía ninguna.</p>}
+                {finished.length === 0 && <p className="px-2 py-3 text-xs text-neutral-500">Todavía ninguna.</p>}
               </ListGroup>
             </Card>
           </div>
@@ -197,7 +197,7 @@ export default function CompetencyInterviewPage() {
                 onStage={(stage) => setStage(selected.id, stage)}
               />
             ) : (
-              <Card className="p-10 text-center text-sm text-neutral-400">Elige un candidato de la lista.</Card>
+              <Card className="p-10 text-center text-sm text-neutral-500">Elige un candidato de la lista.</Card>
             )}
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function CompetencyInterviewPage() {
 function ListGroup({ title, count, children }: { title: string; count: number; children: ReactNode }) {
   return (
     <div className="mb-1">
-      <p className="flex items-center justify-between px-2 pb-1 pt-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-neutral-400">
+  <p className="flex items-center justify-between px-2 pb-1 pt-2.5 eyebrow text-neutral-500">
         {title} <span>{count}</span>
       </p>
       <div className="space-y-0.5">{children}</div>
@@ -242,13 +242,13 @@ function CandidateRow({ cand, job, ev, active, onClick }: { cand: Candidate; job
         active ? 'bg-brand-50 ring-1 ring-brand-200' : 'hover:bg-neutral-50',
       )}
     >
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
         {cand.firstName[0]}
         {cand.lastName[0]}
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-neutral-800">{fullName(cand)}</p>
-        <p className="truncate text-[11px] text-neutral-500">
+        <p className="truncate text-xs text-neutral-500">
           {job?.title ?? 'Vacante'}
           {cand.stage !== 'interview' && ` · ${STAGE_LABEL[cand.stage]}`}
         </p>
@@ -359,7 +359,6 @@ function Workspace({
             <select
               value={ev.role}
               disabled={readOnly || !isBlank(ev)}
-              title={!isBlank(ev) ? 'Ya hay notas o puntajes: para cambiar de guía, borra la evaluación y empieza de nuevo.' : undefined}
               onChange={(e) => update({ role: e.target.value as GuideRole })}
               className="w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm disabled:bg-neutral-50 disabled:text-neutral-600"
             >
@@ -369,6 +368,9 @@ function Workspace({
                 </option>
               ))}
             </select>
+            {!isBlank(ev) && !readOnly && (
+              <p className="mt-1 text-xs text-neutral-500">Ya hay notas o puntajes: para cambiar de guía, borra la evaluación y empieza de nuevo.</p>
+            )}
           </Field>
           <Field label="Entrevistador">
             <select
@@ -411,10 +413,10 @@ function Workspace({
             )}
           >
             <span className="flex items-center gap-2 text-sm font-bold">
-              <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-[11px]', step === s.id ? 'bg-white/20' : 'bg-neutral-100')}>{s.n}</span>
+              <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-xs', step === s.id ? 'bg-white/20' : 'bg-neutral-100')}>{s.n}</span>
               {s.label}
             </span>
-            <span className={cn('mt-0.5 block truncate text-[11px]', step === s.id ? 'text-brand-100' : 'text-neutral-400')}>{s.hint}</span>
+            <span className={cn('mt-0.5 block truncate text-xs', step === s.id ? 'text-brand-100' : 'text-neutral-500')}>{s.hint}</span>
           </button>
         ))}
       </div>
@@ -453,7 +455,7 @@ function Workspace({
               onSave(emptyEvaluation({ candidateId: ev.candidateId, tenantId: ev.tenantId, jobId: ev.jobId, role: ev.role, interviewerId: ev.interviewerId, date: ev.date }));
               setStep('interview');
             }}
-            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-neutral-500 hover:bg-neutral-100 hover:text-neutral-600"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Borrar y empezar de nuevo
           </button>
@@ -466,7 +468,7 @@ function Workspace({
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-neutral-400">{label}</span>
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
       {children}
     </label>
   );
@@ -521,13 +523,13 @@ function MiniStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-xl border border-neutral-100 bg-neutral-50/60 p-3">
       <p className="font-display text-lg font-semibold text-ink">{value}</p>
-      <p className="text-[11px] leading-tight text-neutral-500">{label}</p>
+      <p className="text-xs leading-tight text-neutral-500">{label}</p>
     </div>
   );
 }
 
 function StepDot({ n }: { n: number }) {
-  return <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-bold text-brand-700">{n}</span>;
+  return <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">{n}</span>;
 }
 
 function SectionTitle({ n, title, subtitle }: { n?: string; title: string; subtitle?: string }) {
@@ -550,7 +552,7 @@ function NotesBox({ value, onChange, readOnly, placeholder }: { value: string; o
       onChange={(e) => onChange(e.target.value)}
       rows={2}
       placeholder={placeholder ?? 'Frases textuales del candidato…'}
-      className="mt-2 w-full resize-y rounded-lg border border-neutral-200 bg-neutral-50/50 px-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-400 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 read-only:bg-neutral-50"
+      className="mt-2 w-full resize-y rounded-lg border border-neutral-200 bg-neutral-50/50 px-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-500 focus:border-brand-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 read-only:bg-neutral-50"
     />
   );
 }
@@ -605,14 +607,14 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
         <div className="space-y-5">
           {competenciesFor(ev.role).map((c) => (
             <div key={c.key}>
-              <p className="mb-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-brand-700">{c.label}</p>
+  <p className="mb-2 eyebrow text-brand-700">{c.label}</p>
               <div className="space-y-3">
                 {questions
                   .filter((q) => q.competency === c.key)
                   .map((q) => (
                     <div key={q.id} className="rounded-xl border border-neutral-100 p-3">
                       <p className="text-[15px] font-semibold leading-snug text-neutral-900">
-                        <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.id}</span>
+                        <span className="mr-1.5 text-xs font-bold text-neutral-500">{q.id}</span>
                         {q.text}
                       </p>
                       <p className="mt-1 flex gap-1.5 text-xs text-neutral-500">
@@ -668,7 +670,7 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
           {choiceQuestionsFor(ev.role).map((q) => (
             <div key={q.id}>
               <p className="text-sm font-semibold text-neutral-900">
-                <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.n}.</span>
+                <span className="mr-1.5 text-xs font-bold text-neutral-500">{q.n}.</span>
                 {q.prompt}
               </p>
               <div className="mt-2 space-y-1.5" role="radiogroup" aria-label={`Pregunta ${q.n}`}>
@@ -688,7 +690,7 @@ function InterviewStep({ ev, update, readOnly, onNext }: { ev: InterviewEvaluati
                     >
                       <span
                         className={cn(
-                          'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold',
+                          'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold',
                           on ? 'border-brand-600 bg-brand-600 text-white' : 'border-neutral-300 text-neutral-500',
                         )}
                       >
@@ -742,7 +744,6 @@ function ScoreButtons({
             role="radio"
             aria-checked={on}
             aria-label={`${s.score} · ${s.level}`}
-            title={`${s.score} · ${s.level}: ${s.description}`}
             disabled={disabled || blocked}
             onClick={() => onChange(on ? undefined : s.score)}
             className={cn(
@@ -765,18 +766,18 @@ function Quote({ text }: { text?: string }) {
   return text?.trim() ? (
     <p className="mt-1.5 whitespace-pre-line rounded-lg border-l-2 border-brand-300 bg-neutral-50 px-3 py-1.5 text-sm italic text-neutral-700">{text}</p>
   ) : (
-    <p className="mt-1.5 text-xs text-neutral-400">Sin notas.</p>
+    <p className="mt-1.5 text-xs text-neutral-500">Sin notas.</p>
   );
 }
 
 function ScoreChip({ score, weight }: { score: number | null; weight: number }) {
   return (
     <span className="ml-auto flex items-center gap-2">
-      <span className="text-[11px] text-neutral-400">peso {Math.round(weight * 100)} %</span>
+      <span className="text-xs text-neutral-500">peso {Math.round(weight * 100)} %</span>
       <span
         className={cn(
           'rounded-lg px-2.5 py-1 font-display text-base font-semibold',
-          score == null ? 'bg-neutral-100 text-neutral-400' : score >= 4 ? 'bg-green-100 text-green-800' : score >= 3 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700',
+          score == null ? 'bg-neutral-100 text-neutral-500' : score >= 4 ? 'bg-green-100 text-green-800' : score >= 3 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700',
         )}
       >
         {score != null ? fmt1(score) : '—'}
@@ -833,7 +834,7 @@ function ScoreStep({
               <p className="text-sm font-bold text-neutral-800">
                 {s.score} · {s.level}
               </p>
-              <p className="mt-0.5 text-[11px] leading-snug text-neutral-500">{s.description}</p>
+              <p className="mt-0.5 text-xs leading-snug text-neutral-500">{s.description}</p>
             </div>
           ))}
         </div>
@@ -876,7 +877,7 @@ function ScoreStep({
               {qs.map((q) => (
                 <div key={q.id} className="rounded-xl border border-neutral-100 p-3">
                   <p className="text-sm font-semibold text-neutral-900">
-                    <span className="mr-1.5 text-xs font-bold text-neutral-400">{q.id}</span>
+                    <span className="mr-1.5 text-xs font-bold text-neutral-500">{q.id}</span>
                     {q.text}
                   </p>
                   <Quote text={ev.notes[q.id]} />
@@ -1015,10 +1016,10 @@ function ReportStep({
       <Card className="p-4 sm:p-6" dataTour="competencias:report">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand-700">Reporte de competencias del candidato</p>
+  <p className="eyebrow text-brand-700">Reporte de competencias del candidato</p>
             <h3 className="mt-1 font-display text-xl font-semibold text-ink">{fullName(cand)}</h3>
           </div>
-          <FileText className="h-6 w-6 text-neutral-300" />
+          <FileText className="h-6 w-6 text-neutral-500" />
         </div>
         <dl className="mt-3 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
           <Meta label="Puesto aplicado" value={guideNote(ctx.jobTitle, ev.role)} />
@@ -1031,7 +1032,7 @@ function ReportStep({
         <div className="mt-5 overflow-x-auto">
           <table className="w-full min-w-[520px] text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 text-left text-[11px] uppercase tracking-wide text-neutral-400">
+              <tr className="border-b border-neutral-200 text-left text-xs uppercase tracking-wide text-neutral-500">
                 <th className="py-2 pr-3 font-semibold">Competencia</th>
                 <th className="px-2 py-2 text-center font-semibold">Conductuales</th>
                 <th className="px-2 py-2 text-center font-semibold">Historia</th>
@@ -1045,14 +1046,14 @@ function ReportStep({
                 <tr key={c.key} className="border-b border-neutral-100">
                   <td className="py-2 pr-3 font-medium text-neutral-800">{c.label}</td>
                   <td className="px-2 py-2 text-center text-neutral-600">{behavioralCell(c)}</td>
-                  <td className="px-2 py-2 text-center text-neutral-600">{c.storyApplies ? (c.story ?? '—') : <span className="text-neutral-400">No aplica</span>}</td>
+                  <td className="px-2 py-2 text-center text-neutral-600">{c.storyApplies ? (c.story ?? '—') : <span className="text-neutral-500">No aplica</span>}</td>
                   <td className="px-2 py-2 text-center text-neutral-600">{c.choice ?? '—'}</td>
-                  <td className="px-2 py-2 text-center text-neutral-400">{Math.round(c.weight * 100)} %</td>
+                  <td className="px-2 py-2 text-center text-neutral-500">{Math.round(c.weight * 100)} %</td>
                   <td className="py-2 pl-2 text-right">
                     <span
                       className={cn(
                         'font-display text-base font-semibold',
-                        c.score == null ? 'text-neutral-300' : c.score >= 4 ? 'text-green-700' : c.score >= 3 ? 'text-amber-700' : 'text-red-600',
+                        c.score == null ? 'text-neutral-500' : c.score >= 4 ? 'text-green-700' : c.score >= 3 ? 'text-amber-700' : 'text-red-600',
                       )}
                     >
                       {c.score != null ? fmt1(c.score) : '—'}
@@ -1063,7 +1064,7 @@ function ReportStep({
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-[11px] text-neutral-400">
+        <p className="mt-2 text-xs text-neutral-500">
           Puntaje de la competencia = (promedio conductual × 0.8) + (opción múltiple × 0.2). El promedio conductual incluye el criterio de la historia cuando aplica.
         </p>
 
@@ -1071,7 +1072,7 @@ function ReportStep({
         {r.index != null && r.level && (
           <div className="mt-5 grid gap-4 rounded-2xl bg-neutral-50 p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
             <div className="text-center sm:pr-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Índice General</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Índice General</p>
               <p className="font-display text-4xl font-semibold leading-none text-ink">{fmt1(r.index)}</p>
               <p className="mt-1 text-xs text-neutral-500">de 5 · {r.percent} %</p>
             </div>
@@ -1085,7 +1086,7 @@ function ReportStep({
                   <li key={x}>• {x}</li>
                 ))}
               </ul>
-              <p className="mt-1.5 break-words font-mono text-[10.5px] text-neutral-400">{indexFormula(r)}</p>
+              <p className="mt-1.5 break-words font-mono text-xs text-neutral-500">{indexFormula(r)}</p>
             </div>
           </div>
         )}
@@ -1094,7 +1095,7 @@ function ReportStep({
           <p className="mt-3 rounded-xl border border-neutral-200 px-4 py-2.5 text-sm text-neutral-600">
             <b className="text-neutral-800">Leído como Vendedor</b> (mismos puntajes, pesos de Vendedor): Índice {fmt1(asSeller.index)} ({asSeller.percent} %) —{' '}
             <Badge variant={LEVEL_BADGE[asSeller.level]}>{RECOMMENDATION_LABEL[asSeller.level]}</Badge>
-            <span className="mt-0.5 block text-xs text-neutral-400">Útil si el candidato no queda para Jefe de Tienda pero podría servir en piso de ventas.</span>
+            <span className="mt-0.5 block text-xs text-neutral-500">Útil si el candidato no queda para Jefe de Tienda pero podría servir en piso de ventas.</span>
           </p>
         )}
 
@@ -1180,7 +1181,7 @@ function ReportStep({
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-2">
-      <dt className="shrink-0 text-neutral-400">{label}:</dt>
+      <dt className="shrink-0 text-neutral-500">{label}:</dt>
       <dd className="min-w-0 font-medium text-neutral-800">{value}</dd>
     </div>
   );
@@ -1197,7 +1198,7 @@ function SummaryList({ title, items, tone }: { title: string; items: string[]; t
           ))}
         </ul>
       ) : (
-        <p className="mt-1 text-sm text-neutral-400">—</p>
+        <p className="mt-1 text-sm text-neutral-500">—</p>
       )}
     </div>
   );

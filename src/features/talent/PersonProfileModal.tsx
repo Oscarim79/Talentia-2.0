@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { Tooltip } from '../../components/ui/Tooltip';
+import { useDialogFocus } from '../../lib/dialogFocus';
+import { useRef, useState } from 'react';
 import { X, Sparkles, Loader2, MessageCircle, Target, GraduationCap, Award, Eye, AlertTriangle, Ban } from 'lucide-react';
 import { CULTURE_DIMENSIONS } from '../../data/seed';
 import { providers } from '../../core/providers';
@@ -36,6 +38,8 @@ export function PersonProfileModal({
 }) {
   const [plan, setPlan] = useState<GrowthPlanResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
 
   const first = person.name.split(' ')[0];
   const perf = person.performanceScore;
@@ -80,7 +84,9 @@ export function PersonProfileModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl"
+        ref={dialogRef}
+        tabIndex={-1}
+        className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Encabezado */}
@@ -94,14 +100,14 @@ export function PersonProfileModal({
               <p className="text-sm text-neutral-500">
                 {person.role} · {person.department}
               </p>
-              <p className="mt-0.5 text-xs text-neutral-400">
+              <p className="mt-0.5 text-xs text-neutral-500">
                 Jefe: {person.managerName}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
+            className="rounded-lg p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-600"
             aria-label="Cerrar"
           >
             <X className="h-5 w-5" />
@@ -130,17 +136,16 @@ export function PersonProfileModal({
                 const light = periodLight(h);
                 const avg = (h.performanceScore + h.cultureScore) / 2;
                 return (
-                  <div key={h.period} className="flex flex-1 flex-col items-center">
-                    <span className="mb-1 text-[10px] font-semibold text-neutral-500">{avg.toFixed(1)}</span>
+                  <Tooltip key={h.period} text={`${h.period}: desempeño ${h.performanceScore}/5 · cultura ${h.cultureScore}/5`} className="flex flex-1 flex-col items-center">
+                    <span className="mb-1 text-xs font-semibold text-neutral-500">{avg.toFixed(1)}</span>
                     <div className="flex h-20 w-full items-end">
                       <div
                         className={`w-full rounded-t ${LIGHT_META[light].bar}`}
                         style={{ height: `${(avg / 5) * 100}%` }}
-                        title={`${h.period}: desempeño ${h.performanceScore}/5 · cultura ${h.cultureScore}/5`}
                       />
                     </div>
-                    <span className="mt-1 text-[9px] text-neutral-400">{h.period}</span>
-                  </div>
+                    <span className="mt-1 text-xs text-neutral-500">{h.period}</span>
+                  </Tooltip>
                 );
               })}
             </div>
@@ -158,7 +163,7 @@ export function PersonProfileModal({
                   {decision.label}
                 </p>
                 <p className="mt-1 text-sm text-neutral-600">{decision.detail}</p>
-                <p className="mt-1.5 text-xs text-neutral-400">Base: {decision.rationale}</p>
+                <p className="mt-1.5 text-xs text-neutral-500">Base: {decision.rationale}</p>
               </div>
             </div>
           </div>
@@ -288,7 +293,7 @@ function Stat({ label, value, suffix }: { label: string; value: string; suffix?:
       <p className="text-xs text-neutral-500">{label}</p>
       <p className="mt-0.5 text-xl font-black text-neutral-900">
         {value}
-        {suffix && <span className="text-sm font-medium text-neutral-400">{suffix}</span>}
+        {suffix && <span className="text-sm font-medium text-neutral-500">{suffix}</span>}
       </p>
     </Card>
   );

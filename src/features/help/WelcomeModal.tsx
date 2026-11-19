@@ -1,3 +1,5 @@
+import { useDialogFocus } from '../../lib/dialogFocus';
+import { useRef } from 'react';
 import { Compass, PlayCircle, MessageCircleQuestion, X } from 'lucide-react';
 import { useHelp } from './HelpContext';
 import { TOUR_STEPS } from './tourSteps';
@@ -9,11 +11,13 @@ import { LogoMark } from '../../components/brand/Logo';
 export function WelcomeModal() {
   const { showWelcome, dismissWelcome, startTour, openPanel } = useHelp();
   useEscape(dismissWelcome);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef, showWelcome);
   if (!showWelcome) return null;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm" onClick={dismissWelcome}>
-      <div role="dialog" aria-modal="true" aria-label="Bienvenida" onClick={(e) => e.stopPropagation()} className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+      <div role="dialog" aria-modal="true" aria-label="Bienvenida" ref={dialogRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
         <div className="bg-ink px-6 py-6 text-white">
           <div className="flex items-start justify-between">
             <LogoMark className="h-11 w-11" />
