@@ -1,6 +1,6 @@
 # Presupuesto — Entrevistas IA por voz en la videollamada (opción completa)
 
-Fecha: 2026-11-10. Decisión de Oscar: ir directo a la **opción completa** (el asistente de IA entra a la videollamada y entrevista hablando) y **arrancar la semana del 16 de noviembre de 2026**.
+Fecha: 2026-11-10. Decisión de Oscar: ir directo a la **opción completa** (el asistente de IA entra a la videollamada y entrevista hablando) y **arrancar la semana del 16 de noviembre de 2026**. **Actualización 2026-11-19: la videollamada será Google Meet, no Zoom** (decisión de Oscar; ver secciones 2 y 10).
 
 Este documento responde dos preguntas: **cuánto cuestan las pruebas** y **cuánto cuesta salir en vivo**. Los precios son los oficiales de cada proveedor consultados el 2026-11-10 (tabla en la sección 9). Todo está en dólares.
 
@@ -10,13 +10,13 @@ Este documento responde dos preguntas: **cuánto cuestan las pruebas** y **cuán
 
 ## 1. Qué vamos a construir
 
-El candidato recibe su enlace de Zoom como hoy. A la hora acordada entra el **asistente de Talentia** (una ventana con el logo y voz propia), lo saluda, le hace las preguntas de la guía de competencias de RR.HH. (Vendedor: 16 preguntas, 45 min; Jefe de Tienda: 19 preguntas, 60 min), repregunta cuando hace falta y se despide. La llamada queda grabada y transcrita. Al terminar, Claude califica cada respuesta contra la guía, detecta lo que no cuadra con el CV y deja la evaluación lista en la sección Entrevistas. El reclutador puede mirar en vivo o solo leer la evaluación.
+El candidato recibe su enlace de Google Meet (decisión del 2026-11-19; antes se asumía Zoom). A la hora acordada entra el **asistente de Talentia** (una ventana con el logo y voz propia), lo saluda, le hace las preguntas de la guía de competencias de RR.HH. (Vendedor: 16 preguntas, 45 min; Jefe de Tienda: 19 preguntas, 60 min), repregunta cuando hace falta y se despide. La llamada queda grabada y transcrita. Al terminar, Claude califica cada respuesta contra la guía, detecta lo que no cuadra con el CV y deja la evaluación lista en la sección Entrevistas. El reclutador puede mirar en vivo o solo leer la evaluación (al inicio acompaña para pulir a la IA; la meta es que no tenga que estar; sección 10).
 
 Piezas (todas de pago por uso, sin servidores propios):
 
 | Pieza | Quién la hace | Para qué |
 |---|---|---|
-| Asistente dentro de la videollamada | **Recall.ai** | Entra al Zoom o Meet, muestra la ventana del asistente, graba y transcribe |
+| Asistente dentro de la videollamada | **Recall.ai** | Entra a Google Meet (también funciona en Zoom), muestra la ventana del asistente, graba y transcribe |
 | Voz en tiempo real (escuchar, hablar, turnos) | **Vapi** (alternativa: ElevenLabs Agents) | Convierte la voz del candidato en texto y la respuesta en voz, sin cortes |
 | Cerebro de la entrevista | **Claude Sonnet 5.5** (ya configurado desde la Entrega B) | Sigue la guía pregunta por pregunta y califica al final |
 | Datos, claves y lógica | **Supabase** (ya existe) | Funciones con las claves, registro de consumo (`ai_calls`), transcripciones y evaluaciones |
@@ -26,7 +26,7 @@ Piezas (todas de pago por uso, sin servidores propios):
 ## 2. Supuestos (si cambian, cambia el número)
 
 1. **Duración según la guía de RR.HH.:** Vendedor 45 minutos, Jefe de Tienda 60 minutos. Con la IA puede salir más corta (no hay charla de pasillo), pero se presupuesta con la guía. Regla: **cada minuto cuesta ≈ $0.10**.
-2. **Zoom.** Reynaldo confirmó (2026-09-23) que entrevistan por Zoom. Recall.ai cuesta lo mismo en Zoom que en Google Meet. La diferencia es un trámite: en Zoom la empresa registra una app gratuita para el asistente; en Meet basta con que el entrevistador lo admita en la llamada.
+2. **Google Meet (decisión de Oscar, 2026-11-19; antes, Zoom).** Reynaldo había confirmado (2026-09-23) que entrevistaban por Zoom; Oscar decidió pasar a Google Meet. Recall.ai cuesta lo mismo en los dos. Ventajas de Meet: no hay trámite (en Zoom la empresa tendría que registrar una app gratuita para el asistente; en Meet basta con que el organizador lo admita en la llamada) y **Meet genera la transcripción de la reunión** (función del Google Workspace de la empresa), un plus para el equipo: queda un respaldo escrito de cada entrevista, también de las que RR.HH. haga sin el asistente. Para el asistente, la transcripción en vivo sigue saliendo de Recall.ai/Vapi (la de Meet llega al terminar, al Drive del organizador); en la Fase A se revisa si la app puede leerla sola (API REST de Meet) y ahorrar así la transcripción de Recall.ai.
 3. **Voz con Vapi en pago por uso** (sin cuota mensual) y Claude como cerebro. ElevenLabs Agents cuesta parecido por minuto pero exige un plan mensual (desde $22).
 4. **Guardamos transcripción y evaluación**, no el video. El audio queda 7 días gratis en Recall.ai y luego se borra (o se conserva por $0.05 por hora cada 30 días).
 5. **Margen del 25 %** en las cifras "presupuestadas": los proveedores facturan por segundo y por token, y las primeras semanas siempre hay reintentos.
@@ -109,7 +109,7 @@ Durante las pruebas **no hay cuotas mensuales**: Vapi y Recall.ai son pago por u
 | **Supabase Pro** | **$25** | Recomendado al salir en vivo. Hoy el proyecto está en plan gratis: se pausa si nadie lo usa 7 días, no tiene respaldos diarios y solo guarda 1 GB de archivos. Con Pro: sin pausas, respaldos diarios, 100 GB. |
 | Vapi Core | $29 | **Solo si** hay más de 4 entrevistas a la misma hora (el plan gratis permite 4 simultáneas; Core permite 10). |
 | Recall.ai, Anthropic | $0 | Sin cuota; solo pago por uso. |
-| Zoom | $0 extra | La empresa ya lo paga; la app del asistente es gratuita. |
+| Google Meet | $0 extra | Va con el Google Workspace que la empresa ya paga; sin app ni trámite. |
 
 ### Costos variables según el volumen (entrevistas de Vendedor, 45 min)
 
@@ -131,7 +131,7 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 | Palanca | Ahorro | Qué implica |
 |---|---|---|
 | **Entrevistas más cortas**: la IA no necesita los 45 min de la guía si las respuestas son concretas | ≈ $0.50 por cada 5 minutos menos (30 min en vez de 45 = $1.50 menos por entrevista) | Se mide en la Fase B |
-| **Enlace propio en vez de Zoom/Meet**: el candidato abre un enlace de Talentia y la entrevista ocurre en el navegador, con voz y video | ≈ $0.60 por entrevista y se evita la app de Zoom | Decisión de RR.HH.; funciona igual en todo el país |
+| **Enlace propio en vez de Zoom/Meet**: el candidato abre un enlace de Talentia y la entrevista ocurre en el navegador, con voz y video | ≈ $0.60 por entrevista, pero se pierde la transcripción propia de Meet | Decisión de RR.HH.; funciona igual en todo el país |
 | **Claude Haiku 5.5 como cerebro** (si la calidad aguanta en las pruebas) | ≈ $0.40 por entrevista | Se decide con los resultados de la Fase A |
 | **ElevenLabs Agents en vez de Vapi** | parecido por minuto ($0.08 + modelo) | Conviene si el volumen cabe en su plan Pro ($99 con 1,238 minutos ≈ 27 entrevistas de 45 min) |
 
@@ -152,7 +152,7 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 
 1. **Cuenta en Recall.ai** (pago por uso, tarjeta, 5 horas gratis). La clave va como secreto en Supabase, igual que la de Anthropic. Nunca pegarla en el chat.
 2. **Cuenta en Vapi** (pago por uso, $5 de regalo). Misma regla para la clave.
-3. **App de Zoom**: pedir al administrador de la cuenta de Zoom de Americana 2000 que cree la app para el asistente siguiendo la guía de Recall.ai (gratis). Alternativas: Google Meet (sin trámite) o el enlace propio de la sección 6.
+3. ~~**App de Zoom**: pedir al administrador de la cuenta de Zoom de Americana 2000 que cree la app para el asistente siguiendo la guía de Recall.ai (gratis).~~ **Ya no hace falta (2026-11-19): la videollamada será Google Meet**, que no pide trámite; solo que el organizador admita al asistente en la llamada. Queda como alternativa el enlace propio de la sección 6.
 4. **Saldo en Anthropic**: ya existe desde la Entrega B.
 
 ### Construcción (sesiones con Claude Code)
@@ -160,9 +160,9 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 | Semanas | Bloque | Resultado |
 |---|---|---|
 | 1 a 2 | **Cerebro** (parte de la Entrega C): el agente de entrevistas con Claude real en texto, siguiendo la guía; evaluación final real; registro en `ai_calls` | Se puede entrevistar por chat con IA de verdad |
-| 3 a 4 | **Voz y videollamada**: agente en Vapi conectado al cerebro; ventana del asistente que Recall.ai muestra en la llamada; botón "Enviar el asistente" desde Respuestas a CVs; recibir grabación y transcripción; evaluación automática | El asistente entra al Zoom de prueba y conversa |
+| 3 a 4 | **Voz y videollamada**: agente en Vapi conectado al cerebro; ventana del asistente que Recall.ai muestra en la llamada; botón "Enviar el asistente" desde Respuestas a CVs; recibir grabación y transcripción; evaluación automática | El asistente entra al Meet de prueba y conversa |
 | 5 | **Fase A**: pruebas internas; ajustar voz, ritmo, interrupciones, ruido | Lista para candidatos |
-| 6 a 8 | **Fase B**: piloto con una vacante real; medir duración, abandono y opinión de candidatos y reclutadores | Números reales |
+| 6 a 8 | **Fase B**: piloto con una vacante real, con RR.HH. acompañando en Meet para afinar a la IA; medir duración, abandono y opinión de candidatos y reclutadores | Números reales |
 | después | **Decisión de salida en vivo** con los números reales: volumen, Supabase Pro, Vapi Core si hace falta | En producción |
 
 ---
@@ -184,6 +184,6 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 ## 10. Decisiones pendientes de Oscar
 
 1. **Volumen mensual esperado** de entrevistas (define el presupuesto de la sección 5).
-2. **Zoom, Meet o enlace propio** (sección 6).
+2. ~~**Zoom, Meet o enlace propio** (sección 6).~~ **Decidido el 2026-11-19: Google Meet** (sin trámite de app y con transcripción propia de la reunión, un plus para el equipo). El enlace propio queda como posible ahorro futuro.
 3. **Voz del asistente** (hombre o mujer, acento): se elige en la Fase A escuchando opciones.
-4. **¿El reclutador mira en vivo** o solo lee la evaluación después? Cambia la pantalla de Entrevistas, no el costo.
+4. ~~**¿El reclutador mira en vivo** o solo lee la evaluación después?~~ **Decidido el 2026-11-19 (Oscar): al inicio (Fase A y piloto) el equipo de RR.HH. acompaña las entrevistas del asistente en Meet, solo para ir puliendo y "limpiando" a la IA, trabajo que debe quedar hecho antes de salir en vivo; la meta es que después no tengan que estar.** La pantalla de Entrevistas debe permitir las dos cosas (acompañar en vivo y solo leer la evaluación); no cambia el costo.
