@@ -475,4 +475,20 @@ export const CASES = [
   ['dice que la ia no está configurada', 'errores-cv', '/screening'],
   ['¿cómo reintento un cv con error?', 'errores-cv', '/screening'],
   ['¿cuánto cuesta cada cv?', 'ia-cv', '/'],
+  // --- nuevas: cerrar la oferta (Marcar como contratado / No aceptó) — preguntas reales de Reynaldo, 18 y 19-11-2026 ---
+  ['como paso al candidato que esta en fase de oferta a contratados si ya le hice propuesta y acepto??', 'oferta-cerrar', '/candidatos'],
+  ['En que momento se pasa un candidato de oferta a contratado?', 'oferta-cerrar', '/competencias'],
+  ['Si digamos Juan Carlos Marroquin acepta la propuesta, en la app hay un proceso manual algun boto para pasarlo a contratado??', 'oferta-cerrar', '/candidatos'],
+  ['¿cómo lo marco como contratado?', 'oferta-cerrar', '/candidatos'],
+  ['ya aceptó la oferta, ¿qué hago?', 'oferta-cerrar', '/'],
+  ['el candidato no aceptó la oferta', 'oferta-cerrar', '/candidatos'],
+  ['rechazó la propuesta', 'oferta-cerrar', '/'],
+  ['¿cómo cierro la oferta?', 'oferta-cerrar', '/metricas'],
+  ['lo marqué como contratado por error', 'oferta-cerrar', '/candidatos'],
+  ['¿dónde está el botón de contratado?', 'oferta-cerrar', '/entrevistas'],
+  ['ya lo contraté, ¿cómo lo paso?', 'oferta-cerrar', '/candidatos'],
+  // --- las vecinas siguen ganando lo suyo ---
+  ['¿qué significa la etapa contratados?', 'etapas', '/candidatos'],
+  ['¿qué formatos de cv acepta?', 'ia-cv', '/screening'],
+  ['el contratado pasa a talento solo?', 'talento-datos', '/candidatos'],
 ];

@@ -15,7 +15,10 @@ export function applyStage(c: Candidate, stage: CandidateStage, today: string): 
   } else if (stage === 'hired') {
     hiredAt ??= today;
   }
-  return { ...c, stage, timeline, ...(hiredAt !== undefined ? { hiredAt } : {}) };
+  // Salir de Contratado (p. ej. "Regresar a Oferta" por error) deja de contar como contratación.
+  if (stage !== 'hired') hiredAt = undefined;
+  const { hiredAt: _prev, ...rest } = c;
+  return { ...rest, stage, timeline, ...(hiredAt !== undefined ? { hiredAt } : {}) };
 }
 
 /** Marca la fecha de la primera respuesta enviada al candidato (solo la primera vez). */

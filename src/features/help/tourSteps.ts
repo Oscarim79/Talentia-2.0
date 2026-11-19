@@ -53,7 +53,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: '/candidatos',
     target: 'candidates:board',
     title: '6. Sigue a cada candidato',
-    body: 'El tablero muestra a cada persona en su etapa: Aplicados, Screening, Entrevista, Oferta, Contratados y Descartados. Cada tarjeta lleva el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista (tócalo para abrir el reporte).',
+    body: 'El tablero muestra a cada persona en su etapa: Aplicados, Screening, Entrevista, Oferta, Contratados y Descartados. Cada tarjeta lleva el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista (tócalo para abrir el reporte). Cuando alguien en Oferta acepta, su tarjeta tiene el botón "Marcar como contratado" (o "No aceptó la oferta").',
   },
   {
     route: '/metricas',

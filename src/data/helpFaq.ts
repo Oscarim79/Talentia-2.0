@@ -191,16 +191,36 @@ export const HELP_FAQ: FaqEntry[] = [
       'de etapa', 'lo pase a oferta', 'la pase a oferta', 'por error', 'lo regreso', 'la regreso',
     ],
     answer:
-      'Al completar el reporte en Entrevistas aparece "Decisión de RR.HH." con dos botones: "Pasar a Oferta" y "Descartar". La recomendación apoya la decisión, pero la decisión es tuya. Al elegir, la evaluación queda terminada y el candidato cambia de etapa en Candidatos. Si te equivocaste, "Regresar a Entrevista" lo devuelve.',
+      'Al completar el reporte en Entrevistas aparece "Decisión de RR.HH." con dos botones: "Pasar a Oferta" y "Descartar". La recomendación apoya la decisión, pero la decisión es tuya. Al elegir, la evaluación queda terminada y el candidato cambia de etapa en Candidatos. Si te equivocaste, "Regresar a Entrevista" lo devuelve. Cuando el candidato ya está en Oferta, ese mismo cuadro ofrece "Marcar como contratado" y "No aceptó la oferta".',
     route: '/competencias',
     routeLabel: 'Ir a Entrevistas',
+  },
+  {
+    id: 'oferta-cerrar',
+    question: '¿Cómo paso al candidato de Oferta a Contratados cuando acepta?',
+    // Frases específicas de cerrar la oferta: "oferta" y "contratado" sueltas siguen siendo de 'etapas'.
+    keywords: [
+      'pasar a contratado', 'pasarlo a contratado', 'pasarla a contratado', 'paso a contratado', 'pasa a contratado', 'pasa un candidato de oferta',
+      'de oferta a contratado', 'oferta a contratado', 'a contratado', 'a contratados', 'en contratados', 'cuando acepta', 'cuando acepte',
+      'marcar como contratado', 'marcarlo como contratado', 'marcarla como contratado', 'marco como contratado', 'marque como contratado', 'como contratado', 'como contratada',
+      'boton de contratado', 'boton contratado', 'de contratado', 'ya lo contrate', 'ya la contrate', 'lo contrate', 'la contrate', 'lo contratamos', 'la contratamos',
+      'contratarlo', 'contratarla', 'se contrata', 'queda contratado', 'quedo contratado',
+      'acepto la oferta', 'acepta la oferta', 'acepto la propuesta', 'acepta la propuesta', 'acepto el puesto', 'acepta el puesto', 'acepto el trabajo', 'ya acepto', 'si acepta', 'y acepto', 'propuesta',
+      'no acepto', 'no acepta', 'no quiso', 'rechazo la oferta', 'rechaza la oferta', 'rechazo la propuesta', 'rechaza la propuesta',
+      'cerrar la oferta', 'cierro la oferta', 'cerrar oferta', 'cierre de la oferta', 'fase de oferta', 'etapa de oferta', 'en oferta',
+      'contratado por error', 'contratada por error', 'regresar a oferta', 'regresarlo a oferta', 'regresarla a oferta',
+    ],
+    answer:
+      'Cuando la persona en Oferta acepta, en Candidatos su tarjeta tiene el botón "Marcar como contratado": confírmalo y pasa a Contratados con la fecha de hoy como fecha de contratación (de ahí salen el time-to-hire y las plazas cubiertas en Métricas). Si no aceptó, "No aceptó la oferta" la manda a Descartados. Los mismos dos botones están al final de su reporte en Entrevistas, en "Decisión de RR.HH.", donde también puedes regresarla a Oferta o a Entrevista si te equivocaste.',
+    route: '/candidatos',
+    routeLabel: 'Ir a Candidatos',
   },
   {
     id: 'etapas',
     question: '¿Qué significan las etapas de Candidatos?',
     keywords: ['etapa', 'etapas', 'candidatos', 'pipeline', 'tablero', 'aplicado', 'oferta', 'contratado', 'descartado', 'kanban'],
     answer:
-      'Aplicados: llegó el CV y nadie lo ha revisado. Screening: ya fue revisado y puntuado. Entrevista: tiene entrevista agendada o hecha (quien confirma en Respuestas a CVs pasa aquí solo). Oferta: se le envió oferta. Contratados y Descartados cierran el proceso. Cada tarjeta muestra el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista por competencias. A Oferta o a Descartados se pasa desde el reporte de la entrevista, en Entrevistas.',
+      'Aplicados: llegó el CV y nadie lo ha revisado. Screening: ya fue revisado y puntuado. Entrevista: tiene entrevista agendada o hecha (quien confirma en Respuestas a CVs pasa aquí solo). Oferta: se le envió oferta. Contratados y Descartados cierran el proceso. Cada tarjeta muestra el score de la IA y, si ya lo entrevistaste, el resultado de su entrevista por competencias. A Oferta o a Descartados se pasa desde el reporte de la entrevista, en Entrevistas. Cuando alguien en Oferta acepta, su tarjeta tiene el botón "Marcar como contratado" (y "No aceptó la oferta" si la rechaza).',
     route: '/candidatos',
     routeLabel: 'Ir a Candidatos',
   },
