@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, MapPin, Users2, Link2, Sparkles, Download, NotebookPen } from 'lucide-react';
+import { Plus, Pencil, MapPin, Users2, Link2, Sparkles, Download, NotebookPen } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { useJobs } from '../../context/JobsContext';
 import { GUIDES, guideRoleForJob } from '../../core/interviewGuide';
@@ -24,9 +24,10 @@ const STATUS_LABEL: Record<JobStatus, string> = {
 
 export default function JobsPage() {
   const { tenant } = useTenant();
-  const { jobs: allJobs, addJob } = useJobs();
+  const { jobs: allJobs, addJob, updateJob } = useJobs();
   const jobs = allJobs.filter((j) => j.tenantId === tenant.id);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
 
   return (
     <div>
@@ -46,17 +47,18 @@ export default function JobsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {jobs.map((j, i) => (
-            <JobCard key={j.id} job={j} tourTarget={i === 0} />
+            <JobCard key={j.id} job={j} tourTarget={i === 0} onEdit={() => setEditingJob(j)} />
           ))}
         </div>
       )}
 
       {wizardOpen && <JobWizard onClose={() => setWizardOpen(false)} onCreate={addJob} />}
+      {editingJob && <JobWizard key={editingJob.id} job={editingJob} onClose={() => setEditingJob(null)} onSave={updateJob} />}
     </div>
   );
 }
 
-function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
+function JobCard({ job: j, tourTarget, onEdit }: { job: Job; tourTarget?: boolean; onEdit: () => void }) {
   const { tenant } = useTenant();
   return (
     <Card className="flex flex-col p-5">
@@ -99,6 +101,9 @@ function JobCard({ job: j, tourTarget }: { job: Job; tourTarget?: boolean }) {
           <Link2 className="h-3.5 w-3.5" />
           talentialabs.app/{j.applySlug}
         </div>
+        <Button variant="secondary" onClick={onEdit}>
+          <Pencil className="h-4 w-4" /> Editar
+        </Button>
         <Button
           variant="secondary"
           onClick={() =>

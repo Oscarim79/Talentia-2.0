@@ -84,3 +84,11 @@ export async function insertJob(job: Job): Promise<void> {
   const { error } = await supabase.from('jobs').insert(jobToRow(job));
   if (error) throw error;
 }
+
+/** Guarda los cambios de una vacante existente (no toca id, empresa ni fecha de creación). */
+export async function updateJobRow(job: Job): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id, tenant_id, created_at, ...changes } = jobToRow(job);
+  const { error } = await supabase.from('jobs').update(changes).eq('id', job.id).eq('tenant_id', job.tenantId);
+  if (error) throw error;
+}
