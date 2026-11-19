@@ -27,6 +27,7 @@ import { useEvaluations } from '../../context/EvaluationsContext';
 import { useSettings } from '../../context/SettingsContext';
 import { Badge, Button, Card, PageHeader } from '../../components/ui/primitives';
 import { useConfirm } from '../../components/ui/ConfirmDialog';
+import { OfferActions } from '../candidates/OfferActions';
 import { cn, downloadTextFile, slugify } from '../../lib/utils';
 import {
   BEHAVIORAL,
@@ -1158,12 +1159,26 @@ function ReportStep({
                   <XCircle className="h-4 w-4" /> Descartar
                 </Button>
               </>
+            ) : cand.stage === 'offer' ? (
+              <>
+                {/* Con la oferta enviada: aceptó → Contratados, no aceptó → Descartados (con confirmación). */}
+                <Badge variant="green">Etapa actual: {STAGE_LABEL.offer}</Badge>
+                <OfferActions candidate={cand} onStage={onStage} />
+                <Button variant="ghost" onClick={() => onStage('interview')}>
+                  <Undo2 className="h-4 w-4" /> Regresar a Entrevista
+                </Button>
+              </>
             ) : (
               <>
                 <Badge variant={cand.stage === 'rejected' ? 'red' : 'green'}>Etapa actual: {STAGE_LABEL[cand.stage]}</Badge>
-                {(cand.stage === 'offer' || cand.stage === 'rejected') && (
+                {cand.stage === 'rejected' && (
                   <Button variant="ghost" onClick={() => onStage('interview')}>
                     <Undo2 className="h-4 w-4" /> Regresar a Entrevista
+                  </Button>
+                )}
+                {cand.stage === 'hired' && (
+                  <Button variant="ghost" onClick={() => onStage('offer')}>
+                    <Undo2 className="h-4 w-4" /> Regresar a Oferta
                   </Button>
                 )}
               </>

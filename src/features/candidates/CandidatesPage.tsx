@@ -5,6 +5,7 @@ import { useEvaluations } from '../../context/EvaluationsContext';
 import { Card, PageHeader, Badge, scoreVariant } from '../../components/ui/primitives';
 import { CvLink } from '../../components/CvLink';
 import { RECOMMENDATION_LABEL, fmt1, scoreEvaluation, type RecommendationLevel } from '../../core/interviewGuide';
+import { OfferActions } from './OfferActions';
 import type { Candidate, CandidateStage } from '../../types';
 
 const LEVEL_BADGE: Record<RecommendationLevel, 'green' | 'amber' | 'red'> = { recommended: 'green', reservations: 'amber', not: 'red' };
@@ -19,7 +20,7 @@ const COLUMNS: { key: CandidateStage; label: string }[] = [
 ];
 
 export default function CandidatesPage() {
-  const { candidates: cands } = useCandidates();
+  const { candidates: cands, setStage } = useCandidates();
   const { evaluations } = useEvaluations();
 
   /** Resultado de la Entrevista por competencias en la tarjeta (o el acceso para hacerla). */
@@ -92,6 +93,8 @@ export default function CandidatesPage() {
                         </div>
                       )}
                       {interviewLine(c)}
+                      {/* En Oferta: cerrar la oferta desde la misma tarjeta (aceptó → Contratados; no aceptó → Descartados). */}
+                      <OfferActions candidate={c} onStage={(stage) => setStage(c.id, stage)} className="mt-2 border-t border-neutral-100 pt-2" />
                     </Card>
                   ))}
                   {items.length === 0 && (

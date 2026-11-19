@@ -23,3 +23,12 @@ describe('applyStage', () => {
     expect(applyReplied(once, '2026-11-09').timeline?.replied).toBe('2026-11-01');
   });
 });
+
+describe('applyStage: regresar desde Contratado', () => {
+  it('volver a Oferta desde Contratado quita hiredAt para que Métricas no lo cuente como contratado', () => {
+    const hired = applyStage(base, 'hired', '2026-11-19');
+    const back = applyStage(hired, 'offer', '2026-11-20');
+    expect(back.stage).toBe('offer');
+    expect(back.hiredAt).toBeUndefined();
+  });
+});
