@@ -32,7 +32,7 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
     tour: 'interviewsAi',
     title: 'Entrevistas IA por videollamada',
     summary:
-      'Un asistente con inteligencia artificial entrevista por videollamada (Zoom) a los candidatos que agendaste, con la misma guía de competencias de RR.HH. que usaría una persona, y te deja la transcripción lista para puntuar en Entrevistas. La decisión sigue siendo de RR.HH.',
+      'Un asistente con inteligencia artificial entrevista por videollamada (Google Meet) a los candidatos que agendaste, con la misma guía de competencias de RR.HH. que usaría una persona, y te deja la transcripción lista para puntuar en Entrevistas. La decisión sigue siendo de RR.HH.',
     howItWorks: [
       {
         title: 'Las preguntas de la guía',
@@ -40,11 +40,11 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
       },
       {
         title: 'Agendas como siempre',
-        body: 'En Respuestas a CVs, Virtual por Zoom, con la casilla "La entrevista la hará el asistente de IA": el mensaje avisa al candidato que lo entrevistará una IA y que se grabará.',
+        body: 'En Respuestas a CVs, Virtual por Google Meet, con la casilla "La entrevista la hará el asistente de IA": el mensaje avisa al candidato que lo entrevistará una IA y que se grabará.',
       },
       {
         title: 'El asistente entrevista',
-        body: 'A la hora acordada entra a la videollamada de Zoom, se presenta como asistente virtual con IA y hace las preguntas una por una. Todo queda transcrito.',
+        body: 'A la hora acordada entra a la videollamada de Google Meet, se presenta como asistente virtual con IA y hace las preguntas una por una. Todo queda transcrito.',
       },
       {
         title: 'Deja la transcripción lista para puntuar',
@@ -81,7 +81,7 @@ export const MODULE_GUIDES: Record<ModuleId, ModuleGuide> = {
       },
     ],
     demoNote:
-      'La videollamada real (Zoom, con voz) está planeada para la Fase 3; hoy la entrevista se simula con un chat y tú escribes las respuestas del candidato (son todas las preguntas de la guía: 16 para Vendedor, 19 para Jefe de Tienda). La sugerencia de puntaje es una regla simple (ejemplo concreto, acciones propias, resultado medible) y el chat no se guarda al salir, pero la transcripción sí queda como borrador en Entrevistas. Quien confirma su entrevista en Respuestas a CVs pasa a la etapa Entrevista y aparece en la lista.',
+      'La videollamada real (Google Meet, con voz) está planeada para la Fase 3; hoy la entrevista se simula con un chat y tú escribes las respuestas del candidato (son todas las preguntas de la guía: 16 para Vendedor, 19 para Jefe de Tienda). La sugerencia de puntaje es una regla simple (ejemplo concreto, acciones propias, resultado medible) y el chat no se guarda al salir, pero la transcripción sí queda como borrador en Entrevistas. Quien confirma su entrevista en Respuestas a CVs pasa a la etapa Entrevista y aparece en la lista.',
     video: 'interviewsAi',
     chatSuggestions: ['entrevista-ia-como', 'entrevista-ia-pasos', 'entrevista-ia-evaluacion', 'entrevista-ia-aviso'],
   },

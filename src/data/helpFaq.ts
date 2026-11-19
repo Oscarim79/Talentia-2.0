@@ -85,9 +85,9 @@ export const HELP_FAQ: FaqEntry[] = [
   {
     id: 'responder',
     question: '¿Cómo respondo a los candidatos para agendar entrevista?',
-    keywords: ['responder', 'respondo', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'agendo', 'entrevista', 'citar', 'plantilla', 'zoom'],
+    keywords: ['responder', 'respondo', 'respuesta', 'mensaje', 'whatsapp', 'correo', 'email', 'agendar', 'agendo', 'entrevista', 'citar', 'plantilla', 'meet'],
     answer:
-      'En Respuestas a CVs filtra por vacante y score mínimo, marca a los candidatos y pulsa "Responder a N seleccionados". El mensaje es la plantilla estándar: tú eliges canal (WhatsApp o correo), modalidad (Virtual por Zoom viene por defecto), la primera entrevista y cuánto dura cada una, indicaciones y firma. Cada candidato recibe su propia fecha y hora, y el nombre, la vacante y la marca se completan solos. Mira la vista previa con el ojito antes de enviar.',
+      'En Respuestas a CVs filtra por vacante y score mínimo, marca a los candidatos y pulsa "Responder a N seleccionados". El mensaje es la plantilla estándar: tú eliges canal (WhatsApp o correo), modalidad (Virtual por Google Meet viene por defecto), la primera entrevista y cuánto dura cada una, indicaciones y firma. Cada candidato recibe su propia fecha y hora, y el nombre, la vacante y la marca se completan solos. Mira la vista previa con el ojito antes de enviar.',
     route: '/respuestas',
     routeLabel: 'Ir a Respuestas a CVs',
   },
@@ -136,7 +136,7 @@ export const HELP_FAQ: FaqEntry[] = [
     keywords: [
       'guia de competencias', 'guia de entrevista', 'guia de la entrevista', 'entrevista por competencias', 'entrevistas por competencias',
       'competencias', 'hago la entrevista', 'hacer la entrevista', 'hacer una entrevista', 'hago una entrevista', 'durante la entrevista',
-      'entrevista por zoom', 'evaluar la entrevista', 'evaluo la entrevista', 'evaluar una entrevista', 'evaluo una entrevista',
+      'entrevista por meet', 'entrevista por google meet', 'evaluar la entrevista', 'evaluo la entrevista', 'evaluar una entrevista', 'evaluo una entrevista',
       'evaluar al candidato', 'evaluo al candidato', 'evaluar entrevista', 'tomar notas', 'tomo notas', 'anotar', 'anoto', 'notas',
       'preguntas conductuales', 'pregunta conductual', 'conductuales', 'conductual', 'historia', 'opcion multiple',
       'repreguntas', 'repregunta', 'busca', 'empezar la entrevista', 'entrevistar al candidato', 'entrevisto al candidato',
@@ -394,7 +394,7 @@ export const HELP_FAQ: FaqEntry[] = [
     id: 'entrevista-ia-como',
     question: '¿Cómo funciona la entrevista por videollamada con IA?',
     keywords: [
-      'videollamada', 'video llamada', 'meet', 'videollamada de zoom', 'como funciona', 'como funcionan',
+      'videollamada', 'video llamada', 'meet', 'videollamada de meet', 'videollamada de google meet', 'como funciona', 'como funcionan',
       'como funciona la entrevista', 'como funcionan las entrevistas', 'funciona la entrevista', 'funcionan las entrevistas',
       'funciona la videollamada', 'asistente de ia', 'asistente ia', 'asistente virtual', 'entrevistador', 'entra a la llamada',
       'entra a la videollamada', 'a la llamada', 'entra el asistente', 'transcribe', 'transcripcion', 'es una persona',
@@ -405,7 +405,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'hace el modulo', 'que es la entrevista con',
     ],
     answer:
-      'Agendas la entrevista como siempre en Respuestas a CVs (Virtual por Zoom), con la casilla "La entrevista la hará el asistente de IA" marcada. A la hora acordada, el asistente de IA entra a la videollamada de Zoom, se presenta como asistente virtual con inteligencia artificial y hace una por una las preguntas de la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda, según la vacante), con repreguntas si la respuesta es vaga; todo queda transcrito. Al terminar, la transcripción queda como borrador en Entrevistas con una sugerencia preliminar de puntaje y las diferencias con el CV; tú puntúas de 1 a 5 y la app calcula el reporte. La decisión es de RR.HH. La videollamada real está planeada para la Fase 3: en la demo se simula con un chat.',
+      'Agendas la entrevista como siempre en Respuestas a CVs (Virtual por Google Meet), con la casilla "La entrevista la hará el asistente de IA" marcada. A la hora acordada, el asistente de IA entra a la videollamada de Meet, se presenta como asistente virtual con inteligencia artificial y hace una por una las preguntas de la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda, según la vacante), con repreguntas si la respuesta es vaga; todo queda transcrito. Al terminar, la transcripción queda como borrador en Entrevistas con una sugerencia preliminar de puntaje y las diferencias con el CV; tú puntúas de 1 a 5 y la app calcula el reporte. La decisión es de RR.HH. La videollamada real está planeada para la Fase 3: en la demo se simula con un chat.',
     route: '/entrevistas',
     routeLabel: 'Ir a Entrevistas IA',
     topic: 'interviewsAi',

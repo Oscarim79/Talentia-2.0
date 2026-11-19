@@ -31,10 +31,10 @@ import { Toggle } from '../settings/SettingsPage';
 // ---------- Plantilla estándar (software opinado: una sola, con campos fijos) ----------
 
 type Modality = 'presencial' | 'llamada' | 'videollamada';
-// Americana 2000 entrevista en línea por Zoom (cadena en todo el país): es la opción por defecto.
+// Americana 2000 entrevista en línea por Google Meet (cadena en todo el país): es la opción por defecto.
 // Cada modalidad trae su indicación por defecto (se puede editar).
 const MODALITIES: { key: Modality; label: string; phrase: string; place: string }[] = [
-  { key: 'videollamada', label: 'Virtual por Zoom', phrase: 'virtual por Zoom', place: 'Al confirmar tu horario te enviaremos el enlace de la entrevista por Zoom.' },
+  { key: 'videollamada', label: 'Virtual por Google Meet', phrase: 'virtual por Google Meet', place: 'Al confirmar tu horario te enviaremos el enlace de la entrevista por Google Meet.' },
   { key: 'llamada', label: 'Llamada telefónica', phrase: 'por llamada telefónica', place: 'Al confirmar tu horario te llamaremos a este número.' },
   { key: 'presencial', label: 'Presencial', phrase: 'presencial', place: 'Al confirmar tu horario te enviaremos la dirección. Ten a mano tu DPI.' },
 ];
