@@ -10,7 +10,7 @@ Este documento responde dos preguntas: **cuánto cuestan las pruebas** y **cuán
 
 ## 1. Qué vamos a construir
 
-El candidato recibe su enlace de Google Meet (decisión del 2026-11-19; antes se asumía Zoom). A la hora acordada entra el **asistente de Talentia** (una ventana con el logo y voz propia), lo saluda, le hace las preguntas de la guía de competencias de RR.HH. (Vendedor: 16 preguntas, 45 min; Jefe de Tienda: 19 preguntas, 60 min), repregunta cuando hace falta y se despide. La llamada queda grabada y transcrita. Al terminar, Claude califica cada respuesta contra la guía, detecta lo que no cuadra con el CV y deja la evaluación lista en la sección Entrevistas. El reclutador puede mirar en vivo o solo leer la evaluación.
+El candidato recibe su enlace de Google Meet (decisión del 2026-11-19; antes se asumía Zoom). A la hora acordada entra el **asistente de Talentia** (una ventana con el logo y voz propia), lo saluda, le hace las preguntas de la guía de competencias de RR.HH. (Vendedor: 16 preguntas, 45 min; Jefe de Tienda: 19 preguntas, 60 min), repregunta cuando hace falta y se despide. La llamada queda grabada y transcrita. Al terminar, Claude califica cada respuesta contra la guía, detecta lo que no cuadra con el CV y deja la evaluación lista en la sección Entrevistas. El reclutador puede mirar en vivo o solo leer la evaluación (al inicio acompaña para pulir a la IA; la meta es que no tenga que estar; sección 10).
 
 Piezas (todas de pago por uso, sin servidores propios):
 
@@ -162,7 +162,7 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 | 1 a 2 | **Cerebro** (parte de la Entrega C): el agente de entrevistas con Claude real en texto, siguiendo la guía; evaluación final real; registro en `ai_calls` | Se puede entrevistar por chat con IA de verdad |
 | 3 a 4 | **Voz y videollamada**: agente en Vapi conectado al cerebro; ventana del asistente que Recall.ai muestra en la llamada; botón "Enviar el asistente" desde Respuestas a CVs; recibir grabación y transcripción; evaluación automática | El asistente entra al Meet de prueba y conversa |
 | 5 | **Fase A**: pruebas internas; ajustar voz, ritmo, interrupciones, ruido | Lista para candidatos |
-| 6 a 8 | **Fase B**: piloto con una vacante real; medir duración, abandono y opinión de candidatos y reclutadores | Números reales |
+| 6 a 8 | **Fase B**: piloto con una vacante real, con RR.HH. acompañando en Meet para afinar a la IA; medir duración, abandono y opinión de candidatos y reclutadores | Números reales |
 | después | **Decisión de salida en vivo** con los números reales: volumen, Supabase Pro, Vapi Core si hace falta | En producción |
 
 ---
@@ -186,4 +186,4 @@ Regla rápida para el CEO: **una entrevista completa hecha por la IA cuesta entr
 1. **Volumen mensual esperado** de entrevistas (define el presupuesto de la sección 5).
 2. ~~**Zoom, Meet o enlace propio** (sección 6).~~ **Decidido el 2026-11-19: Google Meet** (sin trámite de app y con transcripción propia de la reunión, un plus para el equipo). El enlace propio queda como posible ahorro futuro.
 3. **Voz del asistente** (hombre o mujer, acento): se elige en la Fase A escuchando opciones.
-4. **¿El reclutador mira en vivo** o solo lee la evaluación después? Cambia la pantalla de Entrevistas, no el costo.
+4. ~~**¿El reclutador mira en vivo** o solo lee la evaluación después?~~ **Decidido el 2026-11-19 (Oscar): al inicio (Fase A y piloto) el equipo de RR.HH. acompaña las entrevistas del asistente en Meet, solo para ir puliendo y "limpiando" a la IA, trabajo que debe quedar hecho antes de salir en vivo; la meta es que después no tengan que estar.** La pantalla de Entrevistas debe permitir las dos cosas (acompañar en vivo y solo leer la evaluación); no cambia el costo.
