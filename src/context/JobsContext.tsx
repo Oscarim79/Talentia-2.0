@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
-import { insertJob, listJobs } from '../core/db/jobs';
+import { insertJob, listJobs, updateJobRow } from '../core/db/jobs';
 import { notifyError } from '../lib/notify';
 import type { Job } from '../types';
 import { useTenantData } from './useTenantData';
@@ -8,6 +8,8 @@ interface JobsCtxValue {
   jobs: Job[];
   /** Crea una vacante nueva (la antepone a la lista para verla de inmediato). */
   addJob: (job: Job) => void;
+  /** Guarda los cambios de una vacante existente (se ven de inmediato; si falla, se revierten). */
+  updateJob: (job: Job) => void;
   ready: boolean;
   error: string | null;
   reload: () => void;
@@ -28,7 +30,27 @@ export function JobsProvider({ children }: { children: ReactNode }) {
     },
     [setData],
   );
-  const value = useMemo<JobsCtxValue>(() => ({ jobs, addJob, ready, error, reload }), [jobs, addJob, ready, error, reload]);
+  const updateJob = useCallback(
+    (job: Job) => {
+      let previous: Job | undefined;
+      setData((prev) =>
+        prev.map((j) => {
+          if (j.id !== job.id) return j;
+          previous = j;
+          return job;
+        }),
+      );
+      updateJobRow(job).catch(() => {
+        if (previous) setData((prev) => prev.map((j) => (j.id === job.id ? (previous as Job) : j)));
+        notifyError('No se pudieron guardar los cambios. Revisa tu conexión e inténtalo de nuevo.');
+      });
+    },
+    [setData],
+  );
+  const value = useMemo<JobsCtxValue>(
+    () => ({ jobs, addJob, updateJob, ready, error, reload }),
+    [jobs, addJob, updateJob, ready, error, reload],
+  );
   return <JobsContext.Provider value={value}>{children}</JobsContext.Provider>;
 }
 

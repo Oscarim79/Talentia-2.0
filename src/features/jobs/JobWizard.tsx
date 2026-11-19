@@ -20,32 +20,46 @@ const nextId = (prefix: string) => `${prefix}_${Date.now().toString(36)}_${++uid
 const inputCls =
   'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500';
 
-/** Wizard paso a paso para crear una vacante con IA + export XML LinkedIn. */
-export default function JobWizard({ onClose, onCreate }: { onClose: () => void; onCreate: (job: Job) => void }) {
+/**
+ * Wizard paso a paso para crear una vacante con IA + export XML LinkedIn.
+ * Con `job` funciona en modo edición: precarga la vacante, deja saltar entre pasos y guarda con `onSave`.
+ */
+export default function JobWizard({
+  onClose,
+  onCreate,
+  job: editing,
+  onSave,
+}: {
+  onClose: () => void;
+  onCreate?: (job: Job) => void;
+  job?: Job;
+  onSave?: (job: Job) => void;
+}) {
   const { tenant } = useTenant();
+  const isEdit = !!editing;
   const [step, setStep] = useState(0);
 
   // ---- Paso 1: básicos ----
-  const [title, setTitle] = useState('');
-  const [brand, setBrand] = useState(tenant.brands[0] ?? tenant.name);
-  const [department, setDepartment] = useState('');
-  const [location, setLocation] = useState('Guatemala, GT');
-  const [employmentType, setEmploymentType] = useState<Job['employmentType']>('Full-time');
-  const [openings, setOpenings] = useState(1);
-  const [salaryMin, setSalaryMin] = useState(4000);
-  const [salaryMax, setSalaryMax] = useState(6000);
+  const [title, setTitle] = useState(editing?.title ?? '');
+  const [brand, setBrand] = useState(editing?.brand ?? tenant.brands[0] ?? tenant.name);
+  const [department, setDepartment] = useState(editing?.department ?? '');
+  const [location, setLocation] = useState(editing?.location ?? 'Guatemala, GT');
+  const [employmentType, setEmploymentType] = useState<Job['employmentType']>(editing?.employmentType ?? 'Full-time');
+  const [openings, setOpenings] = useState(editing?.openings ?? 1);
+  const [salaryMin, setSalaryMin] = useState(editing?.salaryMin ?? 4000);
+  const [salaryMax, setSalaryMax] = useState(editing?.salaryMax ?? 6000);
 
   // ---- Paso 2: descripción ----
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(editing?.description ?? '');
   const [genDesc, setGenDesc] = useState(false);
 
   // ---- Paso 3: filtros ----
-  const [filters, setFilters] = useState<ScreeningFilter[]>([]);
+  const [filters, setFilters] = useState<ScreeningFilter[]>(editing?.filters ?? []);
   const [filterText, setFilterText] = useState('');
   const [filterPolarity, setFilterPolarity] = useState<'positive' | 'negative'>('positive');
 
   // ---- Paso 4: preguntas ----
-  const [questions, setQuestions] = useState<InterviewQuestion[]>([]);
+  const [questions, setQuestions] = useState<InterviewQuestion[]>(editing?.questions ?? []);
   const [genQ, setGenQ] = useState(false);
 
   const salaryInvalid = salaryMin > salaryMax;
@@ -53,6 +67,9 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
     step === 0
       ? title.trim().length > 1 && department.trim().length > 1 && !salaryInvalid
       : true;
+
+  // Guardar desde cualquier paso (modo edición): exige lo mismo que el paso 1 para no dejar la vacante rota.
+  const canSave = title.trim().length > 1 && department.trim().length > 1 && !salaryInvalid;
 
   async function generateDescription() {
     setGenDesc(true);
@@ -70,34 +87,46 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
     setGenQ(false);
   }
 
-  function addFilter() {
+  /** Agrega el criterio escrito. Devuelve la lista nueva (útil para no perder lo escrito al cambiar de paso). */
+  function addFilter(): ScreeningFilter[] {
     const criterion = filterText.trim();
-    if (!criterion) return;
-    setFilters((prev) => [
-      ...prev,
+    if (!criterion) return filters;
+    const next = [
+      ...filters,
       { id: nextId('f'), polarity: filterPolarity, criterion, weight: filterPolarity === 'positive' ? 30 : 100 },
-    ]);
+    ];
+    setFilters(next);
     setFilterText('');
+    return next;
   }
 
-  function buildJob(): Job {
+  /** Si dejaron un criterio escrito sin pulsar «Agregar», se agrega al avanzar en vez de perderlo. */
+  function goTo(target: number) {
+    if (step === 2 && filterText.trim()) addFilter();
+    setStep(target);
+  }
+
+  function buildJob(filtersOverride?: ScreeningFilter[]): Job {
     return {
-      id: `job_${Date.now()}`,
-      tenantId: tenant.id,
+      // En edición se conserva todo lo que el wizard no toca (estado, enlace de postulación, guía, fecha).
+      ...editing,
+      id: editing?.id ?? `job_${Date.now()}`,
+      tenantId: editing?.tenantId ?? tenant.id,
       title: title.trim(),
       brand,
       department: department.trim(),
       location: location.trim(),
       employmentType,
-      status: 'open',
+      status: editing?.status ?? 'open',
       salaryMin,
       salaryMax,
       description: description.trim() || `Vacante de ${title} en ${department}.`,
-      applySlug: `${tenant.slug}/${slugify(title)}`,
+      // El enlace no cambia al editar: ya pudo haberse publicado.
+      applySlug: editing?.applySlug ?? `${tenant.slug}/${slugify(title)}`,
       openings,
-      createdAt: new Date().toISOString().slice(0, 10),
-      questions,
-      filters,
+      createdAt: editing?.createdAt ?? new Date().toISOString().slice(0, 10),
+      questions: questions.filter((q) => q.text.trim()),
+      filters: filtersOverride ?? filters,
     };
   }
 
@@ -107,16 +136,27 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
   }
 
   function finish() {
-    onCreate(buildJob());
+    const job = buildJob(step === 2 && filterText.trim() ? addFilter() : undefined);
+    if (isEdit) onSave?.(job);
+    else onCreate?.(job);
     onClose();
   }
 
   // Evita perder el trabajo con un clic fuera del modal o Escape.
-  const dirty =
-    title.trim().length > 0 || description.trim().length > 0 || filters.length > 0 || questions.length > 0;
+  const dirty = isEdit
+    ? JSON.stringify(buildJob()) !== JSON.stringify(editing) || filterText.trim().length > 0
+    : title.trim().length > 0 || description.trim().length > 0 || filters.length > 0 || questions.length > 0;
   const confirm = useConfirm();
   async function safeClose() {
-    if (!dirty || (await confirm({ title: 'Descartar la vacante', message: 'Se perderá la vacante en progreso y lo que ya escribiste.', confirmLabel: 'Descartar', tone: 'danger' }))) onClose();
+    if (
+      !dirty ||
+      (await confirm(
+        isEdit
+          ? { title: 'Descartar los cambios', message: 'Se perderán los cambios que hiciste a esta vacante.', confirmLabel: 'Descartar', tone: 'danger' }
+          : { title: 'Descartar la vacante', message: 'Se perderá la vacante en progreso y lo que ya escribiste.', confirmLabel: 'Descartar', tone: 'danger' },
+      ))
+    )
+      onClose();
   }
   useEscape(safeClose);
 
@@ -124,7 +164,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Nueva vacante"
+      aria-label={isEdit ? 'Editar vacante' : 'Nueva vacante'}
       className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 p-4"
       onClick={safeClose}
     >
@@ -140,7 +180,7 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                 <Briefcase className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-neutral-900">Nueva vacante</h2>
+                <h2 className="text-base font-bold text-neutral-900">{isEdit ? 'Editar vacante' : 'Nueva vacante'}</h2>
                 <p className="text-xs text-neutral-500">Paso {step + 1} de {STEPS.length} · {STEPS[step]}</p>
               </div>
             </div>
@@ -149,12 +189,25 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
             </button>
           </div>
           <div className="mt-4 flex gap-1.5">
-            {STEPS.map((s, i) => (
-              <div
-                key={s}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? 'bg-brand-600' : 'bg-neutral-200'}`}
-              />
-            ))}
+            {STEPS.map((s, i) => {
+              const bar = `h-1.5 w-full rounded-full transition-colors ${i <= step ? 'bg-brand-600' : 'bg-neutral-200'}`;
+              // Al editar se puede saltar directo al paso que se quiere corregir (si los datos básicos son válidos).
+              return isEdit ? (
+                <button
+                  key={s}
+                  type="button"
+                  title={s}
+                  aria-label={`Ir al paso ${i + 1}: ${s}`}
+                  disabled={i > 0 && step === 0 && !canNext}
+                  onClick={() => goTo(i)}
+                  className="group flex-1 py-1.5 disabled:cursor-not-allowed"
+                >
+                  <div className={`${bar} group-hover:bg-brand-400`} />
+                </button>
+              ) : (
+                <div key={s} className={`${bar} flex-1`} />
+              );
+            })}
           </div>
         </div>
 
@@ -236,33 +289,60 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
                 Define los criterios que el motor de screening usará para puntuar CVs.
                 Los <b className="text-green-700">positivos</b> suman; los <b className="text-red-600">negativos</b> son excluyentes.
               </p>
-              <div className="flex gap-2">
-                <select className={`${inputCls} w-36 shrink-0`} value={filterPolarity} onChange={(e) => setFilterPolarity(e.target.value as 'positive' | 'negative')}>
-                  <option value="positive">+ Positivo</option>
-                  <option value="negative">− Negativo</option>
-                </select>
-                <input
-                  className={inputCls}
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addFilter()}
-                  placeholder="Ej. Ventas, Inglés, Sin disponibilidad de fines de semana…"
-                />
-                <Button onClick={addFilter} disabled={!filterText.trim()}>
-                  <Plus className="h-4 w-4" />
-                </Button>
+              {isEdit && (
+                <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  Los cambios aplican a los CVs que subas desde ahora. Los candidatos ya puntuados conservan su puntaje;
+                  para evaluarlos con los filtros nuevos, vuelve a pasar sus CVs por Screening IA.
+                </p>
+              )}
+              <div className="space-y-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <select
+                    aria-label="Tipo de criterio"
+                    className="w-full shrink-0 rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 sm:w-40"
+                    value={filterPolarity}
+                    onChange={(e) => setFilterPolarity(e.target.value as 'positive' | 'negative')}
+                  >
+                    <option value="positive">+ Positivo</option>
+                    <option value="negative">− Negativo</option>
+                  </select>
+                  <textarea
+                    aria-label="Criterio de screening"
+                    rows={2}
+                    className={`${inputCls} min-w-0 flex-1 resize-y py-2.5 text-base leading-snug`}
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        addFilter();
+                      }
+                    }}
+                    placeholder="Ej. Ventas, Inglés, Edad entre 25 y 40 años, Sin disponibilidad de fines de semana…"
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs text-neutral-400">Enter agrega el criterio · Shift+Enter hace salto de línea</p>
+                  <Button onClick={addFilter} disabled={!filterText.trim()}>
+                    <Plus className="h-4 w-4" /> Agregar
+                  </Button>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {filters.length === 0 && <p className="text-sm text-neutral-400">Aún no hay filtros. Agrega al menos uno para un mejor scoring.</p>}
                 {filters.map((f) => (
                   <span
                     key={f.id}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                    className={`inline-flex max-w-full items-start gap-1.5 break-words rounded-2xl px-3 py-1 text-xs font-semibold ${
                       f.polarity === 'positive' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                     }`}
                   >
-                    {f.polarity === 'positive' ? '+' : '−'} {f.criterion}
-                    <button onClick={() => setFilters((prev) => prev.filter((x) => x.id !== f.id))} className="hover:opacity-60">
+                    <span className="min-w-0 whitespace-pre-wrap break-words">{f.polarity === 'positive' ? '+' : '−'} {f.criterion}</span>
+                    <button
+                      onClick={() => setFilters((prev) => prev.filter((x) => x.id !== f.id))}
+                      aria-label={`Quitar criterio: ${f.criterion}`}
+                      className="mt-0.5 shrink-0 hover:opacity-60"
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </span>
@@ -338,17 +418,24 @@ export default function JobWizard({ onClose, onCreate }: { onClose: () => void; 
         </div>
 
         {/* Pie: navegación */}
-        <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-4">
-          <Button variant="ghost" onClick={() => (step === 0 ? safeClose() : setStep((s) => s - 1))}>
+        <div className="flex items-center justify-between gap-2 border-t border-neutral-200 px-6 py-4">
+          <Button variant="ghost" onClick={() => (step === 0 ? safeClose() : goTo(step - 1))}>
             <ChevronLeft className="h-4 w-4" /> {step === 0 ? 'Cancelar' : 'Atrás'}
           </Button>
           {step < STEPS.length - 1 ? (
-            <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext}>
-              Siguiente <ChevronRight className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {isEdit && (
+                <Button variant="secondary" onClick={finish} disabled={!canSave}>
+                  <Check className="h-4 w-4" /> Guardar cambios
+                </Button>
+              )}
+              <Button onClick={() => goTo(step + 1)} disabled={!canNext}>
+                Siguiente <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           ) : (
-            <Button onClick={finish} disabled={!title.trim()}>
-              <Check className="h-4 w-4" /> Crear vacante
+            <Button onClick={finish} disabled={!canSave}>
+              <Check className="h-4 w-4" /> {isEdit ? 'Guardar cambios' : 'Crear vacante'}
             </Button>
           )}
         </div>
