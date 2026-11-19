@@ -112,7 +112,7 @@ export default function CompetencyInterviewPage() {
       <PageHeader
         eyebrow="Reclutamiento"
         title="Entrevista por competencias"
-        subtitle="La guía de entrevista de RR.HH. para Vendedores y Jefes de Tienda: tomas notas durante la entrevista por Zoom, puntúas al terminar y la app calcula el reporte."
+        subtitle="La guía de entrevista de RR.HH. para Vendedores y Jefes de Tienda: tomas notas durante la entrevista por Google Meet, puntúas al terminar y la app calcula el reporte."
       />
 
       {pool.length === 0 ? (

@@ -38,7 +38,7 @@ import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives'
 
 // Americana 2000 entrevista por videollamada (cadena en todo el país): es el canal principal.
 const CHANNELS = [
-  { icon: Video, label: 'Videollamada', desc: 'El asistente de IA entra a la videollamada de Zoom, graba y transcribe (Recall.ai)', tag: 'Fase 3' },
+  { icon: Video, label: 'Videollamada', desc: 'El asistente de IA entra a la videollamada de Google Meet, graba y transcribe (Recall.ai)', tag: 'Fase 3' },
   { icon: MessageCircle, label: 'WhatsApp', desc: 'Entrevista por texto + agendamiento', tag: 'Fase 2' },
   { icon: Phone, label: 'Teléfono', desc: 'Agente de voz (Vapi/Retell)', tag: 'Fase 3' },
 ];
@@ -170,7 +170,7 @@ export default function InterviewsPage() {
       <PageHeader
         eyebrow="Reclutamiento"
         title="Entrevistas IA"
-        subtitle="El asistente de IA entrevista por videollamada (Zoom) con la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda), transcribe y deja las respuestas listas para puntuar. RR.HH. decide."
+        subtitle="El asistente de IA entrevista por videollamada (Google Meet) con la guía de competencias de RR.HH. (Vendedor o Jefe de Tienda), transcribe y deja las respuestas listas para puntuar. RR.HH. decide."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="brand">

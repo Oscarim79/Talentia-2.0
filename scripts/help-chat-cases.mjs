@@ -91,12 +91,12 @@ export const CASES = [
   ['¿Qué pasa si la vacante no tiene preguntas?', 'entrevista-ia-preguntas', '/entrevistas'],
   ['¿cómo cambio las preguntas de la entrevista?', 'entrevista-ia-preguntas', '/vacantes'],
   ['¿El asistente de IA es una persona?', 'entrevista-ia-como', '/configuracion', 'interviewsAi'],
-  // --- Reynaldo: horarios y Zoom ---
+  // --- Reynaldo: horarios y Google Meet ---
   ['¿Cómo cambio el horario de un candidato?', 'horarios', '/respuestas'],
   ['quiero ponerle otra hora a María', 'horarios', '/respuestas'],
   ['¿puedo cambiar la fecha de la entrevista?', 'horarios', '/respuestas'],
   ['¿cuánto dura cada entrevista?', 'horarios', '/respuestas'],
-  ['¿Las entrevistas son por Zoom?', 'responder', '/respuestas'],
+  ['¿Las entrevistas son por Google Meet?', 'responder', '/respuestas'],
   ['cargué CVs y no aparecen en respuestas', 'subir-cv', '/respuestas'],
   ['¿dónde quedan los cvs que cargué?', 'subir-cv', '/screening'],
   ['¿cómo agendo una entrevista?', 'responder', '/respuestas'],
@@ -124,7 +124,7 @@ export const CASES = [
   ["k es eso de la entrevista por videollamada","entrevista-ia-como","/"],
   ["explicame como trabaja el entrevistador virtual","entrevista-ia-como","/entrevistas"],
   ["la ia se conecta sola a la videollamada?","entrevista-ia-como","/entrevistas"],
-  ["funciona con zoom o teams?","entrevista-ia-como","/entrevistas"],
+  ["funciona con meet o teams?","entrevista-ia-como","/entrevistas"],
   ["la ia habla con el candidato por video?","entrevista-ia-como","/entrevistas"],
   ["como es la video llamada con el candidato","entrevista-ia-como","/"],
   ["queda transcrita la entrevista?","entrevista-ia-como","/entrevistas"],
@@ -282,7 +282,7 @@ export const CASES = [
   // --- Entrevista por competencias (guía de RR.HH., 2026-10-13) ---
   ["como hago la entrevista con la guia","competencias","/"],
   ["donde esta la guia de entrevista para vendedores","competencias","/"],
-  ["como evaluo a un candidato despues de la entrevista por zoom","competencias","/competencias"],
+  ["como evaluo a un candidato despues de la entrevista por google meet","competencias","/competencias"],
   ["donde anoto lo que dice el candidato","competencias","/competencias"],
   ["que son las preguntas conductuales","competencias","/competencias"],
   ["para que sirve la pregunta de la historia","competencias","/competencias"],
@@ -306,7 +306,7 @@ export const CASES = [
   ["como muevo un candidato de etapa","competencias-decidir","/candidatos"],
   ["lo pase a oferta por error, como lo regreso","competencias-decidir","/competencias"],
   // regresión: siguen yendo a Entrevistas IA / Respuestas
-  ["como agendo la entrevista por zoom","responder","/respuestas"],
+  ["como agendo la entrevista por google meet","responder","/respuestas"],
   ["que preguntas hace el asistente de ia","entrevista-ia-preguntas","/entrevistas"],
   // --- Talento: Matriz 9-Box, perfil, Acciones RR.HH. (2026-10-19) ---
   ["para que sirve talento","talento","/"],
