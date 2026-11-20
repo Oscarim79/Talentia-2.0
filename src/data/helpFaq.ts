@@ -791,7 +791,7 @@ export const HELP_FAQ: FaqEntry[] = [
       'restablecer contraseña', 'restablecer mi contraseña', 'recuperar contraseña', 'recuperar mi contraseña', 'password', 'no recuerdo mi',
     ],
     answer:
-      'Pídele a Oscar que la restablezca desde su panel: no hay correo automático para recuperarla, así que te la da él. Es personal: no la compartas con nadie.',
+      'Para cambiarla: Configuración → "Tu contraseña", escríbela dos veces y pulsa "Guardar contraseña" (al menos 8 caracteres). Si la olvidaste y no puedes entrar, pídele a Oscar que la restablezca. Es personal: no la compartas con nadie.',
   },
   {
     id: 'guardado',

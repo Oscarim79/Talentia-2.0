@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Puzzle, Lock, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList, Compass } from 'lucide-react';
+import { Puzzle, Lock, KeyRound, ArrowUpRight, Timer, Users, Plus, Trash2, RotateCcw, MessageCircleQuestion, Send, Copy, Download, Eraser, ClipboardList, Compass } from 'lucide-react';
 import { useHelp } from '../help/HelpContext';
 import { FEEDBACK_EMAIL, TEAM_PILOT } from '../../core/config';
 import { downloadTextFile } from '../../lib/utils';
@@ -14,12 +14,15 @@ import { DEFAULT_SLA, SLA_LABELS, type SlaGoals } from '../metrics/hrMetrics';
 import { Card, PageHeader, Badge, Button } from '../../components/ui/primitives';
 import { Field } from '../../components/ui/Field';
 import { cn } from '../../lib/utils';
+import { useAuth } from '../../context/AuthContext';
+import { NewPasswordForm } from '../auth/NewPasswordForm';
 
 const inputCls =
   'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-300';
 
 export default function SettingsPage() {
   const { tenant, canManage } = useTenant();
+  const { email, updatePassword } = useAuth();
   const { settings, isModuleEnabled, setModuleEnabled, setSla, hrTeam, addTeamMember, removeTeamMember } = useSettings();
   const [newName, setNewName] = useState('');
   const [newTitle, setNewTitle] = useState('');
@@ -267,6 +270,18 @@ export default function SettingsPage() {
             <Link to="/ronda-de-prueba" className="inline-flex items-center gap-1 font-semibold text-brand-700 hover:underline"><ClipboardList className="h-3 w-3" /> Ver el guion</Link>
           </p>
         )}
+      </Card>
+
+      {/* Tu contraseña: cada quien cambia la suya, sin correo. */}
+      <Card className="mb-6 overflow-hidden" dataTour="settings:password">
+        <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
+          <KeyRound className="h-4 w-4 text-brand-700" />
+          <h2 className="text-sm font-bold text-neutral-700">Tu contraseña</h2>
+          {email && <span className="ml-auto text-xs text-neutral-500">{email}</span>}
+        </div>
+        <div className="px-6 py-5">
+          <NewPasswordForm onSave={updatePassword} inline />
+        </div>
       </Card>
 
       <Card className="p-5" dataTour="settings:reset">
