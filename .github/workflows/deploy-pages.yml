@@ -1,5 +1,5 @@
 # Publica la demo en GitHub Pages en cada push a main.
-# URL: https://oscarim79.github.io/Talentia-2.0/
+# URL: https://talentialabs.app/ (dominio propio; la dirección de github.io redirige ahí).
 # Requisitos (una sola vez): repo público + Settings → Pages → Source: "GitHub Actions".
 name: Deploy a GitHub Pages
 
@@ -33,16 +33,18 @@ jobs:
           KEY='${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}'
           if [ -z "$URL" ]; then echo "Falta la variable del repositorio VITE_SUPABASE_URL (Settings > Secrets and variables > Actions > Variables)."; exit 1; fi
           if [ -z "$KEY" ]; then echo "Falta la variable del repositorio VITE_SUPABASE_PUBLISHABLE_KEY (Settings > Secrets and variables > Actions > Variables)."; exit 1; fi
+      # Da la carpeta del sitio: "/" con dominio propio, "/Talentia-2.0" con github.io.
+      - id: pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - run: npm run build
         env:
-          GITHUB_PAGES: 'true'
+          PAGES_BASE: ${{ steps.pages.outputs.base_path }}/
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
       # SPA: cualquier ruta profunda (/respuestas, /configuracion…) carga la app.
       - run: cp dist/index.html dist/404.html
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

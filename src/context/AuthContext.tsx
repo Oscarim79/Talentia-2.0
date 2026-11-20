@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { supabase } from '../core/supabase';
 import { notifyError } from '../lib/notify';
+import { parseAuthRedirect, stripAuthErrorFromUrl, updatePasswordErrorMessage } from '../features/auth/password';
 
 export type AuthStatus = 'loading' | 'signed_out' | 'signed_in';
 
@@ -9,6 +10,14 @@ interface AuthCtxValue {
   email: string | null;
   signIn: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
+  /** Entró con el enlace de "restablecer contraseña": la app le pide la contraseña nueva antes de seguir. */
+  recovering: boolean;
+  /** El enlace del correo no sirvió (vencido o ya usado); se muestra en la pantalla de entrada. */
+  linkError: string | null;
+  /** Guarda la contraseña nueva del usuario con sesión. Devuelve el error en español o null. */
+  updatePassword: (password: string) => Promise<string | null>;
+  /** Termina el paso de contraseña nueva y entra a la app. */
+  finishRecovery: () => void;
 }
 
 const NETWORK_MESSAGE = 'No se pudo conectar con el servidor. Si persiste, avísale a Oscar.';
@@ -29,22 +38,32 @@ export function loginErrorMessage(err: { message?: string; status?: number } | n
 
 const AuthContext = createContext<AuthCtxValue | null>(null);
 
+// Se lee al cargar, antes de que Supabase limpie la dirección tras leer el enlace del correo.
+const initialRedirect = typeof window === 'undefined' ? { recovery: false, linkError: null } : parseAuthRedirect(window.location.href);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [email, setEmail] = useState<string | null>(null);
+  const [recovering, setRecovering] = useState(initialRedirect.recovery);
+  const [linkError] = useState(initialRedirect.linkError);
 
   useEffect(() => {
     let active = true;
+    stripAuthErrorFromUrl();
     const apply = (session: { user: { email?: string | null } } | null) => {
       if (!active) return;
       setEmail(session?.user.email ? normalizeEmail(session.user.email) : null);
       setStatus(session ? 'signed_in' : 'signed_out');
+      if (!session) setRecovering(false);
     };
     supabase.auth
       .getSession()
       .then(({ data }) => apply(data.session))
       .catch(() => apply(null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => apply(session));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' && active) setRecovering(true);
+      apply(session);
+    });
     return () => {
       active = false;
       sub.subscription.unsubscribe();
@@ -79,8 +98,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
       },
+      recovering,
+      linkError,
+      updatePassword: async (password) => {
+        try {
+          const { error } = await supabase.auth.updateUser({ password });
+          return updatePasswordErrorMessage(error);
+        } catch {
+          return NETWORK_MESSAGE;
+        }
+      },
+      finishRecovery: () => setRecovering(false),
     }),
-    [status, email],
+    [status, email, recovering, linkError],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

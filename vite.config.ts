@@ -2,9 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// GitHub Pages sirve el sitio bajo /<repo>/ (https://oscarim79.github.io/Talentia-2.0/).
-// El workflow de despliegue define GITHUB_PAGES=true; en local la base sigue siendo "/".
-const base = process.env.GITHUB_PAGES ? '/Talentia-2.0/' : '/';
+// Carpeta desde la que se sirve el sitio. El workflow de Pages la toma de GitHub
+// (actions/configure-pages): "/" con el dominio propio (https://talentialabs.app/) y
+// "/Talentia-2.0/" si se vuelve a la dirección de github.io. En local siempre es "/".
+const base = process.env.PAGES_BASE || '/';
 
 export default defineConfig({
   base,

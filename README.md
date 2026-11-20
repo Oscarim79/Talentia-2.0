@@ -56,4 +56,4 @@ Documento de arquitectura completo: [`docs/ARQUITECTURA_TALENTIA_SAAS.md`](docs/
 
 ## Demo publicada (GitHub Pages)
 
-Cada push a `main` publica la demo en **https://oscarim79.github.io/Talentia-2.0/** mediante `.github/workflows/deploy-pages.yml` (requiere repo público y Pages con origen "GitHub Actions"). El build de Pages usa `GITHUB_PAGES=true` para servir bajo `/Talentia-2.0/`; en local la base sigue siendo `/`.
+Cada push a `main` publica la demo en **https://talentialabs.app/** (dominio propio en GitHub Pages; https://oscarim79.github.io/Talentia-2.0/ redirige ahí) mediante `.github/workflows/deploy-pages.yml` (requiere repo público y Pages con origen "GitHub Actions"). El workflow toma la carpeta del sitio de `actions/configure-pages` y se la pasa al build como `PAGES_BASE` (`/` con dominio propio, `/Talentia-2.0/` sin él); en local la base sigue siendo `/`.
